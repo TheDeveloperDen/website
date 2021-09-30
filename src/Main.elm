@@ -1,98 +1,132 @@
 module Main exposing (main)
 
-import Browser
-import Html exposing (Html, pre, text)
-import Http exposing (Error)
-import Json.Decode as D
+import Browser exposing (Document)
+import Browser.Navigation as Nav
+import Html exposing (Html, text)
+import Json.Decode exposing (Value)
+import Page
+import Route exposing (Route)
+import Session exposing (Session)
+import Url exposing (Url)
+import Viewer exposing (Viewer)
+import Views.Learning as Learning
 
 
+main : Program Value Model Msg
 main =
-    Browser.element
+    Browser.application Viewer
+
         { init = init
         , update = update
         , subscriptions = subscriptions
         , view = view
+        , onUrlChange = ChangedUrl
+        , onUrlRequest = ClickedLink
         }
 
 
-type alias LearningResourceIndex =
-    { name : String
-    }
 
-
-indexDecoder : D.Decoder (List LearningResourceIndex)
-indexDecoder =
-    D.list (D.field "name" D.string |> D.map LearningResourceIndex)
-
-
-type alias LearningResources =
-    { name : String
-    , description : String
-    , resources : List LearningResource
-    }
-
-
-type alias LearningResource =
-    { name : String
-    , url : String
-    , price : Maybe Int
-    , pros : List String
-    , cons : List String
-    }
-
-
-resourcesDecoder : D.Decoder LearningResources
-resourcesDecoder =
-    D.map3 LearningResources
-        (D.field "name" D.string)
-        (D.field "description" D.string)
-        (D.field "resources" (D.list resourceDecoder))
-
-
-resourceDecoder : D.Decoder LearningResource
-resourceDecoder =
-    D.map5 LearningResource
-        (D.field "name" D.string)
-        (D.field "url" D.string)
-        (D.field "price" (D.maybe D.int))
-        (D.field "pros" (D.list D.string))
-        (D.field "cons" (D.list D.string))
+init : Maybe Viewer -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init _ url navKey =
+    changeRouteTo
+        (Route.fromUrl url)
+        Home
+        (Session.fromViewer navKey
 
 
 type Model
-    = Failure Error
-    | Success String
-    | Loading
-
-
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( Loading
-    , Http.get
-        { url = "https://developerden.net/learning-resources/"
-        , expect = Http.expectJson GotText indexDecoder
-        }
-    )
-
-
-
--- UPDATE
+    = Home Session
+    | Learning Session String
+    | NotFound Session
 
 
 type Msg
-    = GotText (Result Http.Error (List LearningResourceIndex))
+    = ChangedUrl Url
+    | ClickedLink Browser.UrlRequest
+    | GotLearningMsg Learning.Msg
+
+
+changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo maybeRoute model =
+    case maybeRoute of
+        Nothing ->
+            ( NotFound, Cmd.none )
+
+        Just Route.Home ->
+            ( Home, Cmd.none )
+
+        Just (Route.Learning topic) ->
+            Learning.init topic |> (\( _, b ) -> ( Learning topic, Cmd.map GotLearningMsg b ))
+
+
+updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
+updateWith toModel toMsg model ( subModel, subCmd ) =
+    ( toModel subModel
+    , Cmd.map toMsg subCmd
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg _ =
-    case msg of
-        GotText result ->
-            case result of
-                Ok indices ->
-                    ( Success (List.map .name indices |> String.join ", "), Cmd.none )
+update msg model =
+    case ( msg, model ) of
+        ( ChangedUrl url, _ ) ->
+            changeRouteTo (Route.fromUrl (Debug.log (Debug.toString url) url)) model
 
-                Err s ->
-                    ( Failure s, Cmd.none )
+        ( ClickedLink urlRequest, _ ) ->
+            case urlRequest of
+                Browser.Internal url ->
+                    case url.fragment of
+                        Nothing ->
+                            -- If we got a link that didn't include a fragment,
+                            -- it's from one of those (href "") attributes that
+                            -- we have to include to make the RealWorld CSS work.
+                            --
+                            -- In an application doing path routing instead of
+                            -- fragment-based routing, this entire
+                            -- `case url.fragment of` expression this comment
+                            -- is inside would be unnecessary.
+                            ( model, Cmd.none )
+
+                        Just _ ->
+                            ( model
+                            , Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
+                            )
+
+                Browser.External href ->
+                    ( model
+                    , Nav.load href
+                    )
+
+        ( _, m ) ->
+            changeRouteTo (Debug.log (Debug.toString msg) (Just Route.Home)) model
+
+
+toSession : Model -> Session
+toSession page =
+    case page of
+        NotFound session ->
+            session
+
+        Home home ->
+            Home.toSession home
+
+        Settings settings ->
+            Settings.toSession settings
+
+        Login login ->
+            Login.toSession login
+
+        Register register ->
+            Register.toSession register
+
+        Profile _ profile ->
+            Profile.toSession profile
+
+        Article article ->
+            Article.toSession article
+
+        Editor _ editor ->
+            Editor.toSession editor
 
 
 
@@ -108,14 +142,18 @@ subscriptions _ =
 -- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Document Msg
 view model =
+    let
+        viewPage page config =
+            Page.view page config
+    in
     case model of
-        Failure e ->
-            text ("I was unable to load your book." ++ Debug.toString e)
+        Home ->
+            viewPage Page.Home { title = "Home", content = text "" }
 
-        Loading ->
-            text "Loading..."
+        NotFound ->
+            { title = "404", body = [ text "Not found" ] }
 
-        Success fullText ->
-            pre [] [ text fullText ]
+        Learning string ->
+            viewPage Page.Learning { title = string, content = text <| "Learning " ++ string }

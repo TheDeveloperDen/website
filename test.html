@@ -1,0 +1,48 @@
+<html>
+<head>
+    <script type="text/javascript">
+        function showHaskell() {
+            var e = document.getElementById("haskelltable");
+            if (e.style.display == "none") {
+                e.style.display = "block";
+            } else {
+                e.style.display = "none";
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+<button onclick="showHaskell()">
+    <a>
+        <h2>Haskell</h2>
+        <p>Haskell is functional and good</p>
+    </a>
+</button>
+<table id="haskelltable" style="display: none">
+    <tr>
+        <th>Resource</th>
+        <th>Price</th>
+        <th>Pros</th>
+        <th>Cons</th>
+    </tr>
+    <tr>
+        <td><a href="http://learnyouahaskell.org">Learn you a Haskell</a></td>
+        <td>Free!</td>
+        <td>
+            <ul>
+                <li>it's good</li>
+                <li>free</li>
+            </ul>
+        </td>
+        <td>
+            <ul>
+                <li>doesn't explain more advanced things very well</li>
+            </ul>
+        </td>
+    </tr>
+</table>
+<a><h2>Kotlin</h2></a>
+</body>
+</html>
