@@ -27,7 +27,7 @@ viewHeader page =
             [ a [ class "navbar-brand", Route.href Route.Home ]
                 [ text "Developer Den" ]
             , ul [ class "nav navbar-nav pull-xs-right" ] <|
-                navbarLink page (Route.Learning "Haskell") [ text "Haskell" ]
+                navbarLink page Route.Learning [ text "Learning" ]
                     :: []
             ]
         ]

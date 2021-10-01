@@ -9,6 +9,7 @@ type alias HttpTask a =
     Task Http.Error a
 
 
+getTask : String -> Decoder a -> HttpTask a
 getTask url decoder =
     Http.task
         { method = "GET"

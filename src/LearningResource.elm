@@ -1,7 +1,7 @@
-module LearningResource exposing (LearningResource, LearningResourceIndex, LearningResources, baseUrl, getIndexes, indexDecoder, resourceDecoder, resourcesDecoder)
+module LearningResource exposing (LearningResource, LearningResourceIndex, LearningResources, baseUrl, getIndexes, getResources, indexDecoder, resourceDecoder, resourcesDecoder)
 
 import Http
-import HttpUtil exposing (getTask)
+import HttpUtil exposing (HttpTask, getTask)
 import Json.Decode as D
 import Task exposing (Task)
 
@@ -57,3 +57,8 @@ resourceDecoder =
 getIndexes : Task Http.Error (List LearningResourceIndex)
 getIndexes =
     getTask baseUrl indexDecoder
+
+
+getResources : LearningResourceIndex -> HttpTask LearningResources
+getResources index =
+    getTask (baseUrl ++ index.name) resourcesDecoder

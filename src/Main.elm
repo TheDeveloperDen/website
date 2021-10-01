@@ -63,8 +63,8 @@ changeRouteTo maybeRoute model =
         Just Route.Home ->
             Home.init session |> updateWith Home GotHomeMsg model
 
-        Just (Route.Learning topic) ->
-            Learning.init session (Debug.log "topic" (Just topic)) |> updateWith Learning GotLearningMsg model
+        Just Route.Learning ->
+            Learning.init session |> updateWith Learning GotLearningMsg model
 
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
