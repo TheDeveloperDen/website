@@ -1,7 +1,9 @@
-module Views.Learning exposing (LearningResource, LearningResources, Msg(..), init)
+module Views.Learning exposing (LearningResource, LearningResources, Model, Msg(..), init, toSession, view)
 
+import Html exposing (Html)
 import Http
 import Json.Decode as D
+import Session exposing (Session)
 
 
 type alias LearningResourceIndex =
@@ -48,10 +50,10 @@ resourceDecoder =
         (D.field "cons" (D.list D.string))
 
 
-type Model
-    = Failure
-    | Loading
-    | Success String
+type alias Model =
+    { session : Session
+    , topic : String
+    }
 
 
 type Msg
@@ -73,6 +75,15 @@ getIndexes =
         }
 
 
-init : String -> ( Model, Cmd Msg )
-init url =
-    ( Loading, getIndexes )
+init : Session -> String -> ( Model, Cmd Msg )
+init session url =
+    ( Model session url, getIndexes )
+
+
+view : Model -> { title : String, content : Html Msg }
+view =
+    Debug.todo "View Learning"
+
+
+toSession =
+    .session

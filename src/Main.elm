@@ -1,21 +1,23 @@
 module Main exposing (main)
 
+import Api exposing (Cred)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Html exposing (Html, text)
-import Json.Decode exposing (Value)
+import Json.Decode exposing (Decoder, Value)
 import Page
 import Route exposing (Route)
 import Session exposing (Session)
 import Url exposing (Url)
 import Viewer exposing (Viewer)
+import Views.Blank as Blank
+import Views.Home as Home exposing (Msg(..))
 import Views.Learning as Learning
 
 
 main : Program Value Model Msg
 main =
-    Browser.application Viewer
-
+    Api.application Viewer.decoder
         { init = init
         , update = update
         , subscriptions = subscriptions
@@ -25,18 +27,19 @@ main =
         }
 
 
-
 init : Maybe Viewer -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init _ url navKey =
+init maybeViewer url navKey =
     changeRouteTo
         (Route.fromUrl url)
-        Home
-        (Session.fromViewer navKey
+        (Redirect
+            (Session.fromViewer navKey maybeViewer)
+        )
 
 
 type Model
-    = Home Session
-    | Learning Session String
+    = Home Home.Model
+    | Redirect Session
+    | Learning Learning.Model
     | NotFound Session
 
 
@@ -44,19 +47,24 @@ type Msg
     = ChangedUrl Url
     | ClickedLink Browser.UrlRequest
     | GotLearningMsg Learning.Msg
+    | GotHomeMsg Home.Msg
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
+    let
+        session =
+            toSession model
+    in
     case maybeRoute of
         Nothing ->
-            ( NotFound, Cmd.none )
+            ( NotFound session, Cmd.none )
 
         Just Route.Home ->
-            ( Home, Cmd.none )
+            Home.init session |> updateWith Home GotHomeMsg model
 
         Just (Route.Learning topic) ->
-            Learning.init topic |> (\( _, b ) -> ( Learning topic, Cmd.map GotLearningMsg b ))
+            Learning.init session topic |> updateWith Learning GotLearningMsg model
 
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
@@ -104,29 +112,17 @@ update msg model =
 toSession : Model -> Session
 toSession page =
     case page of
+        Redirect session ->
+            session
+
         NotFound session ->
             session
 
         Home home ->
             Home.toSession home
 
-        Settings settings ->
-            Settings.toSession settings
-
-        Login login ->
-            Login.toSession login
-
-        Register register ->
-            Register.toSession register
-
-        Profile _ profile ->
-            Profile.toSession profile
-
-        Article article ->
-            Article.toSession article
-
-        Editor _ editor ->
-            Editor.toSession editor
+        Learning learning ->
+            Learning.toSession learning
 
 
 
@@ -145,15 +141,25 @@ subscriptions _ =
 view : Model -> Document Msg
 view model =
     let
-        viewPage page config =
-            Page.view page config
+        viewer =
+            toSession model |> Session.viewer
+
+        viewPage page toMsg config =
+            let
+                { title, body } =
+                    Page.view viewer page config
+            in
+            { title = title, body = List.map (Html.map toMsg) body }
     in
     case model of
-        Home ->
-            viewPage Page.Home { title = "Home", content = text "" }
+        Redirect _ ->
+            Page.view viewer Page.Other Blank.view
 
-        NotFound ->
+        Home home ->
+            viewPage Page.Home GotHomeMsg (Home.view home)
+
+        NotFound _ ->
             { title = "404", body = [ text "Not found" ] }
 
-        Learning string ->
-            viewPage Page.Learning { title = string, content = text <| "Learning " ++ string }
+        Learning topic ->
+            viewPage Page.Learning GotLearningMsg (Learning.view topic)

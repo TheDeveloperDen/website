@@ -1,24 +1,18 @@
-module Viewer exposing (Viewer, avatar, cred, decoder, minPasswordChars, store, username)
+module Viewer exposing (Viewer, cred, decoder, minPasswordChars)
 
 {-| The logged-in user currently viewing this page. It stores enough data to
 be able to render the menu bar (username and avatar), along with Cred so it's
 impossible to have a Viewer if you aren't logged in.
 -}
 
+import Api exposing (Cred)
 import Json.Decode as Decode exposing (Decoder)
+import Json.Decode.Pipeline exposing (custom)
 import Json.Encode as Encode exposing (Value)
 
 
 
 -- TYPES
-
-
-type Username
-    = Username String
-
-
-type Cred
-    = Cred Username String
 
 
 type Viewer
@@ -31,11 +25,6 @@ type Viewer
 
 cred : Viewer -> Cred
 cred (Viewer val) =
-    val
-
-
-username : Viewer -> Username
-username (Viewer (Cred val _)) =
     val
 
 
@@ -52,8 +41,7 @@ minPasswordChars =
 
 decoder : Decoder (Cred -> Viewer)
 decoder =
-    Decode.map Viewer <|
-        Decode.field "username" Avatar.decoder
+    Decode.succeed Viewer
 
 
 
