@@ -1,88 +1,69 @@
-module Views.Learning exposing (LearningResource, LearningResources, Model, Msg(..), init, toSession, view)
+module Views.Learning exposing (Model, Msg(..), init, toSession, update, view)
 
-import Html exposing (Html)
+import Html exposing (Html, text)
 import Http
-import Json.Decode as D
+import LearningResource exposing (LearningResourceIndex, LearningResources)
 import Session exposing (Session)
-
-
-type alias LearningResourceIndex =
-    { name : String
-    }
-
-
-indexDecoder : D.Decoder (List LearningResourceIndex)
-indexDecoder =
-    D.list (D.field "name" D.string |> D.map LearningResourceIndex)
-
-
-type alias LearningResources =
-    { name : String
-    , description : String
-    , resources : List LearningResource
-    }
-
-
-resourcesDecoder : D.Decoder LearningResources
-resourcesDecoder =
-    D.map3 LearningResources
-        (D.field "name" D.string)
-        (D.field "description" D.string)
-        (D.field "resources" (D.list resourceDecoder))
-
-
-type alias LearningResource =
-    { name : String
-    , url : String
-    , price : Maybe Int
-    , pros : List String
-    , cons : List String
-    }
-
-
-resourceDecoder : D.Decoder LearningResource
-resourceDecoder =
-    D.map5 LearningResource
-        (D.field "name" D.string)
-        (D.field "url" D.string)
-        (D.field "price" (D.maybe D.int))
-        (D.field "pros" (D.list D.string))
-        (D.field "cons" (D.list D.string))
+import Task
 
 
 type alias Model =
     { session : Session
-    , topic : String
+    , indexes : List LearningResourceIndex
+    , topic : Status LearningResources
     }
+
+
+type Status a
+    = Loading
+    | Loaded a
+    | LoadingSlowly
+    | Failed
 
 
 type Msg
     = Show LearningResources
     | Hide LearningResources
     | Indexed (Result Http.Error (List LearningResourceIndex))
-    | Loaded (Result Http.Error LearningResources)
+    | LoadedResources (Result Http.Error LearningResources)
 
 
-baseUrl =
-    "https://developerden.net/learning-resources/"
-
-
-getIndexes : Cmd Msg
-getIndexes =
-    Http.get
-        { url = baseUrl
-        , expect = Http.expectJson Indexed indexDecoder
-        }
-
-
-init : Session -> String -> ( Model, Cmd Msg )
+init : Session -> Maybe String -> ( Model, Cmd Msg )
 init session url =
-    ( Model session url, getIndexes )
+    ( Model session [] Loading, LearningResource.getIndexes |> Task.attempt Indexed )
 
 
 view : Model -> { title : String, content : Html Msg }
-view =
-    Debug.todo "View Learning"
+view model =
+    case model.topic of
+        Loading ->
+            { title = "Loading", content = text (Debug.toString model.indexes) }
+
+        LoadingSlowly ->
+            { title = "Loading", content = text "Slowly..." }
+
+        Failed ->
+            { title = "Failed", content = text "Failed to load" }
+
+        Loaded a ->
+            { title = "Loaded", content = text a.name }
+
+
+
+--{ title = Debug.toString model.topic, content = model.topic |> Debug.toString |> text }
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        Indexed (Ok resources) ->
+            ( { model | indexes = resources }, Cmd.none )
+
+        Indexed (Err e) ->
+            ( model, Cmd.none )
+
+        _ ->
+            ( Debug.log "model" model, Cmd.map (always (Debug.log "msg" msg)) Cmd.none )
 
 
 toSession =

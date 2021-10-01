@@ -64,7 +64,7 @@ changeRouteTo maybeRoute model =
             Home.init session |> updateWith Home GotHomeMsg model
 
         Just (Route.Learning topic) ->
-            Learning.init session topic |> updateWith Learning GotLearningMsg model
+            Learning.init session (Debug.log "topic" (Just topic)) |> updateWith Learning GotLearningMsg model
 
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
@@ -78,7 +78,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model ) of
         ( ChangedUrl url, _ ) ->
-            changeRouteTo (Route.fromUrl (Debug.log (Debug.toString url) url)) model
+            changeRouteTo (Route.fromUrl (Debug.log "url" url)) model
+
+        ( GotLearningMsg subMsg, Learning topic ) ->
+            Learning.update subMsg topic |> updateWith Learning GotLearningMsg model
 
         ( ClickedLink urlRequest, _ ) ->
             case urlRequest of
@@ -106,7 +109,7 @@ update msg model =
                     )
 
         ( _, m ) ->
-            changeRouteTo (Debug.log (Debug.toString msg) (Just Route.Home)) model
+            changeRouteTo (Debug.log "msg" (Just Route.Home)) model
 
 
 toSession : Model -> Session

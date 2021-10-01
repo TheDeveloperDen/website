@@ -1,6 +1,6 @@
-module Views.Home exposing (..)
+module Views.Home exposing (Model, Msg(..), init, toSession, view)
 
-import Html exposing (Html)
+import Html exposing (Html, text)
 import Session exposing (Session)
 
 
@@ -23,7 +23,7 @@ init session =
 
 view : Model -> { title : String, content : Html Msg }
 view model =
-    Debug.todo "View Home"
+    { title = "Home", content = text "" }
 
 
 toSession =
