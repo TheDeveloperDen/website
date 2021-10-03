@@ -8,6 +8,7 @@ import Html.Events as Event
 import Http
 import LearningResource exposing (LearningResource, LearningResourceIndex, LearningResources)
 import Session exposing (Session)
+import Tailwind
 import Task
 
 
@@ -44,7 +45,7 @@ resourcesToButton resources =
 
 resourceToTableEntry : LearningResource -> Html Msg
 resourceToTableEntry res =
-    tr []
+    tr [ Tailwind.whitespace_nowrap ]
         [ td [] [ a [ href res.url ] [ text res.name ] ]
         , td [] [ text (Maybe.map String.fromInt res.price |> Maybe.withDefault "Free") ]
         , td []
@@ -58,8 +59,8 @@ resourceToTableEntry res =
 
 resourcesToTable : LearningResources -> Html Msg
 resourcesToTable resources =
-    table []
-        (tr []
+    table [ Tailwind.table_auto, Tailwind.border_separate, Tailwind.divide_y, Tailwind.divide_gray_300 ]
+        (tr [ Tailwind.px_6, Tailwind.py_2, Tailwind.text_xs, Tailwind.text_gray_500 ]
             [ th [] [ text "Resource" ]
             , th [] [ text "Price" ]
             , th [] [ text "Pros" ]
@@ -71,7 +72,7 @@ resourcesToTable resources =
 
 showResource : LearningResources -> Bool -> Html Msg
 showResource resource addTable =
-    div []
+    div [ Tailwind.w_full, Tailwind.border_b, Tailwind.border_gray_200, Tailwind.shadow ]
         (resourcesToButton resource
             :: (if addTable then
                     [ resourcesToTable resource ]
@@ -86,10 +87,10 @@ view : Model -> { title : String, content : Html Msg }
 view { session, loadedTopics, openTopics } =
     { title = "Learning"
     , content =
-        div []
+        div [ Tailwind.container, Tailwind.flex, Tailwind.justify_center, Tailwind.mx_auto ]
             [ Dict.values loadedTopics
                 |> List.map (\topic -> showResource topic (Set.member topic openTopics))
-                |> div []
+                |> div [ Tailwind.flex, Tailwind.flex_col ]
             ]
     }
 

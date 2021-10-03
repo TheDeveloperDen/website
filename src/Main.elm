@@ -78,7 +78,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model ) of
         ( ChangedUrl url, _ ) ->
-            changeRouteTo (Route.fromUrl (Debug.log "url" url)) model
+            changeRouteTo (Route.fromUrl url) model
 
         ( GotLearningMsg subMsg, Learning topic ) ->
             Learning.update subMsg topic |> updateWith Learning GotLearningMsg model
@@ -109,7 +109,7 @@ update msg model =
                     )
 
         ( _, m ) ->
-            changeRouteTo (Debug.log "msg" (Just Route.Home)) model
+            changeRouteTo (Just Route.Home) model
 
 
 toSession : Model -> Session
