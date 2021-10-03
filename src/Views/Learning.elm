@@ -2,11 +2,11 @@ module Views.Learning exposing (Model, Msg(..), init, toSession, update, view)
 
 import AssocSet as Set exposing (Set)
 import Dict exposing (Dict)
-import Html exposing (Html, a, button, div, h2, p, table, td, text, th, tr)
+import Html exposing (Html, a, button, div, h2, li, p, table, td, text, th, tr, ul)
 import Html.Attributes exposing (href)
 import Html.Events as Event
 import Http
-import LearningResource exposing (LearningResourceIndex, LearningResources)
+import LearningResource exposing (LearningResource, LearningResourceIndex, LearningResources)
 import Session exposing (Session)
 import Task
 
@@ -42,20 +42,44 @@ resourcesToButton resources =
         ]
 
 
+resourceToTableEntry : LearningResource -> Html Msg
+resourceToTableEntry res =
+    tr []
+        [ td [] [ a [ href res.url ] [ text res.name ] ]
+        , td [] [ text (Maybe.map String.fromInt res.price |> Maybe.withDefault "Free") ]
+        , td []
+            [ ul [] (List.map (text >> List.singleton >> li []) res.pros)
+            , td []
+                [ ul [] (List.map (text >> List.singleton >> li []) res.cons)
+                ]
+            ]
+        ]
+
+
 resourcesToTable : LearningResources -> Html Msg
 resourcesToTable resources =
     table []
-        [ tr []
+        (tr []
             [ th [] [ text "Resource" ]
             , th [] [ text "Price" ]
             , th [] [ text "Pros" ]
             , th [] [ text "Cons" ]
             ]
-        , tr
-            []
-            [ td [] [ a [ href "learn" ] [ text "learn you a haskell" ] ]
-            ]
-        ]
+            :: List.map resourceToTableEntry resources.resources
+        )
+
+
+showResource : LearningResources -> Bool -> Html Msg
+showResource resource addTable =
+    div []
+        (resourcesToButton resource
+            :: (if addTable then
+                    [ resourcesToTable resource ]
+
+                else
+                    []
+               )
+        )
 
 
 view : Model -> { title : String, content : Html Msg }
@@ -64,11 +88,7 @@ view { session, loadedTopics, openTopics } =
     , content =
         div []
             [ Dict.values loadedTopics
-                |> List.map resourcesToButton
-                |> div []
-            , openTopics
-                |> Set.map resourcesToTable
-                |> Set.toList
+                |> List.map (\topic -> showResource topic (Set.member topic openTopics))
                 |> div []
             ]
     }
@@ -83,22 +103,17 @@ setToggle set elem =
         Set.insert elem set
 
 
-
---{ title = Debug.toString model.topic, content = model.topic |> Debug.toString |> text }
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    Debug.log "response" <|
-        case msg of
-            LoadedResources (Ok resources) ->
-                ( { model | loadedTopics = resources |> List.map (\a -> ( a.name, a )) |> Dict.fromList }, Cmd.none )
+    case msg of
+        LoadedResources (Ok resources) ->
+            ( { model | loadedTopics = resources |> List.map (\a -> ( a.name, a )) |> Dict.fromList }, Cmd.none )
 
-            LoadedResources (Err e) ->
-                ( model, Cmd.none )
+        LoadedResources (Err _) ->
+            ( model, Cmd.none )
 
-            Toggle res ->
-                ( { model | openTopics = setToggle model.openTopics res }, Cmd.none )
+        Toggle res ->
+            ( { model | openTopics = setToggle model.openTopics res }, Cmd.none )
 
 
 toSession =
