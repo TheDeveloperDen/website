@@ -8,14 +8,18 @@
   },
   "scripts": {
     "copy-index": "cp index.html dist/",
-    "build-elm": "elm make src/Main.elm --output=dist/elm.js --optimize",
+    "build-elm": "elm make src/Main.elm --output=dist/elm.js",
+    "build-elm-prod": "elm make src/Main.elm --output=dist/elm.js --optimize",
     "build-tw": "postcss -o dist/main.css main.css",
     "build": "yarn build-tw && yarn build-elm && yarn copy-index",
-    "build-prod": "yarn build-tw && yarn build-elm && NODE_ENV=production yarn build-tw && yarn copy-index",
-    "check-format": "elm-format src/**/*.elm --validate"
+    "build-prod": "yarn build-tw && NODE_ENV=production yarn build-tw-prod && yarn copy-index",
+    "check-format": "elm-format src/**/*.elm --validate",
+    "watch-elm": "watch 'yarn build-elm' src"
   },
   "dependencies": {
     "postcss-loader": "^6.1.1",
+    "serve": "^12.0.1",
+    "watch": "^1.0.2",
     "yarn": "^1.22.15"
   }
 }
