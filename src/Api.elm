@@ -76,6 +76,9 @@ decoderFromCred decoder =
 port onStoreChange : (Value -> msg) -> Sub msg
 
 
+port storeCache : Maybe Value -> Cmd msg
+
+
 viewerChanges : (Maybe viewer -> msg) -> Decoder (Cred -> viewer) -> Sub msg
 viewerChanges toMsg decoder =
     onStoreChange (\value -> toMsg (decodeFromChange decoder value))
