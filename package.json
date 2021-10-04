@@ -2,6 +2,7 @@
   "devDependencies": {
     "autoprefixer": "^10.3.6",
     "postcss": "^8.3.8",
+    "postcss-cli": "^9.0.1",
     "postcss-elm-tailwind": "^0.11.0",
     "tailwindcss": "^2.2.16"
   },
@@ -14,6 +15,7 @@
     "check-format": "elm-format src/**/*.elm --validate"
   },
   "dependencies": {
-    "postcss-cli": "^9.0.1"
+    "postcss-loader": "^6.1.1",
+    "yarn": "^1.22.15"
   }
 }
