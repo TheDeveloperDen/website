@@ -7,12 +7,12 @@
     "tailwindcss": "^2.2.16"
   },
   "scripts": {
-    "copy-index": "cp index.html dist/",
+    "copy-resources": "cp -r static/. dist/;",
     "build-elm": "elm make src/Main.elm --output=dist/elm.js",
     "build-elm-prod": "elm make src/Main.elm --output=dist/elm.js --optimize",
-    "build-tw": "postcss -o dist/main.css main.css",
-    "build": "yarn build-tw && yarn build-elm && yarn copy-index",
-    "build-prod": "yarn build-tw && NODE_ENV=production yarn build-tw-prod && yarn copy-index",
+    "build-tw": "postcss main.css -o dist/main.css",
+    "build": "yarn build-tw && yarn build-elm && yarn copy-resources",
+    "build-prod": "yarn build-tw && NODE_ENV=production yarn build-elm-prod && yarn copy-resources",
     "check-format": "elm-format src/**/*.elm --validate",
     "watch-elm": "watch 'yarn build-elm' src"
   },

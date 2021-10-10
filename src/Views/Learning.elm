@@ -37,8 +37,8 @@ init session =
 resourcesToButton : LearningResources -> Html Msg
 resourcesToButton resources =
     button
-        [ Event.onClick (Toggle resources) ]
-        [ h2 [] [ text resources.name ]
+        [ Event.onClick (Toggle resources), Tailwind.bg_blue_500, Tailwind.text_white ]
+        [ h2 [ Tailwind.font_bold ] [ text resources.name ]
         , p [] [ text resources.description ]
         ]
 
@@ -49,10 +49,9 @@ resourceToTableEntry res =
         [ td [] [ a [ href res.url ] [ text res.name ] ]
         , td [] [ text (Maybe.map String.fromInt res.price |> Maybe.withDefault "Free") ]
         , td []
-            [ ul [] (List.map (text >> List.singleton >> li []) res.pros)
-            , td []
-                [ ul [] (List.map (text >> List.singleton >> li []) res.cons)
-                ]
+            [ ul [] (List.map (text >> List.singleton >> li []) res.pros) ]
+        , td []
+            [ ul [] (List.map (text >> List.singleton >> li []) res.cons)
             ]
         ]
 
