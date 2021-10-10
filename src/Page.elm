@@ -2,8 +2,9 @@ module Page exposing (Page(..), view)
 
 import Browser exposing (Document)
 import Html exposing (Html, a, button, div, img, nav, span, text)
-import Html.Attributes exposing (alt, class, src)
+import Html.Attributes exposing (alt, class, href, src)
 import Html.Attributes.Aria exposing (ariaControls, ariaExpanded)
+import Redirects exposing (discordURL, githubURL)
 import Route exposing (Route)
 import Tailwind as Tw
 import Tailwind.LG as TwLG
@@ -42,6 +43,8 @@ viewHeader page =
                         [ div [ Tw.flex, Tw.space_x_4 ]
                             [ navbarLink page Route.Home [ text "Home" ]
                             , navbarLink page Route.Learning [ text "Learning" ]
+                            , a (href discordURL :: navbarLinkStyle) [ text "Discord" ]
+                            , a (href githubURL :: navbarLinkStyle) [ text "GitHub" ]
                             ]
                         ]
                     ]
@@ -56,7 +59,11 @@ navbarLink page route linkContent =
         a [ Tw.bg_gray_900, Tw.text_white, Tw.px_3, Tw.py_2, Tw.rounded_md, Tw.text_sm, Tw.font_medium, Route.href route ] linkContent
 
     else
-        a [ Tw.text_gray_300, Tw.px_3, Tw.py_2, Tw.rounded_md, Tw.text_sm, Tw.font_medium, class "hover:bg-gray-700 hover:text-white", Route.href route ] linkContent
+        a (Route.href route :: navbarLinkStyle) linkContent
+
+
+navbarLinkStyle =
+    [ Tw.text_gray_300, Tw.px_3, Tw.py_2, Tw.rounded_md, Tw.text_sm, Tw.font_medium, class "hover:bg-gray-700 hover:text-white" ]
 
 
 isActive : Page -> Route -> Bool
