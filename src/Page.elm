@@ -21,8 +21,13 @@ type Page
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
 view maybeViewer page { title, content } =
     { title = title ++ " - Developer Den"
-    , body = viewHeader page :: content :: []
+    , body = [ background [ viewHeader page, content ] ]
     }
+
+
+background : List (Html msg) -> Html msg
+background =
+    div [ Tw.bg_gradient_to_r, Tw.from_blue_300, Tw.to_pink_400, Tw.h_screen, Tw.bg_fixed ]
 
 
 viewHeader : Page -> Html msg
