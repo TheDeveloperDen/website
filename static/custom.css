@@ -1,0 +1,14 @@
+@font-face {
+    font-family: Horta;
+    src: url(fonts/horta.otf);
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    src: url(fonts/JetBrainsMono-Regular.woff2);
+}
+
+
+.horta {
+    font-family: 'Horta', sans-serif;
+}
