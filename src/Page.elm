@@ -68,7 +68,7 @@ navbarLink page route linkContent =
 
 
 navbarLinkStyle =
-    [ Tw.text_gray_300, Tw.px_3, Tw.py_2, Tw.rounded_md, Tw.text_sm, Tw.font_medium, class "hover:bg-gray-700 hover:text-white" ]
+    [ Tw.text_gray_300, Tw.px_3, Tw.py_2, Tw.rounded_md, Tw.text_sm, Tw.font_medium, Tw.transform, Tw.transition, Tw.duration_300, Tw.ease_in_out, class "hover:bg-gray-700 hover:text-white" ]
 
 
 isActive : Page -> Route -> Bool
