@@ -16,6 +16,7 @@ type Page
     = Other
     | Home
     | Learning
+    | About
 
 
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
@@ -48,6 +49,7 @@ viewHeader page =
                         [ div [ Tw.flex, Tw.space_x_4 ]
                             [ navbarLink page Route.Home [ text "Home" ]
                             , navbarLink page Route.Learning [ text "Learning" ]
+                            , navbarLink page Route.About [ text "About Us" ]
                             , a (href discordURL :: navbarLinkStyle) [ text "Discord" ]
                             , a (href githubURL :: navbarLinkStyle) [ text "GitHub" ]
                             ]
@@ -78,6 +80,9 @@ isActive page route =
             True
 
         ( Learning, Route.Learning ) ->
+            True
+
+        ( About, Route.About ) ->
             True
 
         _ ->

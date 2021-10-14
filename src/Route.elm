@@ -9,6 +9,7 @@ import Url.Parser as Parser exposing ((</>), Parser, oneOf, s)
 type Route
     = Home
     | Learning
+    | About
 
 
 parser : Parser (Route -> a) a
@@ -18,6 +19,7 @@ parser =
         , Parser.map
             Learning
             (s "learning")
+        , Parser.map About (s "about")
         ]
 
 
@@ -48,3 +50,6 @@ routeToPieces route =
 
         Learning ->
             [ "learning" ]
+
+        About ->
+            [ "about" ]

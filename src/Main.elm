@@ -10,6 +10,7 @@ import Route exposing (Route)
 import Session exposing (Session)
 import Url exposing (Url)
 import Viewer exposing (Viewer)
+import Views.About as About
 import Views.Blank as Blank
 import Views.Home as Home exposing (Msg(..))
 import Views.Learning as Learning
@@ -41,6 +42,7 @@ type Model
     | Redirect Session
     | Learning Learning.Model
     | NotFound Session
+    | About About.Model
 
 
 type Msg
@@ -48,6 +50,7 @@ type Msg
     | ClickedLink Browser.UrlRequest
     | GotLearningMsg Learning.Msg
     | GotHomeMsg Home.Msg
+    | GotAboutMsg About.Msg
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -66,6 +69,9 @@ changeRouteTo maybeRoute model =
         Just Route.Learning ->
             Learning.init session |> updateWith Learning GotLearningMsg model
 
+        Just Route.About ->
+            About.init session |> updateWith About GotAboutMsg model
+
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
 updateWith toModel toMsg model ( subModel, subCmd ) =
@@ -82,6 +88,9 @@ update msg model =
 
         ( GotLearningMsg subMsg, Learning topic ) ->
             Learning.update subMsg topic |> updateWith Learning GotLearningMsg model
+
+        ( GotAboutMsg subMsg, About about ) ->
+            About.update subMsg about |> updateWith About GotAboutMsg model
 
         ( ClickedLink urlRequest, _ ) ->
             case urlRequest of
@@ -127,6 +136,9 @@ toSession page =
         Learning learning ->
             Learning.toSession learning
 
+        About about ->
+            About.toSession about
+
 
 
 -- SUBSCRIPTIONS
@@ -166,3 +178,6 @@ view model =
 
         Learning topic ->
             viewPage Page.Learning GotLearningMsg (Learning.view topic)
+
+        About about ->
+            viewPage Page.About GotAboutMsg (About.view about)
