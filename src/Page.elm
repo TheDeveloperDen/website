@@ -27,7 +27,7 @@ view maybeViewer page { title, content } =
 
 background : List (Html msg) -> Html msg
 background =
-    div [ Tw.bg_gradient_to_r, Tw.from_blue_300, Tw.to_pink_400, Tw.h_screen, Tw.bg_fixed, Tw.flex, Tw.flex_col ]
+    div [ Tw.bg_gradient_to_r, Tw.from_blue_700, Tw.to_pink_700, Tw.h_screen, Tw.bg_fixed, Tw.flex, Tw.flex_col ]
 
 
 viewHeader : Page -> Html msg
