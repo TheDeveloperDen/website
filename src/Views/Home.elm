@@ -1,4 +1,4 @@
-module Views.Home exposing (Model, init, toSession, view)
+module Views.Home exposing (Model, Msg, init, toSession, view)
 
 import Html exposing (Html, a, button, div, h1, h2, i, text)
 import Html.Attributes exposing (class, href)
