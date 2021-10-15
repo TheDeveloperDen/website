@@ -12,7 +12,7 @@ import Url exposing (Url)
 import Viewer exposing (Viewer)
 import Views.About as About
 import Views.Blank as Blank
-import Views.Home as Home exposing (Msg(..))
+import Views.Home as Home exposing (Msg)
 import Views.Learning as Learning
 
 
@@ -64,17 +64,17 @@ changeRouteTo maybeRoute model =
             ( NotFound session, Cmd.none )
 
         Just Route.Home ->
-            Home.init session |> updateWith Home GotHomeMsg model
+            Home.init session |> updateWith Home GotHomeMsg
 
         Just Route.Learning ->
-            Learning.init session |> updateWith Learning GotLearningMsg model
+            Learning.init session |> updateWith Learning GotLearningMsg
 
         Just Route.About ->
-            About.init session |> updateWith About GotAboutMsg model
+            About.init session |> updateWith About GotAboutMsg
 
 
-updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
-updateWith toModel toMsg model ( subModel, subCmd ) =
+updateWith : (subModel -> Model) -> (subMsg -> Msg) -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
+updateWith toModel toMsg ( subModel, subCmd ) =
     ( toModel subModel
     , Cmd.map toMsg subCmd
     )
@@ -87,10 +87,10 @@ update msg model =
             changeRouteTo (Route.fromUrl url) model
 
         ( GotLearningMsg subMsg, Learning topic ) ->
-            Learning.update subMsg topic |> updateWith Learning GotLearningMsg model
+            Learning.update subMsg topic |> updateWith Learning GotLearningMsg
 
         ( GotAboutMsg subMsg, About about ) ->
-            About.update subMsg about |> updateWith About GotAboutMsg model
+            About.update subMsg about |> updateWith About GotAboutMsg
 
         ( ClickedLink urlRequest, _ ) ->
             case urlRequest of
@@ -117,7 +117,7 @@ update msg model =
                     , Nav.load href
                     )
 
-        ( _, m ) ->
+        ( _, _ ) ->
             changeRouteTo (Just Route.Home) model
 
 
