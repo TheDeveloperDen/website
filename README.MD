@@ -1,5 +1,13 @@
 # devden-web-frontend
 
+## Building
+
+* To automatically recompile Elm files when changes are detected use `yarn watch-elm`
+* To build for development run `yarn build`
+* To build for production run `yarn build-prod`
+
+The site is built to `./dist/`
+
 ## TODO
 
 - [ ] Main page (index), shows information about the organisation with links to the discord server
