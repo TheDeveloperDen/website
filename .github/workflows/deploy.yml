@@ -70,4 +70,4 @@ jobs:
             docker pull ghcr.io/thedeveloperden/${{ env.name }}:master # DO NOT REMOVE THIS OR EVERYTHING WILL BREAK
             docker stop ${{ env.name }}
             docker rm ${{ env.name }}
-            docker run --name ${{ env.name }} -d -p 8080:80 --restart unless-stopped ghcr.io/thedeveloperden/${{ env.name }}:master
+            docker run --name ${{ env.name }} -d -p 40923:80 --restart unless-stopped ghcr.io/thedeveloperden/${{ env.name }}:master
