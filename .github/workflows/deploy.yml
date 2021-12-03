@@ -8,6 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  name: devden-web-frontend
 
 jobs:
   push_to_registry:
@@ -66,7 +67,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USERNAME }}
           password: ${{ secrets.DEPLOY_PASSWORD }}
           script: |
-            docker pull ghcr.io/thedeveloperden/devden-frontend:master # DO NOT REMOVE THIS OR EVERYTHING WILL BREAK
-            docker stop devden-frontend
-            docker rm devden-frontend
-            docker run --name devden-frontend -d -p 8080:80 --restart unless-stopped ghcr.io/thedeveloperden/devden-frontend:master
+            docker pull ghcr.io/thedeveloperden/${{ env.name }}:master # DO NOT REMOVE THIS OR EVERYTHING WILL BREAK
+            docker stop ${{ env.name }}
+            docker rm ${{ env.name }}
+            docker run --name ${{ env.name }} -d -p 8080:80 --restart unless-stopped ghcr.io/thedeveloperden/${{ env.name }}:master
