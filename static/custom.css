@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
 @font-face {
     font-family: Horta;
     src: url(fonts/horta.otf);
@@ -10,4 +12,8 @@
 
 .horta {
     font-family: 'Horta', sans-serif;
+}
+
+.montserrat {
+    font-family: 'Montserrat', sans-serif;
 }
