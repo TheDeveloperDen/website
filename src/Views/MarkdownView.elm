@@ -34,8 +34,8 @@ update msg model =
         LoadedFileContent (Ok content) ->
             ( { model | markdownContent = content }, Cmd.none )
 
-        LoadedFileContent (Err err) ->
-            ( { model | markdownContent = "Could not load Markdown file " ++ Debug.toString err }, Cmd.none )
+        LoadedFileContent (Err _) ->
+            ( { model | markdownContent = "Could not load Markdown file " }, Cmd.none )
 
 
 view : Model -> { title : String, content : Html Msg }
