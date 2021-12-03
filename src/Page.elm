@@ -15,12 +15,11 @@ import Viewer exposing (Viewer)
 type Page
     = Other
     | Home
-    | Learning
-    | About
+    | Rules
 
 
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
-view maybeViewer page { title, content } =
+view _ page { title, content } =
     { title = title ++ " - Developer Den"
     , body = [ background [ viewHeader page, content ] ]
     }
@@ -48,8 +47,7 @@ viewHeader page =
                     , div [ Tw.hidden, TwSM.block, TwSM.ml_6 ]
                         [ div [ Tw.flex, Tw.space_x_4 ]
                             [ navbarLink page Route.Home [ text "Home" ]
-                            , navbarLink page Route.Learning [ text "Learning" ]
-                            , navbarLink page Route.About [ text "About Us" ]
+                            , navbarLink page Route.Rules [ text "Rules" ]
                             , a (href discordURL :: navbarLinkStyle) [ text "Discord" ]
                             , a (href githubURL :: navbarLinkStyle) [ text "GitHub" ]
                             ]
@@ -79,10 +77,7 @@ isActive page route =
         ( Home, Route.Home ) ->
             True
 
-        ( Learning, Route.Learning ) ->
-            True
-
-        ( About, Route.About ) ->
+        ( Rules, Route.Rules ) ->
             True
 
         _ ->
