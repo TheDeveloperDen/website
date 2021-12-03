@@ -5,6 +5,6 @@ services:
     volumes:
       - .:/mnt
     ports:
-      - "8000"
+      - "40923:80"
     # we need init to kill elm-test when run with "make test"
     init: true

@@ -5,3 +5,4 @@ package-lock.json
 src/Tailwind.elm
 src/Tailwind
 /node_modules/
+*.iml
