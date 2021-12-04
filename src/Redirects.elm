@@ -4,7 +4,7 @@ module Redirects exposing (discordURL, githubURL)
 
 
 discordURL =
-    "https://discord.gg/xpxtM4xft2"
+    "https://developerden.net/discord"
 
 
 githubURL =
