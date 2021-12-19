@@ -1,4 +1,4 @@
-port module Api exposing (..)
+port module Api exposing (Cred, application, credDecoder, decodeFromChange, decoderFromCred, onStoreChange, storageDecoder, viewerChanges)
 
 import Browser
 import Browser.Navigation as Nav
@@ -57,15 +57,6 @@ credDecoder =
         |> required "token" Decode.string
 
 
-decode : Decoder (Cred -> viewer) -> Value -> Result Decode.Error viewer
-decode decoder value =
-    -- It's stored in localStorage as a JSON String;
-    -- first decode the Value as a String, then
-    -- decode that String as JSON.
-    Decode.decodeValue Decode.string value
-        |> Result.andThen (\str -> Decode.decodeString (Decode.field "user" (decoderFromCred decoder)) str)
-
-
 decoderFromCred : Decoder (Cred -> a) -> Decoder a
 decoderFromCred decoder =
     Decode.map2 (\fromCred cred -> fromCred cred)
@@ -74,9 +65,6 @@ decoderFromCred decoder =
 
 
 port onStoreChange : (Value -> msg) -> Sub msg
-
-
-port storeCache : Maybe Value -> Cmd msg
 
 
 viewerChanges : (Maybe viewer -> msg) -> Decoder (Cred -> viewer) -> Sub msg
