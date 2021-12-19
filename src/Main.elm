@@ -12,6 +12,7 @@ import Url exposing (Url)
 import Viewer exposing (Viewer)
 import Views.Blank as Blank
 import Views.Home as Home exposing (Msg)
+import Views.Minecraft as Minecraft
 import Views.Rules as Rules
 
 
@@ -39,6 +40,7 @@ init maybeViewer url navKey =
 type Model
     = Home Home.Model
     | Rules Rules.Model
+    | Minecraft Minecraft.Model
     | Redirect Session
     | NotFound Session
 
@@ -48,6 +50,7 @@ type Msg
     | ClickedLink Browser.UrlRequest
     | GotHomeMsg Home.Msg
     | GotRulesMsg Rules.Msg
+    | GotMinecraftMsg Minecraft.Msg
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -65,6 +68,9 @@ changeRouteTo maybeRoute model =
 
         Just Route.Rules ->
             Rules.init session |> updateWith Rules GotRulesMsg
+
+        Just Route.Minecraft ->
+            Minecraft.init session |> updateWith Minecraft GotMinecraftMsg
 
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
@@ -124,6 +130,9 @@ toSession page =
         Rules rules ->
             Rules.toSession rules
 
+        Minecraft minecraft ->
+            Minecraft.toSession minecraft
+
 
 
 -- SUBSCRIPTIONS
@@ -163,3 +172,6 @@ view model =
 
         Rules rules ->
             viewPage Page.Rules GotRulesMsg (Rules.view rules)
+
+        Minecraft minecraft ->
+            viewPage Page.Minecraft GotMinecraftMsg (Minecraft.view minecraft)
