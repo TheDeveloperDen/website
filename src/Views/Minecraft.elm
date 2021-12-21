@@ -26,7 +26,7 @@ view : Model -> { title : String, content : Html Msg }
 view _ =
     { title = "SMP Rules"
     , content =
-        div [ Tw.bg_opacity_80, Tw.bg_gray_700, Tw.w_full, Tw.h_full, Tw.text_white, Tw.flex, Tw.flex_col ]
+        div [ Tw.bg_opacity_80, Tw.bg_gray_700, Tw.w_full, Tw.h_full, Tw.text_white, Tw.flex, Tw.flex_col, Tw.pb_12 ]
             [ div [ Tw.ml_16, Tw.mr_16 ]
                 [ h1 [ Tw.text_6xl, class "montserrat", Tw.py_4, Tw.text_center ] [ text "SMP Rules" ]
                 , h2 [ Tw.text_4xl, Tw.py_4, Tw.text_center ] [ text "Alongside our normal rules, the SMP has some additional rules" ]
