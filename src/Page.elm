@@ -15,12 +15,12 @@ import Viewer exposing (Viewer)
 type Page
     = Other
     | Home
-    | Learning
-    | About
+    | Rules
+    | Minecraft
 
 
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
-view maybeViewer page { title, content } =
+view _ page { title, content } =
     { title = title ++ " - Developer Den"
     , body = [ background [ viewHeader page, content ] ]
     }
@@ -28,7 +28,7 @@ view maybeViewer page { title, content } =
 
 background : List (Html msg) -> Html msg
 background =
-    div [ Tw.bg_gradient_to_r, Tw.from_blue_700, Tw.to_pink_700, Tw.h_screen, Tw.bg_fixed, Tw.flex, Tw.flex_col ]
+    div [ Tw.bg_gradient_to_r, Tw.from_blue_700, Tw.to_pink_700, Tw.min_h_screen, Tw.bg_fixed, Tw.flex, Tw.flex_col ]
 
 
 viewHeader : Page -> Html msg
@@ -48,8 +48,8 @@ viewHeader page =
                     , div [ Tw.hidden, TwSM.block, TwSM.ml_6 ]
                         [ div [ Tw.flex, Tw.space_x_4 ]
                             [ navbarLink page Route.Home [ text "Home" ]
-                            , navbarLink page Route.Learning [ text "Learning" ]
-                            , navbarLink page Route.About [ text "About Us" ]
+                            , navbarLink page Route.Rules [ text "Rules" ]
+                            , navbarLink page Route.Minecraft [ text "Minecraft" ]
                             , a (href discordURL :: navbarLinkStyle) [ text "Discord" ]
                             , a (href githubURL :: navbarLinkStyle) [ text "GitHub" ]
                             ]
@@ -79,10 +79,10 @@ isActive page route =
         ( Home, Route.Home ) ->
             True
 
-        ( Learning, Route.Learning ) ->
+        ( Rules, Route.Rules ) ->
             True
 
-        ( About, Route.About ) ->
+        ( Minecraft, Route.Minecraft ) ->
             True
 
         _ ->
