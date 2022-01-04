@@ -29,6 +29,7 @@ view _ =
         div [ Tw.bg_opacity_80, Tw.bg_gray_700, Tw.w_full, Tw.h_full, Tw.text_white, Tw.flex, Tw.flex_col, Tw.pb_12 ]
             [ div [ Tw.ml_16, Tw.mr_16 ]
                 [ h1 [ Tw.text_6xl, class "montserrat", Tw.py_4, Tw.text_center ] [ text "SMP Rules" ]
+                , h2 [ Tw.text_2xl, Tw.underline, Tw.text_center ] [ text "IP: mc.developerden.net" ]
                 , h2 [ Tw.text_4xl, Tw.py_4, Tw.text_center ] [ text "Alongside our normal rules, the SMP has some additional rules" ]
                 , h3 [ class "montserrat", Tw.text_2xl, Tw.py_2 ] [ text "Foreword" ]
                 , p [ Tw.pl_10 ]
