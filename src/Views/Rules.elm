@@ -26,7 +26,7 @@ view : Model -> { title : String, content : Html Msg }
 view _ =
     { title = "Rules"
     , content =
-        div [ Tw.bg_opacity_80, Tw.bg_gray_700, Tw.w_full, Tw.h_full, Tw.text_white, Tw.flex, Tw.flex_col ]
+        div [ Tw.bg_opacity_80, Tw.bg_gray_700, Tw.w_full, Tw.flex_1, Tw.text_white, Tw.flex, Tw.flex_col ]
             [ div [ Tw.ml_16, Tw.mr_16 ]
                 [ h1 [ Tw.text_6xl, class "montserrat", Tw.py_4, Tw.text_center ] [ text "Server Rules" ]
                 , h2 [ Tw.text_4xl, Tw.py_4, Tw.text_center ] [ text "You are welcome in our community so long as you follow the rules" ]
