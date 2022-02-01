@@ -93,7 +93,7 @@ update msg model =
                             -- fragment-based routing, this entire
                             -- `case url.fragment of` expression this comment
                             -- is inside would be unnecessary.
-                            ( model, Cmd.none )
+                            ( model, Nav.load url.path )
 
                         Just _ ->
                             ( model

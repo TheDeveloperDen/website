@@ -31,8 +31,8 @@ view _ =
             [ h1 [ Tw.text_center, Tw.text_9xl, class "horta" ] [ text "The Developer Den" ]
             , h2 [ Tw.text_center, Tw.font_mono, Tw.py_4 ] [ text "An inclusive community of programmers who want to learn more and create cool stuff together." ]
             , div [ Tw.flex, Tw.flex_row, Tw.space_x_6 ]
-                [ a [ href discordURL ] [ button (Tw.bg_indigo_400, class "hover:bg-indigo-700 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-discord" ] [], text "Join our Discord" ] ]
-                , a [ href githubURL ] [ button (Tw.bg_blue_400, class "hover:bg-blue-700 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-github" ] [], text "View our GitHub" ] ]
+                [ a [ href discordURL ] [ button (Tw.bg_indigo_400 :: class "hover:bg-indigo-700 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-discord" ] [], text "Join our Discord" ] ]
+                , a [ href githubURL ] [ button (Tw.bg_blue_400 :: class "hover:bg-blue-700 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-github" ] [], text "View our GitHub" ] ]
                 ]
             ]
     }
