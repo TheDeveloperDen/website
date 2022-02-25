@@ -34,7 +34,7 @@ view _ =
                 , ruleLine [ text "a. Don't be rude or disrespectful to anyone in the server." ]
                 , ruleLine [ text "b. Criticism should be constructive. Nitpicking, flaming a certain programming language, etc doesn't help anyone." ]
                 , ruleHeader "2. Help us to help you"
-                , ruleLine [ text "a. Just ask your question, don't ", a [ Tw.underline, href "https://dontasktoask.com/" ] [ text "ask to ask, just ask" ], text "." ]
+                , ruleLine [ text "a. Just ask your question, ", a [ Tw.underline, href "https://dontasktoask.com/" ] [ text "don't ask to ask, just ask" ], text "." ]
                 , ruleLine [ text "b. Give as much information as possible when asking for help." ]
                 , ruleLine [ text "c. Don't DM or ping random people / staff for help, just ask your question and be patient." ]
                 , ruleLine [ text "d. If you need to send large blocks of code, please use a ", a [ Tw.underline, href "http://paste.developerden.net/" ] [ text "paste service" ], text "." ]
