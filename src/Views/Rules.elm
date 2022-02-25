@@ -30,7 +30,7 @@ view _ =
             [ div [ Tw.ml_16, Tw.mr_16 ]
                 [ h1 [ Tw.text_6xl, class "montserrat", Tw.mt_2, Tw.py_2, Tw.text_center ] [ text "Server Rules" ]
                 , h2 [ Tw.text_3xl, Tw.py_2, class "montserrat", Tw.text_center ] [ text "You are welcome in our community as long as you follow the rules." ]
-                , ruleHeader "1. Be Nice"
+                , ruleHeader "1. Be nice"
                 , ruleLine [ text "a. Don't be rude or disrespectful to anyone in the server." ]
                 , ruleLine [ text "b. Criticism should be constructive. Nitpicking, flaming a certain programming language, etc doesn't help anyone." ]
                 , ruleHeader "2. Help us to help you"
@@ -49,7 +49,7 @@ view _ =
                 , ruleLine [ text "b. Controversial / sensitive content (politics, religion, mental health, etc) should only be discussed in ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/851563025190223913" ] [ text "#📋-serious-discussions." ] ]
                 , ruleLine [ text "c. Keep shitposts to ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/932661343520194640" ] [ text "#🌞-random" ], text " as much as possible." ]
                 , ruleLine [ text "d. You can share things you've made in ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/847936633964724254" ] [ text "#💫-showcase" ], text " (read the pinned message before posting)." ]
-                , ruleHeader "5. Other Stuff"
+                , ruleHeader "5. Other stuff"
                 , ruleLine [ text "a. Hiring freelancers & offering services is currently not permitted." ]
                 , ruleLine [ text "b. Don't minimod." ]
                 , ruleLine [ text "c. Don't try and find loopholes in rules." ]
