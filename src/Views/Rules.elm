@@ -28,7 +28,7 @@ view _ =
     , content =
         div [ Tw.bg_opacity_80, Tw.bg_gray_700, Tw.w_full, Tw.flex_1, Tw.text_white, Tw.flex, Tw.flex_col ]
             [ div [ Tw.ml_16, Tw.mr_16 ]
-                [ h1 [ Tw.text_6xl, class "montserrat", Tw.py_2, Tw.text_center ] [ text "Server Rules" ]
+                [ h1 [ Tw.text_6xl, class "montserrat", Tw.mt_2, Tw.py_2, Tw.text_center ] [ text "Server Rules" ]
                 , h2 [ Tw.text_3xl, Tw.py_2, class "montserrat", Tw.text_center ] [ text "You are welcome in our community as long as you follow the rules." ]
                 , ruleHeader "1. Be Nice"
                 , ruleLine [ text "a. Don't be rude or disrespectful to anyone in the server." ]
