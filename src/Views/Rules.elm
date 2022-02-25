@@ -47,7 +47,7 @@ view _ =
                 , ruleHeader "4. Stay on topic & use the right channels"
                 , ruleLine [ text "a. If on-topic conversations are being interrupted by off-topic ones, move to a more relevant channel or make a thread." ]
                 , ruleLine [ text "b. Controversial / sensitive content (politics, religion, mental health, etc) should only be discussed in ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/851563025190223913" ] [ text "#📋-serious-discussions." ] ]
-                , ruleLine [ text "c. Try to keep shitposts to ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/932661343520194640" ] [ text "#🌞-random" ], text " as much as possible." ]
+                , ruleLine [ text "c. Keep shitposts to ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/932661343520194640" ] [ text "#🌞-random" ], text " as much as possible." ]
                 , ruleLine [ text "d. You can share things you've made in ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/847936633964724254" ] [ text "#💫-showcase" ], text " (read the pinned message before posting)." ]
                 , ruleHeader "5. Other Stuff"
                 , ruleLine [ text "a. Hiring freelancers & offering services is currently not permitted." ]
