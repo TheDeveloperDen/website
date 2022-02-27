@@ -46,9 +46,10 @@ view _ =
                 , ruleLine [ text "e. Other unethical questions such as asking people to do your schoolwork are not allowed." ]
                 , ruleHeader "4. Stay on topic & use the right channels"
                 , ruleLine [ text "a. If on-topic conversations are being interrupted by off-topic ones, move to a more relevant channel or make a thread." ]
-                , ruleLine [ text "b. Controversial / sensitive content (politics, religion, mental health, etc) should only be discussed in ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/851563025190223913" ] [ text "#📋-serious-discussions." ] ]
-                , ruleLine [ text "c. Keep shitposts to ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/932661343520194640" ] [ text "#🌞-random" ], text " as much as possible." ]
-                , ruleLine [ text "d. You can share things you've made in ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/847936633964724254" ] [ text "#💫-showcase" ], text " (read the pinned message before posting)." ]
+                , ruleLine [ text "b. Mental health talk (suicidal thoughts, anxiety, depression, etc) is not allowed. None of us are qualified to help you, please seek professional help if you need it." ]
+                , ruleLine [ text "c. Keep conversations about political topics to a minimum. If it gets heated, or there is any discussion in bad faith, staff will step in." ]
+                , ruleLine [ text "d. Keep shitposts to ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/932661343520194640" ] [ text "#🌞-random" ], text " as much as possible." ]
+                , ruleLine [ text "e. You can share things you've made in ", a [ Tw.font_bold, href "https://discord.com/channels/821743100203368458/847936633964724254" ] [ text "#💫-showcase" ], text " (read the pinned message before posting)." ]
                 , ruleHeader "5. Other stuff"
                 , ruleLine [ text "a. Hiring freelancers & offering services is currently not permitted." ]
                 , ruleLine [ text "b. Don't minimod." ]
