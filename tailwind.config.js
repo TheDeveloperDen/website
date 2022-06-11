@@ -6,7 +6,7 @@ module.exports = {
     darkMode: false, // or 'media' or 'class'
     theme: {
         fontFamily: {
-            'mono': ['JetBrains Mono']
+            'titillium': ['Titillium Web', 'sans-serif']
         }
     },
     plugins: [],
