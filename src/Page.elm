@@ -4,7 +4,7 @@ import Browser exposing (Document)
 import Html exposing (Html, a, button, div, img, nav, span, text)
 import Html.Attributes exposing (alt, class, href, src)
 import Html.Attributes.Aria exposing (ariaControls, ariaExpanded)
-import Redirects exposing (discordURL, githubURL, minecraftURL)
+import Redirects exposing (discordURL, githubURL)
 import Route exposing (Route)
 import Tailwind as Tw
 import Tailwind.LG as TwLG
@@ -48,7 +48,6 @@ viewHeader page =
                         [ div [ Tw.flex, Tw.space_x_4 ]
                             [ navbarLink page Route.Home [ text "Home" ]
                             , navbarLink page Route.Rules [ text "Rules" ]
-                            , a (href minecraftURL :: navbarLinkStyle) [ text "Minecraft" ]
                             , a (href githubURL :: navbarLinkStyle) [ text "GitHub" ]
                             , a (href discordURL :: navbarLinkStyle) [ text "Discord" ]
                             ]

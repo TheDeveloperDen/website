@@ -1,4 +1,4 @@
-module Redirects exposing (discordURL, githubURL, minecraftURL)
+module Redirects exposing (discordURL, githubURL)
 
 -- There has to be a better way of doing this...
 
@@ -9,7 +9,3 @@ discordURL =
 
 githubURL =
     "https://github.com/TheDeveloperDen"
-
-
-minecraftURL =
-    "https://densmp.com"
