@@ -28,11 +28,11 @@ view _ =
     { title = "Home"
     , content =
         div [ Tw.flex, Tw.flex_col, Tw.my_auto, Tw.h_auto, Tw.items_center, Tw.justify_center, Tw.text_white ]
-            [ h1 [ Tw.text_center, Tw.text_9xl, class "horta" ] [ text "The Developer Den" ]
-            , h2 [ Tw.text_center, Tw.font_mono, Tw.py_4 ] [ text "An inclusive community of programmers who want to learn more and create cool stuff together." ]
+            [ h1 [ Tw.text_center, Tw.text_9xl, class "horta" ] [ text "Developer Den" ]
+            , h2 [ Tw.text_center, Tw.font_titillium, Tw.text_2xl, Tw.py_4 ] [ text "A closely-knit community anchored in a common passion for programming." ]
             , div [ Tw.flex, Tw.flex_row, Tw.space_x_6 ]
-                [ a [ href discordURL ] [ button (Tw.bg_indigo_400 :: class "hover:bg-indigo-700 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-discord" ] [], text "Join our Discord" ] ]
-                , a [ href githubURL ] [ button (Tw.bg_blue_400 :: class "hover:bg-blue-700 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-github" ] [], text "View our GitHub" ] ]
+                [ a [ href discordURL ] [ button (Tw.bg_indigo_400 :: class "hover:bg-indigo-500 hover:text-white hover:translate-y-1" :: buttonStyles) [ i [ Tw.px_1, Tw.pr_2, class "fab fa-discord" ] [], text "Join our Discord" ] ]
+                , a [ href githubURL ] [ button (Tw.bg_blue_400 :: class "hover:bg-blue-500 hover:text-white hover:translate-y-1" :: buttonStyles) [ i [ Tw.px_1, Tw.pr_2, class "fab fa-github" ] [], text "View our GitHub" ] ]
                 ]
             ]
     }
