@@ -7,3 +7,7 @@ src/Tailwind
 /node_modules/
 
 .idea
+elm-stuff
+
+# Macs are stupid sometimes :)
+.DS_Store
