@@ -6,14 +6,14 @@ import Browser.Navigation as Nav
 import Html exposing (Html, text)
 import Json.Decode exposing (Decoder, Value)
 import Page
-import Route exposing (Route)
+import Route exposing (Route(..))
 import Session exposing (Session)
 import Url exposing (Url)
 import Viewer exposing (Viewer)
-import Views.About as About
 import Views.Blank as Blank
 import Views.Home as Home exposing (Msg)
-import Views.Learning as Learning
+import Views.Notables as Notables
+import Views.Rules as Rules
 
 
 main : Program Value Model Msg
@@ -39,18 +39,18 @@ init maybeViewer url navKey =
 
 type Model
     = Home Home.Model
+    | Rules Rules.Model
+    | Notables Notables.Model
     | Redirect Session
-    | Learning Learning.Model
     | NotFound Session
-    | About About.Model
 
 
 type Msg
     = ChangedUrl Url
     | ClickedLink Browser.UrlRequest
-    | GotLearningMsg Learning.Msg
     | GotHomeMsg Home.Msg
-    | GotAboutMsg About.Msg
+    | GotRulesMsg Rules.Msg
+    | GotNotablesMsg Notables.Msg
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -66,11 +66,11 @@ changeRouteTo maybeRoute model =
         Just Route.Home ->
             Home.init session |> updateWith Home GotHomeMsg
 
-        Just Route.Learning ->
-            Learning.init session |> updateWith Learning GotLearningMsg
+        Just Route.Rules ->
+            Rules.init session |> updateWith Rules GotRulesMsg
 
-        Just Route.About ->
-            About.init session |> updateWith About GotAboutMsg
+        Just Route.Notables ->
+            Notables.init session |> updateWith Notables GotNotablesMsg
 
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
@@ -86,12 +86,6 @@ update msg model =
         ( ChangedUrl url, _ ) ->
             changeRouteTo (Route.fromUrl url) model
 
-        ( GotLearningMsg subMsg, Learning topic ) ->
-            Learning.update subMsg topic |> updateWith Learning GotLearningMsg
-
-        ( GotAboutMsg subMsg, About about ) ->
-            About.update subMsg about |> updateWith About GotAboutMsg
-
         ( ClickedLink urlRequest, _ ) ->
             case urlRequest of
                 Browser.Internal url ->
@@ -105,7 +99,7 @@ update msg model =
                             -- fragment-based routing, this entire
                             -- `case url.fragment of` expression this comment
                             -- is inside would be unnecessary.
-                            ( model, Cmd.none )
+                            ( model, Nav.load url.path )
 
                         Just _ ->
                             ( model
@@ -133,11 +127,11 @@ toSession page =
         Home home ->
             Home.toSession home
 
-        Learning learning ->
-            Learning.toSession learning
+        Rules rules ->
+            Rules.toSession rules
 
-        About about ->
-            About.toSession about
+        Notables notables ->
+            Notables.toSession notables
 
 
 
@@ -167,17 +161,17 @@ view model =
             { title = title, body = List.map (Html.map toMsg) body }
     in
     case model of
+        NotFound _ ->
+            { title = "404", body = [ text "Not found" ] }
+
         Redirect _ ->
             Page.view viewer Page.Other Blank.view
 
         Home home ->
             viewPage Page.Home GotHomeMsg (Home.view home)
 
-        NotFound _ ->
-            { title = "404", body = [ text "Not found" ] }
+        Rules rules ->
+            viewPage Page.Rules GotRulesMsg (Rules.view rules)
 
-        Learning topic ->
-            viewPage Page.Learning GotLearningMsg (Learning.view topic)
-
-        About about ->
-            viewPage Page.About GotAboutMsg (About.view about)
+        Notables notables ->
+            viewPage Page.Notables GotNotablesMsg (Notables.view notables)

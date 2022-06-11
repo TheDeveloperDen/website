@@ -1,6 +1,5 @@
-module Session exposing (Session, changes, fromViewer, navKey, viewer)
+module Session exposing (Session, fromViewer, navKey, viewer)
 
-import Api
 import Browser.Navigation as Nav
 import Viewer exposing (Viewer)
 
@@ -28,17 +27,6 @@ viewer session =
             Nothing
 
 
-
---cred : Session -> Maybe Cred
---cred session =
---    case session of
---        LoggedIn _ val ->
---            Just (Viewer.cred val)
---
---        Guest _ ->
---            Nothing
-
-
 navKey : Session -> Nav.Key
 navKey session =
     case session of
@@ -47,15 +35,6 @@ navKey session =
 
         Guest key ->
             key
-
-
-
--- CHANGES
-
-
-changes : (Session -> msg) -> Nav.Key -> Sub msg
-changes toMsg key =
-    Api.viewerChanges (\maybeViewer -> toMsg (fromViewer key maybeViewer)) Viewer.decoder
 
 
 fromViewer : Nav.Key -> Maybe Viewer -> Session

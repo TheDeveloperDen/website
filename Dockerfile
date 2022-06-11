@@ -1,20 +1,19 @@
-FROM codesimple/elm:0.19
-FROM node
+FROM node:alpine as build
 
-# NOTE: you actually do need unsafe perm to install elm packages with npm
-RUN npm install --unsafe-perm -g elm-test
+RUN apk add curl
 
-# NOTE: we need to set HOME, because elm uses $HOME/.elm to save packages.
-#       if this doesn't persist between runs, you get CORRUPT BINARY errors.
-ENV HOME /mnt
+WORKDIR /app
+COPY . /app
+RUN yarn
 
-WORKDIR /mnt
-VOLUME /mnt
-# NOTE: docker-compose mounts code in /mnt
-COPY . /mnt
+RUN curl -L -o elm.gz https://github.com/elm/compiler/releases/download/0.19.1/binary-for-linux-64-bit.gz \
+    && gunzip elm.gz \
+    && chmod +x elm \
+    && mv elm /usr/local/bin/
 
-CMD ["yarn", "build-prod"]
+RUN yarn build-prod
 
-FROM nginx
-WORKDIR /mnt/dist
-EXPOSE 8000 80
+FROM nginx:stable-alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
