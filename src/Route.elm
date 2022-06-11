@@ -9,6 +9,7 @@ import Url.Parser as Parser exposing ((</>), Parser, oneOf)
 type Route
     = Home
     | Rules
+    | Notables
 
 
 parser : Parser (Route -> a) a
@@ -16,6 +17,7 @@ parser =
     oneOf
         [ Parser.map Home Parser.top
         , Parser.map Rules (Parser.s "rules")
+        , Parser.map Notables (Parser.s "notables")
         ]
 
 
@@ -46,3 +48,6 @@ routeToPieces route =
 
         Rules ->
             [ "rules" ]
+
+        Notables ->
+            [ "notables" ]

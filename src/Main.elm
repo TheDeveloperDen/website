@@ -12,6 +12,7 @@ import Url exposing (Url)
 import Viewer exposing (Viewer)
 import Views.Blank as Blank
 import Views.Home as Home exposing (Msg)
+import Views.Notables as Notables
 import Views.Rules as Rules
 
 
@@ -39,6 +40,7 @@ init maybeViewer url navKey =
 type Model
     = Home Home.Model
     | Rules Rules.Model
+    | Notables Notables.Model
     | Redirect Session
     | NotFound Session
 
@@ -48,6 +50,7 @@ type Msg
     | ClickedLink Browser.UrlRequest
     | GotHomeMsg Home.Msg
     | GotRulesMsg Rules.Msg
+    | GotNotablesMsg Notables.Msg
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -65,6 +68,9 @@ changeRouteTo maybeRoute model =
 
         Just Route.Rules ->
             Rules.init session |> updateWith Rules GotRulesMsg
+
+        Just Route.Notables ->
+            Notables.init session |> updateWith Notables GotNotablesMsg
 
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
@@ -124,6 +130,9 @@ toSession page =
         Rules rules ->
             Rules.toSession rules
 
+        Notables notables ->
+            Notables.toSession notables
+
 
 
 -- SUBSCRIPTIONS
@@ -163,3 +172,6 @@ view model =
 
         Rules rules ->
             viewPage Page.Rules GotRulesMsg (Rules.view rules)
+
+        Notables notables ->
+            viewPage Page.Notables GotNotablesMsg (Notables.view notables)

@@ -1,0 +1,38 @@
+{
+  "admins": [
+    {
+      "name": "Brister Mitten",
+      "image-url": "https://cdn.discordapp.com/avatars/266973575225933824/4028f87411d3f12f674a4430063490bb.webp?size=512"
+    },
+    {
+      "name": "Emily",
+      "image-url": "https://cdn.discordapp.com/avatars/469980680944877568/0b0355f7a3ba8a0b6cf3a52fdbd95fa7.webp?size=512"
+    },
+    {
+      "name": "Redempt",
+      "image-url": "https://cdn.discordapp.com/avatars/186632661622718473/6ef7dfa4c92954d61e173b40831c011d.webp?size=512"
+    }
+  ],
+  "moderators": [
+    {
+      "name": "bobby29831",
+      "image-url": "https://cdn.discordapp.com/avatars/302897522194513931/2ddefaff30193b3d1c32b3cb8d76841a.webp?size=512"
+    },
+    {
+      "name": "Doctor Zod",
+      "image-url": "https://cdn.discordapp.com/avatars/145991368425078785/a434e3db6f270a27ef3d6238bf0cc1c5.webp?size=512"
+    },
+    {
+      "name": "drub",
+      "image-url": "https://cdn.discordapp.com/avatars/219759883480858625/68d0d4d59b0c3cc3bbb5d2165ef01537.webp?size=512"
+    },
+    {
+      "name": "Lucy",
+      "image-url": "https://cdn.discordapp.com/avatars/199036109760495616/c10414c86f592086ffebe26de75ee3c7.webp?size=512"
+    },
+    {
+      "name": "Matt",
+      "image-url": "https://cdn.discordapp.com/avatars/180369172046413824/4be0ae0fc7f2d831bfa6969040a66d9c.webp?size=512"
+    }
+  ]
+}

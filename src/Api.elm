@@ -2,7 +2,7 @@ port module Api exposing (Cred, application, credDecoder, decodeFromChange, deco
 
 import Browser
 import Browser.Navigation as Nav
-import Json.Decode as Decode exposing (Decoder, Value)
+import Json.Decode as Decode exposing (Decoder, Value, field, list, map2, string)
 import Json.Decode.Pipeline exposing (required)
 import Url exposing (Url)
 
@@ -49,6 +49,11 @@ storageDecoder : Decoder (Cred -> viewer) -> Decoder viewer
 storageDecoder viewerDecoder =
     Decode.field "user" (decoderFromCred viewerDecoder)
 
+
+type alias Admin =
+    { name: String
+    , imageUrl: String
+    }
 
 credDecoder : Decoder Cred
 credDecoder =
