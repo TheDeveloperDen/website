@@ -37,7 +37,7 @@ view _ =
                                , text "Interested? Join our Discord!" ]
                       ]
                   ]
-            , div [ Tw.absolute, Tw.bottom_5, Tw.right_5, Tw.flex, Tw.flex_row, Tw.space_x_1, Tw.rounded_xl, Tw.py_1, Tw.px_1, Tw.bg_gray_200, Tw.shadow_md ]
+            , div [ Tw.absolute, Tw.bottom_5, Tw.right_5, Tw.flex, Tw.flex_row, Tw.space_x_1, Tw.rounded_xl, Tw.py_2, Tw.px_2, Tw.bg_gray_200, Tw.shadow_md ]
                   [ a [ href discordURL ] [ button (class "hover:bg-indigo-500 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-discord" ] [] ] ]
                   , a [ href githubURL ] [ button (class "hover:bg-gray-900 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-github" ] [] ] ]
                   ]
@@ -46,7 +46,7 @@ view _ =
 
 
 buttonStyles =
-    [ Tw.font_titillium, Tw.rounded_2xl, Tw.text_black, Tw.font_semibold, Tw.py_3, Tw.px_3, Tw.transform, Tw.transition, Tw.duration_300, Tw.ease_in_out ]
+    [ Tw.font_titillium, Tw.rounded_full, Tw.text_black, Tw.font_semibold, Tw.py_2, Tw.px_2, Tw.transform, Tw.transition, Tw.duration_300, Tw.ease_in_out ]
 
 
 toSession =
