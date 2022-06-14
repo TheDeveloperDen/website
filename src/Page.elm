@@ -1,30 +1,60 @@
 module Page exposing (Page(..), view)
 
 import Browser exposing (Document)
-import Html exposing (Html, a, button, div, img, nav, span, text)
-import Html.Attributes exposing (alt, class, href, src)
-import Html.Attributes.Aria exposing (ariaControls, ariaExpanded)
-import Redirects exposing (discordURL, githubURL)
+import Html exposing (Attribute, Html, a, div, nav, text)
 import Route exposing (Route)
 import Tailwind as Tw
-import Tailwind.LG as TwLG
-import Tailwind.SM as TwSM
 import Viewer exposing (Viewer)
 
 
 type Page
-    = Other
-    | Home
+    = Home
     | Rules
+    | Other
 
 
-view : Maybe Viewer -> { title : String, content : Html msg } -> Document msg
-view _ { title, content } =
+view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
+view _ page { title, content } =
     { title = title ++ " - Developer Den"
-    , body = [ background [ content ] ]
+    , body = [ background [ navbar page, content ] ]
     }
 
 
 background : List (Html msg) -> Html msg
 background =
     div [ Tw.bg_gradient_to_r, Tw.from_blue_700, Tw.to_pink_700, Tw.min_h_screen, Tw.bg_fixed, Tw.flex, Tw.flex_col ]
+
+
+navbar : Page -> Html msg
+navbar page =
+    nav [ Tw.font_titillium, Tw.absolute, Tw.left_5, Tw.top_5, Tw.bg_gray_200, Tw.space_x_5, Tw.p_3, Tw.rounded_2xl, Tw.shadow_md, Tw.px_5 ]
+        [ navbarLink page Route.Home "home"
+        , navbarLink page Route.Rules "rules"
+        ]
+
+
+navbarLink : Page -> Route -> String -> Html msg
+navbarLink page route name =
+    if isActive page route then
+        a (Route.href route :: selected) [ text name ]
+
+    else
+        a [ Route.href route ] [ text name ]
+
+
+selected : List ( Attribute msg )
+selected =
+    [ Tw.font_bold, Tw.rounded_2xl, Tw.px_3, Tw.py_1, Tw.bg_gradient_to_r, Tw.from_blue_700, Tw.to_pink_700, Tw.text_gray_50 ]
+
+
+isActive : Page -> Route -> Bool
+isActive page route =
+    case ( page, route ) of
+        ( Home, Route.Home ) ->
+            True
+
+        ( Rules, Route.Rules ) ->
+            True
+
+        _ ->
+            False

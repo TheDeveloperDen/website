@@ -144,10 +144,10 @@ view model =
         viewer =
             toSession model |> Session.viewer
 
-        viewPage toMsg config =
+        viewPage page toMsg config =
             let
                 { title, body } =
-                    Page.view viewer config
+                    Page.view viewer page config
             in
             { title = title, body = List.map (Html.map toMsg) body }
     in
@@ -156,10 +156,10 @@ view model =
             { title = "404", body = [ text "Not found" ] }
 
         Redirect _ ->
-            Page.view viewer Blank.view
+            Page.view viewer Page.Other Blank.view
 
         Home home ->
-            viewPage GotHomeMsg (Home.view home)
+            viewPage Page.Home GotHomeMsg (Home.view home)
 
         Rules rules ->
-            viewPage GotRulesMsg (Rules.view rules)
+            viewPage Page.Rules GotRulesMsg (Rules.view rules)

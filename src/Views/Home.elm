@@ -30,7 +30,7 @@ view _ =
         div [ Tw.flex, Tw.flex_col, Tw.my_auto, Tw.h_auto, Tw.items_center, Tw.justify_center, Tw.text_white ]
             [ h1 [ Tw.text_center, Tw.text_9xl, class "horta" ] [ text "Developer Den" ]
             , h2 [ Tw.text_center, Tw.font_titillium, Tw.text_2xl, Tw.py_4 ] [ text "A closely-knit community anchored in a common passion for programming." ]
-            , div [ Tw.absolute, Tw.bottom_5, Tw.right_5, Tw.flex, Tw.flex_row, Tw.space_x_1, Tw.rounded_xl, Tw.py_1, Tw.px_1, Tw.bg_gray_300, Tw.shadow_md ]
+            , div [ Tw.absolute, Tw.bottom_5, Tw.right_5, Tw.flex, Tw.flex_row, Tw.space_x_1, Tw.rounded_xl, Tw.py_1, Tw.px_1, Tw.bg_gray_200, Tw.shadow_md ]
                   [ a [ href discordURL ] [ button (class "hover:bg-indigo-500 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-discord" ] [] ] ]
                   , a [ href githubURL ] [ button (class "hover:bg-gray-900 hover:text-white" :: buttonStyles) [ i [ Tw.px_1, class "fab fa-github" ] [] ] ]
                   ]
