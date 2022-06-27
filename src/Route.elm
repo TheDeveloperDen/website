@@ -24,18 +24,19 @@ href target =
     Attr.href (routeToString target)
 
 
-fromUrl : Url -> Maybe Route
+fromUrl : Url -> Route
 fromUrl url =
-    -- The RealWorld spec treats the fragment like a path.
-    -- This makes it *literally* the path, so we can proceed
-    -- with parsing as if it had been a normal path all along.
-    { url | path = Maybe.withDefault "" url.fragment, fragment = Nothing }
-        |> Parser.parse parser
+    case ( Parser.parse parser url ) of
+        (Just route) ->
+            route
+
+        Nothing ->
+            Home
 
 
 routeToString : Route -> String
 routeToString route =
-    "#/" ++ String.join "/" (routeToPieces route)
+    "/" ++ String.join "/" (routeToPieces route)
 
 
 routeToPieces : Route -> List String

@@ -1,26 +1,19 @@
-module Views.Home exposing (Model, Msg, init, toSession, view)
+module Views.Home exposing (Model, Msg, view)
 
+import Browser.Navigation as Nav
 import Html exposing (Html, a, button, div, h1, h2, i, text)
 import Html.Attributes exposing (class, href)
 import Redirects exposing (discordURL, githubURL)
-import Session exposing (Session)
 import Tailwind as Tw
 
 
 type alias Model =
-    { session : Session
+    { key : Nav.Key
     }
 
 
 type alias Msg =
     ()
-
-
-init : Session -> ( Model, Cmd Msg )
-init session =
-    ( { session = session }
-    , Cmd.none
-    )
 
 
 view : Model -> { title : String, content : Html Msg }
@@ -49,5 +42,3 @@ buttonStyles =
     [ Tw.font_titillium, Tw.rounded_full, Tw.text_black, Tw.font_semibold, Tw.py_2, Tw.px_2, Tw.transform, Tw.transition, Tw.duration_300, Tw.ease_in_out ]
 
 
-toSession =
-    .session

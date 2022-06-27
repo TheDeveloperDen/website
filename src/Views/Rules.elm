@@ -1,25 +1,18 @@
-module Views.Rules exposing (Model, Msg, init, toSession, view)
+module Views.Rules exposing (Model, Msg, view)
 
+import Browser.Navigation as Nav
 import Html exposing (Html, a, div, h1, h2, h3, h4, text)
 import Html.Attributes exposing (class, href)
-import Session exposing (Session)
 import Tailwind as Tw
 
 
 type alias Model =
-    { session : Session
+    { key : Nav.Key
     }
 
 
 type alias Msg =
     ()
-
-
-init : Session -> ( Model, Cmd Msg )
-init session =
-    ( { session = session }
-    , Cmd.none
-    )
 
 
 view : Model -> { title : String, content : Html Msg }
@@ -71,6 +64,3 @@ inlineLink : String -> String -> Html Msg
 inlineLink val link =
     a [ Tw.text_indigo_300, Tw.underline, Tw.hover__text_blue_500, Tw.duration_300, Tw.ease_in_out, href link ] [ text val ]
 
-
-toSession =
-    .session

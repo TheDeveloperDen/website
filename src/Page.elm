@@ -4,17 +4,15 @@ import Browser exposing (Document)
 import Html exposing (Attribute, Html, a, div, nav, text)
 import Route exposing (Route)
 import Tailwind as Tw
-import Viewer exposing (Viewer)
 
 
 type Page
     = Home
     | Rules
-    | Other
 
 
-view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
-view _ page { title, content } =
+view : Page -> { title : String, content : Html msg } -> Document msg
+view page { title, content } =
     { title = title ++ " - Developer Den"
     , body = [ background [ navbar page, content ] ]
     }
