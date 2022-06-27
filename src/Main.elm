@@ -40,8 +40,7 @@ type alias Model =
 type Msg
     = ChangedUrl Url
     | ClickedLink Browser.UrlRequest
-    | GotHomeMsg
-    | GotRulesMsg
+    | NewPage
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -85,17 +84,13 @@ subscriptions _ =
 
 view : Model -> Document Msg
 view model =
-    case model.route of
-        Home ->
-            let
-                page =
-                    Page.view Page.Home ( Home.view { key = model.key } )
-            in
-            { title = page.title, body = List.map ( Html.map (\_ -> GotHomeMsg) ) page.body }
+    let
+        page = case model.route of
+            Home ->
+                Page.view Page.Home ( Home.view { key = model.key } )
 
-        Rules ->
-            let
-                page =
-                    Page.view Page.Rules ( Rules.view { key = model.key } )
-            in
-            { title = page.title, body = List.map ( Html.map (\_ -> GotRulesMsg) ) page.body }
+            Rules ->
+                Page.view Page.Rules ( Rules.view { key = model.key } )
+    in
+    { title = page.title, body = List.map ( Html.map (\_ -> NewPage) ) page.body }
+
