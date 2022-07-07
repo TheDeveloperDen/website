@@ -6,7 +6,8 @@ module.exports = {
     darkMode: false, // or 'media' or 'class'
     theme: {
         fontFamily: {
-            'titillium': ['Titillium Web', 'sans-serif']
+            'titillium': ['Titillium Web', 'sans-serif'],
+            'poppins': ['Poppins', 'sans-serif']
         }
     },
     plugins: [],
