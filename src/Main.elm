@@ -24,10 +24,10 @@ main =
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
-    ( { route = ( Route.fromUrl url )
+    ( { route = Route.fromUrl url
       , key = key
       }
-      , Cmd.none
+    , Cmd.none
     )
 
 
@@ -47,10 +47,19 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChangedUrl url ->
-            ( { route = (Route.fromUrl url)
-              , key = model.key }
-            , Cmd.none
-            )
+            let
+                route =
+                    Route.maybeFromUrl url
+            in
+            case route of
+                Nothing ->
+                    ( { route = Route.Home, key = model.key }, Cmd.none )
+
+                Just Discord ->
+                    ( model, Nav.load (Route.routeToString Route.Discord) )
+
+                Just other ->
+                    ( { route = other, key = model.key }, Cmd.none )
 
         ClickedLink request ->
             case request of
@@ -70,6 +79,7 @@ update msg model =
             )
 
 
+
 -- SUBSCRIPTIONS
 
 
@@ -85,12 +95,16 @@ subscriptions _ =
 view : Model -> Document Msg
 view model =
     let
-        page = case model.route of
-            Home ->
-                Page.view Page.Home ( Home.view { key = model.key } )
+        page =
+            case model.route of
+                Home ->
+                    Page.view Page.Home (Home.view { key = model.key })
 
-            Rules ->
-                Page.view Page.Rules ( Rules.view { key = model.key } )
+                Rules ->
+                    Page.view Page.Rules (Rules.view { key = model.key })
+
+                Discord ->
+                    -- default to home, this should never happen
+                    Page.view Page.Home (Home.view { key = model.key })
     in
-    { title = page.title, body = List.map ( Html.map (\_ -> NewPage) ) page.body }
-
+    { title = page.title, body = List.map (Html.map (\_ -> NewPage)) page.body }

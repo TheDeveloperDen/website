@@ -40,12 +40,12 @@ navbarLink page route name =
         a (Route.href route :: deselected) [ text name ]
 
 
-selected : List ( Attribute msg )
+selected : List (Attribute msg)
 selected =
     [ Tw.font_bold, Tw.rounded_2xl, Tw.px_3, Tw.py_1, Tw.bg_gradient_to_r, Tw.from_blue_700, Tw.to_pink_700, Tw.text_gray_50 ]
 
 
-deselected : List ( Attribute msg )
+deselected : List (Attribute msg)
 deselected =
     [ Tw.hover__bg_gray_300, Tw.rounded_2xl, Tw.px_3, Tw.py_1, Tw.ease_in_out, Tw.duration_300 ]
 

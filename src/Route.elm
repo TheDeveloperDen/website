@@ -1,4 +1,4 @@
-module Route exposing (Route(..), fromUrl, href)
+module Route exposing (Route(..), fromUrl, href, maybeFromUrl, routeToString)
 
 import Html exposing (Attribute)
 import Html.Attributes as Attr
@@ -9,6 +9,7 @@ import Url.Parser as Parser exposing ((</>), Parser, oneOf)
 type Route
     = Home
     | Rules
+    | Discord
 
 
 parser : Parser (Route -> a) a
@@ -16,6 +17,7 @@ parser =
     oneOf
         [ Parser.map Home Parser.top
         , Parser.map Rules (Parser.s "rules")
+        , Parser.map Discord (Parser.s "discord")
         ]
 
 
@@ -24,10 +26,15 @@ href target =
     Attr.href (routeToString target)
 
 
+maybeFromUrl : Url -> Maybe Route
+maybeFromUrl url =
+    Parser.parse parser url
+
+
 fromUrl : Url -> Route
 fromUrl url =
-    case ( Parser.parse parser url ) of
-        (Just route) ->
+    case Parser.parse parser url of
+        Just route ->
             route
 
         Nothing ->
@@ -47,3 +54,6 @@ routeToPieces route =
 
         Rules ->
             [ "rules" ]
+
+        Discord ->
+            [ "discord" ]

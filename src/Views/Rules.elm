@@ -60,7 +60,7 @@ ruleHeader body =
 ruleLine text =
     h4 [ Tw.pl_8, Tw.font_titillium, Tw.text_lg ] text
 
+
 inlineLink : String -> String -> Html Msg
 inlineLink val link =
     a [ Tw.text_indigo_300, Tw.underline, Tw.hover__text_blue_500, Tw.duration_300, Tw.ease_in_out, href link ] [ text val ]
-
