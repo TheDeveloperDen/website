@@ -3,6 +3,8 @@ module Views.Rules exposing (Model, Msg, view)
 import Browser.Navigation as Nav
 import Html exposing (Html, a, div, h1, h2, h3, h4, text)
 import Html.Attributes exposing (class, href)
+import Redirects exposing (freeServicesURL, paidServicesURL)
+import Route
 import Tailwind as Tw
 
 
@@ -44,7 +46,7 @@ view _ =
                 , ruleLine [ text "d. Keep shitposts to ", inlineLink "#🌞-random" "https://discord.com/channels/821743100203368458/932661343520194640", text " as much as possible." ]
                 , ruleLine [ text "e. You can share things you've made in ", inlineLink "#💫-showcase" "https://discord.com/channels/821743100203368458/847936633964724254", text " (read the pinned message before posting)." ]
                 , ruleHeader "5. Other stuff"
-                , ruleLine [ text "a. Hiring freelancers & offering services is currently not permitted." ]
+                , ruleLine [ text "a. Hiring freelancers & offering services must be done in ", inlineLink "#💰-paid-services" paidServicesURL, text " and ", inlineLink "🆓-free-services" freeServicesURL, text ". Before posting, make sure you've read the ", inlineLink "rules" (Route.routeToString Route.ServicesRules), text " for those channels." ]
                 , ruleLine [ text "b. Don't minimod." ]
                 , ruleLine [ text "c. Don't try and find loopholes in rules." ]
                 , ruleLine [ text "d. Staff reserve the right to punish anyone even if they haven't explicitly broken any rules." ]

@@ -3,6 +3,7 @@ module Views.ServicesRules exposing (Model, Msg, view)
 import Browser.Navigation as Nav
 import Html exposing (Html, a, b, div, h1, h2, h3, i, li, p, text, ul)
 import Html.Attributes exposing (class, href)
+import Redirects exposing (freeServicesURL, paidServicesURL)
 import Tailwind as Tw
 
 
@@ -22,7 +23,7 @@ view _ =
         div [ Tw.bg_opacity_80, Tw.bg_gray_700, Tw.w_full, Tw.flex_1, Tw.text_white, Tw.flex, Tw.flex_col ]
             [ div [ Tw.ml_16, Tw.mr_16, Tw.mb_20 ]
                 [ h1 [ Tw.text_6xl, class "montserrat", Tw.mt_2, Tw.py_2, Tw.text_center ] [ text "Services Rules" ]
-                , h2 [ Tw.text_2xl, Tw.py_2, Tw.font_titillium, Tw.text_center ] [ text "Rules for posting in ", inlineLink "#💰-paid-services" "https://discord.com/channels/821743100203368458/1024625154107654234", text " and ", inlineLink "🆓-free-services" "https://discord.com/channels/821743100203368458/1037763084485406760" ]
+                , h2 [ Tw.text_2xl, Tw.py_2, Tw.font_titillium, Tw.text_center ] [ text "Rules for posting in ", inlineLink "#💰-paid-services" paidServicesURL, text " and ", inlineLink "🆓-free-services" freeServicesURL ]
                 , ruleHeader "Global Rules"
                 , rulesList
                     [ i [] [ text "In all rules, the term 'host' refers to someone offering their services and the term 'client' refers to anyone seeking the services of a host." ]
@@ -39,7 +40,7 @@ view _ =
                     ]
                 , ruleHeader "Paid Services"
                 , rulesList
-                    [ i [] [ text "These rules only apply to ", inlineLink "#💰-paid-services" "https://discord.com/channels/821743100203368458/1024625154107654234", text "." ]
+                    [ i [] [ text "These rules only apply to ", inlineLink "#💰-paid-services" paidServicesURL, text "." ]
                     , div []
                         [ text "This channel is for offering or requesting "
                         , b [] [ text "paid" ]
@@ -51,7 +52,7 @@ view _ =
                     ]
                 , ruleHeader "Free Services"
                 , rulesList
-                    [ i [] [ text "These rules only apply to ", inlineLink "🆓-free-services" "https://discord.com/channels/821743100203368458/1037763084485406760", text "." ]
+                    [ i [] [ text "These rules only apply to ", inlineLink "🆓-free-services" freeServicesURL, text "." ]
                     , div []
                         [ text "This channel is only for "
                         , b [] [ text "offering" ]
