@@ -8,6 +8,7 @@ import Route exposing (Route(..))
 import Url exposing (Url)
 import Views.Home as Home
 import Views.Rules as Rules
+import Views.ServicesRules as ServicesRules
 
 
 main : Program () Model Msg
@@ -102,6 +103,9 @@ view model =
 
                 Rules ->
                     Page.view Page.Rules (Rules.view { key = model.key })
+
+                ServicesRules ->
+                    Page.view Page.ServicesRules (ServicesRules.view { key = model.key })
 
                 Discord ->
                     -- default to home, this should never happen

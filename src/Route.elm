@@ -9,6 +9,7 @@ import Url.Parser as Parser exposing ((</>), Parser, oneOf)
 type Route
     = Home
     | Rules
+    | ServicesRules
     | Discord
 
 
@@ -17,6 +18,7 @@ parser =
     oneOf
         [ Parser.map Home Parser.top
         , Parser.map Rules (Parser.s "rules")
+        , Parser.map ServicesRules (Parser.s "services-rules")
         , Parser.map Discord (Parser.s "discord")
         ]
 
@@ -54,6 +56,9 @@ routeToPieces route =
 
         Rules ->
             [ "rules" ]
+
+        ServicesRules ->
+            [ "services-rules" ]
 
         Discord ->
             [ "discord" ]

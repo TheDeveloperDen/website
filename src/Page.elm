@@ -9,6 +9,7 @@ import Tailwind as Tw
 type Page
     = Home
     | Rules
+    | ServicesRules
 
 
 view : Page -> { title : String, content : Html msg } -> Document msg
@@ -28,6 +29,7 @@ navbar page =
     nav [ Tw.font_titillium, Tw.absolute, Tw.left_5, Tw.top_5, Tw.bg_gray_200, Tw.space_x_5, Tw.p_3, Tw.rounded_2xl, Tw.shadow_md, Tw.px_5 ]
         [ navbarLink page Route.Home "home"
         , navbarLink page Route.Rules "rules"
+        , navbarLink page Route.ServicesRules "services rules"
         ]
 
 
