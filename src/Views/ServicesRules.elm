@@ -28,6 +28,7 @@ view _ =
                 , rulesList
                     [ i [] [ text "In all rules, the term 'host' refers to someone offering their services and the term 'client' refers to anyone seeking the services of a host." ]
                     , text "Only active members (Tier 3+) may create posts in these channels to reduce spam and abuse."
+                    , text "All service offers (free and paid) may only be posted by individuals representing themselves. Organizations such as service teams are not allowed to offer services, but may respond to requests privately."
                     , text "Posts should be appropriately tagged to describe the service(s)."
                     , text "Posts should include a title concisely describing the host (if applicable) and/or the service(s)."
                     , text "Only 1 post per service may be made per month."
@@ -46,7 +47,7 @@ view _ =
                         , b [] [ text "paid" ]
                         , text " services."
                         ]
-                    , text "Posts must include a price / maximum budget, which should be in $USD."
+                    , text "Posts must include a price / maximum budget, which should be in $USD. Hosts may choose to offer quote-by-quote prices available after conferring with the client."
                     , text "Budgets / payments must be a concrete amount, not something like \"10% of profits\"."
                     , text "The Developer Den's only role is as a platform for finding clients / hosts. We do not act as a middleman for any funds except in exceptional circumstances."
                     ]
