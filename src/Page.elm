@@ -61,5 +61,8 @@ isActive page route =
         ( Rules, Route.Rules ) ->
             True
 
+        ( ServicesRules, Route.ServicesRules ) ->
+            True
+
         _ ->
             False
