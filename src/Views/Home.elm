@@ -2,14 +2,13 @@ module Views.Home exposing (Model, Msg, view)
 
 import Browser.Navigation as Nav
 import Html exposing (Attribute, Html, a, button, div, fieldset, h1, h2, i, legend, p, text)
-import Html.Attributes exposing (class, href)
+import Html.Attributes exposing (class, href, src)
 import Redirects exposing (discordURL, githubURL)
 import Tailwind as Tw
 
 
 type alias Model =
-    { key : Nav.Key
-    }
+    ()
 
 
 type alias Msg =
@@ -21,11 +20,11 @@ view _ =
     { title = "Home"
     , content =
         div [ Tw.flex, Tw.flex_col, Tw.my_auto, Tw.h_auto, Tw.items_center, Tw.justify_center, Tw.text_white ]
-            [ h1 [ Tw.text_center, Tw.text_9xl, class "horta" ] [ text "Developer Den" ]
-            , h2 [ Tw.text_center, Tw.font_titillium, Tw.text_2xl, Tw.py_4 ] [ text "A closely-knit community anchored in a common passion for programming." ]
+            [ Html.img [ src "devden_logo.svg", Tw.max_w_7xl, Tw.pb_10 ] []
+            , h2 [ Tw.text_center, Tw.font_montserrat, Tw.text_3xl, Tw.py_4 ] [ text "A closely-knit community anchored in a common passion for programming." ]
             , div [ Tw.py_7 ]
-                [ a [ href discordURL, Tw.bg_indigo_500, Tw.text_2xl, Tw.p_5, Tw.rounded_2xl, Tw.shadow_md, Tw.hover__bg_indigo_600, Tw.ease_in_out, Tw.duration_300 ]
-                    [ button [ Tw.font_titillium, Tw.font_bold ]
+                [ a [ href discordURL, Tw.bg_indigo, Tw.text_2xl, Tw.p_5, Tw.rounded_2xl, Tw.shadow_md, Tw.ease_in_out, Tw.duration_300 ]
+                    [ button [ Tw.font_cascadia, Tw.font_bold ]
                         [ i [ Tw.px_1, Tw.pr_3, class "fab fa-discord" ] []
                         , text "Interested? Join our Discord!"
                         ]
@@ -49,11 +48,11 @@ projectOf attr name desc url =
     div attr
         [ fieldset [ Tw.p_3, Tw.border_gray_300, Tw.border_2, Tw.border_opacity_50, Tw.m_5, Tw.rounded_2xl, Tw.shadow_md, Tw.w_auto ]
             [ legend [ Tw.px_1_dot_5, Tw.py_0, Tw.hover__bg_gray_200, Tw.rounded_2xl, Tw.duration_300, Tw.ease_in_out ]
-                [ a [ href url, Tw.font_poppins, Tw.font_bold, Tw.hover__text_black, Tw.p_0_dot_5, Tw.duration_300, Tw.ease_in_out ] [ text name ] ]
-            , p [ Tw.font_titillium, Tw.break_words ] [ text desc ]
+                [ a [ href url, Tw.font_cascadia, Tw.font_bold, Tw.hover__text_black, Tw.p_0_dot_5, Tw.duration_300, Tw.ease_in_out ] [ text name ] ]
+            , p [ Tw.font_montserrat, Tw.break_words ] [ text desc ]
             ]
         ]
 
 
 buttonStyles =
-    [ Tw.font_titillium, Tw.rounded_full, Tw.text_black, Tw.font_semibold, Tw.py_2, Tw.px_2, Tw.transform, Tw.transition, Tw.duration_300, Tw.ease_in_out ]
+    [ Tw.font_montserrat, Tw.rounded_full, Tw.text_black, Tw.font_semibold, Tw.py_2, Tw.px_2, Tw.transform, Tw.transition, Tw.duration_300, Tw.ease_in_out ]

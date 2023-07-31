@@ -1,4 +1,4 @@
-module Page exposing (Page(..), view)
+module Page exposing (Page(..), map, view)
 
 import Browser exposing (Document)
 import Html exposing (Attribute, Html, a, div, nav, text)
@@ -10,6 +10,14 @@ type Page
     = Home
     | Rules
     | ServicesRules
+    | LearningResources (Maybe String)
+
+
+map : (msg -> msg2) -> Document msg -> Document msg2
+map f document =
+    { title = document.title
+    , body = List.map (Html.map f) document.body
+    }
 
 
 view : Page -> { title : String, content : Html msg } -> Document msg
@@ -21,15 +29,16 @@ view page { title, content } =
 
 background : List (Html msg) -> Html msg
 background =
-    div [ Tw.bg_gradient_to_r, Tw.from_blue_700, Tw.to_pink_700, Tw.min_h_screen, Tw.h_full, Tw.bg_fixed, Tw.flex, Tw.flex_col ]
+    div [ Tw.bg_deep_blue, Tw.min_h_screen, Tw.h_full, Tw.bg_fixed, Tw.flex, Tw.flex_col ]
 
 
 navbar : Page -> Html msg
 navbar page =
-    nav [ Tw.font_titillium, Tw.absolute, Tw.left_5, Tw.top_5, Tw.bg_gray_200, Tw.space_x_5, Tw.p_3, Tw.rounded_2xl, Tw.shadow_md, Tw.px_5 ]
+    nav [ Tw.font_montserrat, Tw.absolute, Tw.left_5, Tw.top_5, Tw.bg_gray_200, Tw.space_x_5, Tw.p_3, Tw.rounded_2xl, Tw.shadow_md, Tw.px_5 ]
         [ navbarLink page Route.Home "home"
         , navbarLink page Route.Rules "rules"
         , navbarLink page Route.ServicesRules "services rules"
+        , navbarLink page (Route.LearningResources Nothing) "learning resources"
         ]
 
 
@@ -44,7 +53,7 @@ navbarLink page route name =
 
 selected : List (Attribute msg)
 selected =
-    [ Tw.font_bold, Tw.rounded_2xl, Tw.px_3, Tw.py_1, Tw.bg_gradient_to_r, Tw.from_blue_700, Tw.to_pink_700, Tw.text_gray_50 ]
+    [ Tw.font_bold, Tw.rounded_2xl, Tw.px_3, Tw.py_1, Tw.bg_gradient_to_r, Tw.from_teal, Tw.via_indigo, Tw.to_deep_blue, Tw.text_gray_50 ]
 
 
 deselected : List (Attribute msg)
@@ -62,6 +71,9 @@ isActive page route =
             True
 
         ( ServicesRules, Route.ServicesRules ) ->
+            True
+
+        ( LearningResources _, Route.LearningResources _ ) ->
             True
 
         _ ->
