@@ -10,5 +10,7 @@ src/Tailwind
 .idea
 elm-stuff
 
+.direnv/
+
 # Macs are stupid sometimes :)
 .DS_Store

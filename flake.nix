@@ -18,7 +18,7 @@
     in
     {
       devShells.default = pkgs.mkShell {
-        packages = (with pkgs.elmPackages; [ elm ]) ++ (with pkgs; [ elm2nix nodejs yarn ]);
+        packages = (with pkgs.elmPackages; [ elm elm-format elm-test ]) ++ (with pkgs; [ elm2nix nodejs yarn ]);
 
         shellHook = with pkgs.elmPackages; ''
           echo "elm `${elm}/bin/elm --version`"

@@ -1,4 +1,4 @@
-module Views.Blank exposing (..)
+module Views.Blank exposing (view)
 
 import Html exposing (Html)
 

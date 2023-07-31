@@ -3,7 +3,8 @@ module Route exposing (Route(..), fromUrl, href, maybeFromUrl, routeToString)
 import Html exposing (Attribute)
 import Html.Attributes as Attr
 import Url exposing (Url)
-import Url.Parser as Parser exposing ((</>), Parser, oneOf)
+import Url.Parser as Parser exposing ((<?>), Parser, oneOf)
+import Url.Parser.Query as Query
 
 
 type Route
@@ -11,6 +12,7 @@ type Route
     | Rules
     | ServicesRules
     | Discord
+    | LearningResources (Maybe String)
 
 
 parser : Parser (Route -> a) a
@@ -20,6 +22,7 @@ parser =
         , Parser.map Rules (Parser.s "rules")
         , Parser.map ServicesRules (Parser.s "services-rules")
         , Parser.map Discord (Parser.s "discord")
+        , Parser.map LearningResources (Parser.s "learning-resources" <?> Query.string "resource")
         ]
 
 
@@ -62,3 +65,6 @@ routeToPieces route =
 
         Discord ->
             [ "discord" ]
+
+        LearningResources res ->
+            [ "learning-resources", Maybe.withDefault "" res ]

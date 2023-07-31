@@ -2,6 +2,7 @@
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^10.3.6",
+    "elm-review": "^2.9.1",
     "postcss": "^8.3.8",
     "postcss-cli": "^9.0.1",
     "postcss-elm-tailwind": "^0.11.0",
@@ -15,9 +16,12 @@
     "build": "yarn build-tw && yarn build-elm && yarn copy-resources",
     "build-prod": "yarn build-tw && yarn build-elm-prod && NODE_ENV=production yarn build-tw && yarn copy-resources",
     "check-format": "elm-format src/**/*.elm --validate",
-    "watch-elm": "watch 'yarn build-elm' src"
+    "watch-elm": "watch 'yarn build-elm' src",
+    "live-edit": "elm-live src/Main.elm --dir=./dist -h -u -- --debug --output=dist/elm.js",
+    "lint": "npx elm-review --fix"
   },
   "dependencies": {
+    "elm-live": "^4.0.2",
     "postcss-loader": "^6.1.1",
     "serve": "^12.0.1",
     "watch": "^1.0.2",

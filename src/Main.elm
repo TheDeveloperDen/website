@@ -1,12 +1,13 @@
-module Main exposing (main)
+module Main exposing (Model, Msg, main)
 
 import Browser exposing (Document)
 import Browser.Navigation as Nav
-import Html exposing (Html)
-import Page exposing (view)
+import Html
+import Page
 import Route exposing (Route(..))
 import Url exposing (Url)
 import Views.Home as Home
+import Views.LearningResources as LearningResources
 import Views.Rules as Rules
 import Views.ServicesRules as ServicesRules
 
@@ -25,44 +26,70 @@ main =
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
-    ( { route = Route.fromUrl url
-      , key = key
-      }
-    , Cmd.none
-    )
+    changeRouteTo (Route.maybeFromUrl url) { key = key, page = EmptyModel }
 
 
 type alias Model =
-    { route : Route
-    , key : Nav.Key
+    { key : Nav.Key
+    , page : PageModel
     }
+
+
+type PageModel
+    = EmptyModel
+    | NotFound
+    | HomeModel
+    | RulesModel
+    | ServicesRulesModel
+    | LearningResourcesModel (Maybe String) LearningResources.Model
+    | DiscordModel
 
 
 type Msg
     = ChangedUrl Url
     | ClickedLink Browser.UrlRequest
     | NewPage
+    | GotLRMsg LearningResources.Msg
+    | GotNullMsg ()
+
+
+changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo maybeRoute model =
+    case maybeRoute of
+        Nothing ->
+            ( { model | page = NotFound }, Cmd.none )
+
+        Just Home ->
+            ( { model | page = HomeModel }, Cmd.none )
+
+        Just Discord ->
+            ( { model | page = DiscordModel }, Nav.load (Route.routeToString Route.Discord) )
+
+        Just (LearningResources res) ->
+            let
+                ( learningModel, cmd ) =
+                    LearningResources.init res
+            in
+            ( { model | page = LearningResourcesModel res learningModel }, Cmd.map GotLRMsg cmd )
+
+        Just Rules ->
+            ( { model | page = RulesModel }, Cmd.none )
+
+        Just ServicesRules ->
+            ( { model | page = ServicesRulesModel }, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        ChangedUrl url ->
+    case ( msg, model.page ) of
+        ( ChangedUrl url, _ ) ->
             let
                 route =
                     Route.maybeFromUrl url
             in
-            case route of
-                Nothing ->
-                    ( { route = Route.Home, key = model.key }, Cmd.none )
+            changeRouteTo route model
 
-                Just Discord ->
-                    ( model, Nav.load (Route.routeToString Route.Discord) )
-
-                Just other ->
-                    ( { route = other, key = model.key }, Cmd.none )
-
-        ClickedLink request ->
+        ( ClickedLink request, _ ) ->
             case request of
                 Browser.Internal url ->
                     ( model
@@ -73,6 +100,13 @@ update msg model =
                     ( model
                     , Nav.load href
                     )
+
+        ( GotLRMsg lrMsg, LearningResourcesModel r lrm ) ->
+            let
+                ( lrModel, lrMsg2 ) =
+                    LearningResources.update lrMsg lrm
+            in
+            ( { model | page = LearningResourcesModel r lrModel }, Cmd.map GotLRMsg lrMsg2 )
 
         _ ->
             ( model
@@ -97,18 +131,29 @@ view : Model -> Document Msg
 view model =
     let
         page =
-            case model.route of
-                Home ->
-                    Page.view Page.Home (Home.view { key = model.key })
+            case model.page of
+                HomeModel ->
+                    Page.map GotNullMsg <| Page.view Page.Home (Home.view ())
 
-                Rules ->
-                    Page.view Page.Rules (Rules.view { key = model.key })
+                RulesModel ->
+                    Page.map GotNullMsg <| Page.view Page.Rules (Rules.view ())
 
-                ServicesRules ->
-                    Page.view Page.ServicesRules (ServicesRules.view { key = model.key })
+                ServicesRulesModel ->
+                    Page.map GotNullMsg <| Page.view Page.ServicesRules (ServicesRules.view ())
 
-                Discord ->
+                LearningResourcesModel res m ->
+                    Page.map GotLRMsg (Page.view (Page.LearningResources res) (LearningResources.view m))
+
+                DiscordModel ->
                     -- default to home, this should never happen
-                    Page.view Page.Home (Home.view { key = model.key })
+                    Page.map GotNullMsg <| Page.view Page.Home (Home.view ())
+
+                EmptyModel ->
+                    Page.map GotNullMsg <| Page.view Page.Home (Home.view ())
+
+                NotFound ->
+                    Page.map GotNullMsg <| Page.view Page.Home (Home.view ())
+
+        -- TODO 404 page
     in
     { title = page.title, body = List.map (Html.map (\_ -> NewPage)) page.body }

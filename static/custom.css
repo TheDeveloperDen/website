@@ -1,17 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/cascadia-code');
 
-@font-face {
-    font-family: Horta;
-    src: url(fonts/horta.otf);
-}
 
-@font-face {
-    font-family: "JetBrains Mono";
-    src: url(fonts/JetBrainsMono-Regular.woff2);
-}
-
-.horta {
-    font-family: 'Horta', sans-serif;
+.cascadia-code {
+    font-family: 'Cascadia Code', sans-serif;
 }
 
 .montserrat {
