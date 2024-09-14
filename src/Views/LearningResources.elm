@@ -6,7 +6,9 @@ import Html exposing (Html, text, ul)
 import Http
 import Json.Decode as Decode exposing (Decoder)
 import Redirects exposing (learningResourcesUrl)
+import Route
 import Tailwind as Tw
+import Util exposing (expectYaml)
 
 
 type Model
@@ -44,7 +46,7 @@ getResource : String -> Cmd Msg
 getResource name =
     Http.get
         { url = learningResourcesUrl ++ "/" ++ name
-        , expect = Http.expectJson (ResourceLoaded name) learningResourcesDecoder
+        , expect = expectYaml (ResourceLoaded name) learningResourcesDecoder
         }
 
 
@@ -66,11 +68,11 @@ update msg model =
         ( ResourceLoaded name (Ok resource), Loaded { resourceNames, resources, selectedResource } ) ->
             ( Loaded { resourceNames = resourceNames, resources = Dict.insert resource.name resource resources, selectedResource = Just ( name, resource ) }, Cmd.none )
 
-        ( ResourceLoaded name (Err e), Loaded { resourceNames, resources, selectedResource } ) ->
-            ( LoadResourceFail name e, Cmd.none )
+        ( ResourceLoaded name (Err e), m ) ->
+            ( LoadResourceFail name e, Debug.log (Debug.toString m) Cmd.none )
 
         _ ->
-            ( model, Cmd.none )
+            ( model, Debug.log (Debug.toString model) Cmd.none )
 
 
 init : Maybe String -> ( Model, Cmd Msg )
@@ -92,7 +94,7 @@ view model =
                 Html.text "Failed to load index"
 
             LoadResourceFail name e ->
-                Html.text ("Failed to load resource " ++ name)
+                Html.text ("Failed to load resource " ++ name ++ ": " ++ Debug.toString e)
 
             LoadedIndex index ->
                 viewIndexSidebar index
@@ -107,7 +109,7 @@ viewIndexSidebar resourceNames =
     let
         createLi name =
             Html.li []
-                [ Html.a [ Tw.flex, Tw.items_center, Tw.p_2, Tw.text_base, Tw.font_normal, Tw.text_gray_900, Tw.rounded_lg, Tw.hover__bg_gray_700 ]
+                [ Html.a [ Route.href (Route.LearningResources (Just name)), Tw.flex, Tw.items_center, Tw.p_2, Tw.text_base, Tw.font_normal, Tw.text_gray_900, Tw.rounded_lg, Tw.hover__bg_gray_700 ]
                     [ Html.span [ Tw.flex_1, Tw.ml_3, Tw.whitespace_nowrap ] [ text (prettifyResourceName name) ]
                     ]
                 ]
