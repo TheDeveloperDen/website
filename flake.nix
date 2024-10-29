@@ -13,7 +13,7 @@
     {
       devShells = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.mkShell {
-          packages = (with pkgs.elmPackages; [ elm ]) ++ (with pkgs; [ elm2nix yarn-berry ]);
+          packages = (with pkgs.elmPackages; [ elm elm-live ]) ++ (with pkgs; [ elm2nix yarn-berry ]);
         };
       });
     };

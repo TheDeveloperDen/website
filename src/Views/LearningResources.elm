@@ -35,7 +35,7 @@ decodeResourceIndex =
 
 
 getResourceIndex : Cmd Msg
-getResourceIndex =
+getResourceIndex = Debug.log "getResourceIndex"
     Http.get
         { url = learningResourcesUrl
         , expect = Http.expectJson ResourceIndexLoaded (Decode.list decodeResourceIndex)
@@ -87,7 +87,7 @@ update msg model =
         ( ResourceLoaded name (Err e), _ ) ->
             ( LoadResourceFail name e, Cmd.none )
 
-        _ ->
+        _ -> Debug.log "Loaded?"
             ( model, Cmd.none )
 
 
