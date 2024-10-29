@@ -22,8 +22,7 @@ parser =
         , Parser.map Rules (Parser.s "rules")
         , Parser.map ServicesRules (Parser.s "services-rules")
         , Parser.map Discord (Parser.s "discord")
-        , Parser.map (LearningResources Nothing) (Parser.s "learning-resources")
-        , Parser.map (\s -> LearningResources (Just s)) (Parser.s "learning-resources" </> Parser.string)
+        , Parser.map LearningResources (Parser.s "learning-resources" <?> Query.string "res")
         ]
 
 
@@ -68,4 +67,12 @@ routeToPieces route =
             [ "discord" ]
 
         LearningResources res ->
-            [ "learning-resources", Maybe.withDefault "" res ]
+            [ "learning-resources"
+                ++ (case res of
+                        Just r ->
+                            "?res=" ++ r
+
+                        Nothing ->
+                            ""
+                   )
+            ]

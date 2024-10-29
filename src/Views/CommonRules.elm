@@ -7,7 +7,7 @@ import Tailwind as Tw
 
 rulesSection : Html msg -> Html msg -> List (Html msg) -> Html msg
 rulesSection title subtitle body =
-    div [ Tw.ml_16, Tw.mr_16, Tw.mb_20, Tw.text_white ]
+    div [ Tw.flex, Tw.flex_col, Tw.my_auto, Tw.h_auto, Tw.ml_16, Tw.mr_16, Tw.mb_20, Tw.text_white ]
         [ h1 [ Tw.text_6xl, Tw.font_cascadia, Tw.mt_2, Tw.py_2, Tw.text_center ] [ title ]
         , h2 [ Tw.text_2xl, Tw.py_2, Tw.font_montserrat, Tw.text_center ] [ subtitle ]
         , div [] body

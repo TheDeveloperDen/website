@@ -1,6 +1,6 @@
 module Views.LearningResources exposing (..)
 
-import Data.LearningResources exposing (LearningResources, learningResourcesDecoder)
+import Data.LearningResources exposing (LearningResources, Resource, learningResourcesDecoder)
 import Dict exposing (Dict)
 import Html exposing (Html, text, ul)
 import Http
@@ -37,7 +37,7 @@ decodeResourceIndex =
 getResourceIndex : Cmd Msg
 getResourceIndex =
     Http.get
-        { url = Debug.log "lr" learningResourcesUrl
+        { url = learningResourcesUrl
         , expect = Http.expectJson ResourceIndexLoaded (Decode.list decodeResourceIndex)
         }
 
@@ -65,14 +65,30 @@ update msg model =
         ( LoadResource name, _ ) ->
             ( model, getResource name )
 
-        ( ResourceLoaded name (Ok resource), Loaded { resourceNames, resources, selectedResource } ) ->
-            ( Loaded { resourceNames = resourceNames, resources = Dict.insert resource.name resource resources, selectedResource = Just ( name, resource ) }, Cmd.none )
+        ( ResourceLoaded name (Ok resource), Loaded { resourceNames, resources } ) ->
+            Debug.log "ResourceLoaded"
+                ( Loaded
+                    { resourceNames = resourceNames
+                    , resources = Dict.insert resource.name resource resources
+                    , selectedResource = Just ( name, resource )
+                    }
+                , Cmd.none
+                )
 
-        ( ResourceLoaded name (Err e), m ) ->
-            ( LoadResourceFail name e, Debug.log (Debug.toString m) Cmd.none )
+        ( ResourceLoaded name (Ok resource), LoadedIndex idx ) ->
+            ( Loaded
+                { resourceNames = idx
+                , resources = Dict.singleton resource.name resource
+                , selectedResource = Just ( name, resource )
+                }
+            , Cmd.none
+            )
+
+        ( ResourceLoaded name (Err e), _ ) ->
+            ( LoadResourceFail name e, Cmd.none )
 
         _ ->
-            ( model, Debug.log (Debug.toString model) Cmd.none )
+            ( model, Cmd.none )
 
 
 init : Maybe String -> ( Model, Cmd Msg )
@@ -100,7 +116,10 @@ view model =
                 viewIndexSidebar index
 
             Loaded { resourceNames, resources, selectedResource } ->
-                Html.text <| Debug.toString ( resourceNames, resources, selectedResource )
+                Html.div [ Tw.flex, Tw.flex_row ]
+                    [ viewIndexSidebar resourceNames
+                    , viewResource resources selectedResource
+                    ]
     }
 
 
@@ -109,13 +128,26 @@ viewIndexSidebar resourceNames =
     let
         createLi name =
             Html.li []
-                [ Html.a [ Route.href (Route.LearningResources (Just name)), Tw.flex, Tw.items_center, Tw.p_2, Tw.text_base, Tw.font_normal, Tw.text_gray_900, Tw.rounded_lg, Tw.hover__bg_gray_700 ]
-                    [ Html.span [ Tw.flex_1, Tw.ml_3, Tw.whitespace_nowrap ] [ text (prettifyResourceName name) ]
+                [ Html.a
+                    [ Route.href (Route.LearningResources (Just name))
+                    , Tw.flex
+                    , Tw.items_center
+                    , Tw.p_2
+                    , Tw.text_base
+                    , Tw.font_normal
+                    , Tw.text_gray_900
+                    , Tw.rounded_lg
+                    , Tw.hover__bg_gray_700
+                    ]
+                    [ Html.span [ Tw.flex_1, Tw.ml_3, Tw.whitespace_nowrap ]
+                        [ text (prettifyResourceName name) ]
                     ]
                 ]
     in
-    Html.div [ Tw.fixed ]
-        [ ul [] (List.map createLi resourceNames)
+    -- sidebar with list of resources which appears _under_ the navbar
+    Html.div [ Tw.flex, Tw.flex_col, Tw.bg_gray_200, Tw.w_64, Tw.h_auto, Tw.my_auto, Tw.overflow_y_auto ]
+        [ Html.h1 [ Tw.text_2xl, Tw.font_montserrat, Tw.text_center, Tw.py_2 ] [ text "Resources" ]
+        , ul [] (List.map createLi resourceNames)
         ]
 
 
@@ -124,3 +156,26 @@ prettifyResourceName name =
     String.join " " (String.split "-" name)
         |> String.replace ".json" ""
         |> String.replace ".yaml" " "
+
+
+viewResource : Dict String LearningResources -> Maybe ( String, LearningResources ) -> Html Msg
+viewResource resources selectedResource =
+    case selectedResource of
+        Just ( name, resource ) ->
+            Html.div [ Tw.flex, Tw.flex_col, Tw.ml_64, Tw.mr_64, Tw.mt_20, Tw.text_white ]
+                ([ Html.h1 [] [ text resource.name ]
+                 , Html.h2 [] [ text resource.description ]
+                 ]
+                    ++ List.map (viewResourcesSection resource) resource.resources
+                )
+
+        Nothing ->
+            Html.text "Select a resource to view"
+
+
+viewResourcesSection : LearningResources -> Resource -> Html Msg
+viewResourcesSection resources section =
+    Html.div []
+        [ Html.h3 [] [ text section.name ]
+        , Html.ul [] (List.map (Html.li [] << List.singleton << Html.text) section.pros)
+        ]
