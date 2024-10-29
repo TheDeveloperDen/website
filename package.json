@@ -18,7 +18,7 @@
     "watch-elm": "watch 'yarn build-elm' src"
   },
   "dependencies": {
-    "postcss-loader": "^6.1.1",
+    "postcss-loader": "^8.0.0",
     "serve": "^12.0.1",
     "watch": "^1.0.2",
     "yarn": "^1.22.15"
