@@ -37,7 +37,7 @@ view _ =
                     , text "It is the host's responsibility to ensure that their clients are trustworthy."
                     , text "Similarly, it is the client's responsibility to ensure the host is the right choice for their needs."
                     , text "The Developer Den has no obligation to investigate or take action in the case of scams or disputes. We will attempt to do so if possible, but no action is guaranteed."
-                    , text "To request an investigation please send a message to @ModMail#5460 in the Discord Server"
+                    , text "To request an investigation please send a message to @Developer Den#4726 in the Discord Server"
                     ]
                 , ruleHeader "Paid Services"
                 , rulesList
