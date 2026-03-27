@@ -61,6 +61,7 @@
             # https://devenv.sh/reference/options/
             packages = [ config.packages.default ];
 
+            languages.javascript.bun.enable = true;
             languages.elm.enable = true;
             languages.elm.lsp.enable = true;
 
@@ -72,6 +73,9 @@
               };
             };
 
+            processes.spa-server = {
+              exec = "bunx elm-spa server";
+            };
           };
 
         };

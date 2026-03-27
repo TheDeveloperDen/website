@@ -13,6 +13,8 @@ npm install -g elm elm-spa
 
 ```bash
 elm-spa server  # starts this app at http:/localhost:1234
+devenv up # also starts the app, but automatically takes care of everything
+
 ```
 
 ### other commands
@@ -21,6 +23,12 @@ elm-spa server  # starts this app at http:/localhost:1234
 elm-spa add    # add a new page to the application
 elm-spa build  # production build
 elm-spa watch  # runs build as you code (without the server)
+```
+
+**Formatting**:
+
+```bash
+treefmt  # formats everything
 ```
 
 ## learn more
