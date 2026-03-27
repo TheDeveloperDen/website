@@ -13,6 +13,7 @@
     nix2container.url = "github:nlewo/nix2container";
     nix2container.inputs.nixpkgs.follows = "nixpkgs";
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   nixConfig = {
@@ -20,36 +21,60 @@
     extra-substituters = "https://devenv.cachix.org";
   };
 
-  outputs = inputs@{ flake-parts, devenv-root, ... }:
+  outputs =
+    inputs@{ flake-parts, devenv-root, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         inputs.devenv.flakeModule
       ];
-      systems = [ "x86_64-linux" "i686-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+      systems = [
+        "x86_64-linux"
+        "i686-linux"
+        "x86_64-darwin"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
 
-      perSystem = { config, self', inputs', pkgs, system, ... }: {
-        # Per-system attributes can be defined here. The self' and inputs'
-        # module parameters provide easy access to attributes of the same
-        # system.
+      perSystem =
+        {
+          config,
+          self',
+          inputs',
+          pkgs,
+          system,
+          ...
+        }:
+        {
+          # Per-system attributes can be defined here. The self' and inputs'
+          # module parameters provide easy access to attributes of the same
+          # system.
 
-        # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
-        packages.default = pkgs.hello;
+          # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
+          packages.default = pkgs.hello;
 
-        devenv.shells.default = {
-          name = "devden-website";
+          devenv.shells.default = {
+            name = "devden-website";
 
-          imports = [
-          ];
+            imports = [
+            ];
 
-          # https://devenv.sh/reference/options/
-          packages = [ config.packages.default ];
+            # https://devenv.sh/reference/options/
+            packages = [ config.packages.default ];
 
-          languages.elm.enable = true;
-          languages.elm.lsp.enable = true;
+            languages.elm.enable = true;
+            languages.elm.lsp.enable = true;
+
+            treefmt = {
+              enable = true;
+              config.programs = {
+                nixfmt.enable = true;
+                elm-format.enable = true;
+              };
+            };
+
+          };
 
         };
-
-      };
       flake = {
       };
     };
