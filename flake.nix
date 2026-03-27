@@ -74,7 +74,7 @@
             };
 
             processes.spa-server = {
-              exec = "bunx elm-spa server";
+              exec = "bunx elm-land server";
             };
           };
 
