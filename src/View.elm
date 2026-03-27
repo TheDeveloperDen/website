@@ -13,7 +13,7 @@ module View exposing
 -}
 
 import Browser
-import Html exposing (Html)
+import Html.Styled as Html exposing (Html, toUnstyled)
 import Route exposing (Route)
 import Shared.Model
 
@@ -35,7 +35,7 @@ toBrowserDocument :
     -> Browser.Document msg
 toBrowserDocument { view } =
     { title = view.title
-    , body = view.body
+    , body = List.map toUnstyled view.body
     }
 
 

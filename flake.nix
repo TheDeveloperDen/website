@@ -73,8 +73,10 @@
               };
             };
 
-            processes.spa-server = {
-              exec = "bunx elm-land server";
+            scripts.tw.exec = "bunx elm-tailwind-modules --dir ./gen";
+
+            processes = {
+              spa-server.exec = "bunx elm-land server";
             };
           };
 

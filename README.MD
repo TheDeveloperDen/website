@@ -9,7 +9,7 @@ It's easiest to use Nix/Devenv to get everything you need.
 ```bash
 elm-land server  # starts this app at http:/localhost:1234
 devenv up # also starts the app, but automatically takes care of everything
-
+tw # rebuild tailwind definitions
 ```
 
 ### Formatting
