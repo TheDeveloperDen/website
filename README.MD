@@ -1,39 +1,22 @@
 # Devden website
-> 🌳  built with [elm-spa](https://elm-spa.dev)
 
 ## dependencies
 
-This project requires the latest LTS version of [Node.js](https://nodejs.org/)
-
-```bash
-npm install -g elm elm-spa
-```
+It's easiest to use Nix/Devenv to get everything you need.
 
 ## running locally
 
 ```bash
-elm-spa server  # starts this app at http:/localhost:1234
+elm-land server  # starts this app at http:/localhost:1234
 devenv up # also starts the app, but automatically takes care of everything
 
 ```
 
-### other commands
-
-```bash
-elm-spa add    # add a new page to the application
-elm-spa build  # production build
-elm-spa watch  # runs build as you code (without the server)
-```
-
-**Formatting**:
+### Formatting
 
 ```bash
 treefmt  # formats everything
 ```
-
-## learn more
-
-You can learn more at [elm-spa.dev](https://elm-spa.dev)
 
 
 ## TODO

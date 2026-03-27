@@ -2,12 +2,11 @@
 .elm-spa
 elm-stuff
 node_modules
-dist
 .devenv
 .direnv
 .vscode
 dist
 .elm-land
 .env
-.DS_Store
 *.pem
+gen/Tailwind
