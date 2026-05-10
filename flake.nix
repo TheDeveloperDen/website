@@ -1,87 +1,59 @@
 {
-  description = "Description for the project";
+  description = "DevDen Website Nix flake";
 
   inputs = {
-    devenv-root = {
-      url = "file+file:///dev/null";
-      flake = false;
-    };
-    nixpkgs.url = "github:cachix/devenv-nixpkgs/rolling";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-    devenv.url = "github:cachix/devenv";
-    nix2container.url = "github:nlewo/nix2container";
-    nix2container.inputs.nixpkgs.follows = "nixpkgs";
-    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
     treefmt-nix.url = "github:numtide/treefmt-nix";
-  };
-
-  nixConfig = {
-    extra-trusted-public-keys = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
-    extra-substituters = "https://devenv.cachix.org";
+    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
-    inputs@{ flake-parts, devenv-root, ... }:
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
-        inputs.devenv.flakeModule
+        inputs.treefmt-nix.flakeModule
       ];
+
       systems = [
         "x86_64-linux"
-        "i686-linux"
-        "x86_64-darwin"
         "aarch64-linux"
+        "x86_64-darwin"
         "aarch64-darwin"
       ];
 
       perSystem =
+        { config, pkgs, ... }:
         {
-          config,
-          self',
-          inputs',
-          pkgs,
-          system,
-          ...
-        }:
-        {
-          # Per-system attributes can be defined here. The self' and inputs'
-          # module parameters provide easy access to attributes of the same
-          # system.
-
-          # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
-          packages.default = pkgs.hello;
-
-          devenv.shells.default = {
-            name = "devden-website";
-
-            imports = [
-            ];
-
-            # https://devenv.sh/reference/options/
-            packages = [ config.packages.default ];
-
-            languages.javascript.bun.enable = true;
-            languages.elm.enable = true;
-            languages.elm.lsp.enable = true;
-
-            treefmt = {
-              enable = true;
-              config.programs = {
-                nixfmt.enable = true;
-                elm-format.enable = true;
-              };
-            };
-
-            scripts.tw.exec = "bunx elm-tailwind-modules --dir ./gen";
-
-            processes = {
-              spa-server.exec = "bunx elm-land server";
+          treefmt = {
+            projectRootFile = "flake.nix";
+            programs = {
+              nixfmt.enable = true;
+              elm-format.enable = true;
             };
           };
 
+          devShells.default = pkgs.mkShell {
+            name = "devden-website";
+
+            nativeBuildInputs = with pkgs; [
+              bun
+              elmPackages.elm
+              elmPackages.elm-format
+              elmPackages.elm-language-server
+              elmPackages.elm-test
+            ];
+
+            shellHook = ''
+              alias tw="bunx elm-tailwind-modules --dir ./gen"
+              alias spa-server="bunx elm-land server"
+
+              echo "Dev shell active."
+              echo "Commands: tw, spa-server"
+            '';
+          };
+
+          packages.default = pkgs.hello;
         };
-      flake = {
-      };
     };
 }

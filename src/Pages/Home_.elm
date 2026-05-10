@@ -28,8 +28,6 @@ page =
                 , Tw.rounded_md
                 , Tw.text_color Tw.white
                 , Tw.bg_color Tw.indigo_600
-
-                -- We can use hover styles via elm-css :)
                 , Css.hover [ Tw.bg_color Tw.indigo_700 ]
                 ]
             ]

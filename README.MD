@@ -7,10 +7,11 @@ It's easiest to use Nix/Devenv to get everything you need.
 ## running locally
 
 ```bash
-elm-land server  # starts this app at http:/localhost:1234
-devenv up # also starts the app, but automatically takes care of everything
+bunx elm-land server  # starts this app at http:/localhost:1234
 tw # rebuild tailwind definitions
 ```
+
+The site should then be running at http://localhost:1234
 
 ### Formatting
 
@@ -29,7 +30,7 @@ treefmt  # formats everything
 - [ ] `/projects/<projectname>` - Show information about a various project we have.
   Should follow a standard format and show github link, contributors (fetch from github?), and other information.
 - [ ] `/faqs` - Show all the FAQs that you'd see in `ddfaq`
-- [X] `/rules` - ~~pretty obvious, rules of the server. we can provide these in a json format if it helps~~
+- [ ] `/rules` - pretty obvious, rules of the server. we can provide these in a json format if it helps
 - [ ] `/team` or `/staff` - Show a nice list of admins, mods, contributors to projects, etc
 - [ ] `/moderation/` Once the bot gets moderation features it would be very very cool to have a panel
   like Dyno or yagpdb have. This probably won't happen for a while.
