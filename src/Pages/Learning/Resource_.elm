@@ -5,6 +5,7 @@ import Dict
 import Effect exposing (Effect, sendSharedMsg)
 import Html.Styled as Html
 import Http
+import Layouts
 import LearningResources
 import Page exposing (Page)
 import Route exposing (Route)
@@ -22,6 +23,7 @@ page shared route =
         , subscriptions = subscriptions
         , view = view shared route.params
         }
+    |> Page.withLayout (\_ -> Layouts.Global {})
 
 
 

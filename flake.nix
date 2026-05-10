@@ -45,7 +45,7 @@
             ];
 
             shellHook = ''
-              alias tw="bunx elm-tailwind-modules --dir ./gen"
+              alias tw="bunx elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts"
               alias spa-server="bunx elm-land server"
 
               echo "Dev shell active."

@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-den-deepblue: #171834;
+  --color-den-teal: #00AFC3;
+  --color-den-pink: #FF52F9;
+  --color-den-indigo: #8099FF;
+}
+
+.theme-light {
+  --color-den-deepblue: #474A9F;
+  --color-den-teal: #007684;
+  --color-den-pink: #BF00B9;
+  --color-den-indigo: #005FF1;
+}
+
+body {
+  background-color: var(--color-den-bg);
+  color: var(--color-den-text);
+}
