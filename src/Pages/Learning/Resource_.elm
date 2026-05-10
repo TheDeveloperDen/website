@@ -2,7 +2,7 @@ module Pages.Learning.Resource_ exposing (Model, Msg, page)
 
 import Api
 import Dict
-import Effect exposing (Effect)
+import Effect exposing (Effect, sendSharedMsg)
 import Html.Styled as Html
 import Http
 import LearningResources
@@ -29,7 +29,7 @@ page shared route =
 
 
 type alias Model =
-    { resourceInfo : ResourceInfo }
+    { resourceInfo : ResourceInfo, resourceId : String }
 
 
 type ResourceInfo
@@ -42,12 +42,12 @@ init : Shared.Model -> { resource : String } -> ( Model, Effect Msg )
 init model route =
     case Dict.get route.resource model.learningResources of
         Nothing ->
-            ( { resourceInfo = Loading }
+            ( { resourceInfo = Loading, resourceId = route.resource }
             , Api.getLearningResource { name = route.resource, onResponse = LearningResourceResponded }
             )
 
         Just info ->
-            ( { resourceInfo = sharedResourceInfoToResourceInfo info }
+            ( { resourceInfo = sharedResourceInfoToResourceInfo info, resourceId = route.resource }
             , Effect.none
             )
 
@@ -75,7 +75,7 @@ update msg model =
     case msg of
         LearningResourceResponded (Ok resourcesSet) ->
             ( { model | resourceInfo = Found resourcesSet }
-            , Effect.none
+            , Effect.sendSharedMsg (Shared.Msg.CacheLearningResource ( model.resourceId, resourcesSet ))
             )
 
         LearningResourceResponded (Err _) ->
