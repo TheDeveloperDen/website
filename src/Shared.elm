@@ -18,6 +18,7 @@ import Json.Decode
 import Route exposing (Route)
 import Shared.Model
 import Shared.Msg
+import Dict
 
 
 
@@ -43,7 +44,7 @@ type alias Model =
 
 init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
 init _ _ =
-    ( { learningIndex = Shared.Model.Loading }
+    ( { learningIndex = Shared.Model.Loading, learningResources = Dict.empty }
     , Api.getLearningResourcesIndex
         { onResponse = Shared.Msg.LearningIndexResponded }
     )
@@ -69,6 +70,11 @@ update _ msg model =
             ( { model | learningIndex = Shared.Model.Failure error }
             , Effect.none
             )
+
+        Shared.Msg.CacheLearningResource (resource, resourcesSet) ->
+            ( { model | learningResources = (Dict.insert resource (Shared.Model.Found resourcesSet) model.learningResources) }
+            , Effect.none
+            )            
 
         Shared.Msg.RetryLearningIndex ->
             ( { model | learningIndex = Shared.Model.Loading }

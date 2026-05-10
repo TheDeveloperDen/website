@@ -1,7 +1,13 @@
-module Shared.Model exposing (LearningIndexStatus(..), Model)
+module Shared.Model exposing
+    ( LearningIndexStatus(..)
+    , LearningResourcesData
+    , ResourceInfo(..)
+    , Model
+    )
 
 {-| -}
 
+import Dict exposing (Dict)
 import Http
 import LearningResources
 
@@ -19,6 +25,16 @@ type LearningIndexStatus
     | Failure Http.Error
 
 
+type alias LearningResourcesData
+    = (Dict String ResourceInfo)
+
+
+type ResourceInfo
+    = NotFound
+    | Found LearningResources.LearningResourcesSet
+
+
 type alias Model =
     { learningIndex : LearningIndexStatus
+    , learningResources : LearningResourcesData
     }

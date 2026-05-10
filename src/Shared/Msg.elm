@@ -15,5 +15,6 @@ own file, so they can be imported by `Effect.elm`
 -}
 type Msg
     = LearningIndexResponded (Result Http.Error (List LearningResources.ResourceIndexEntry))
+    | CacheLearningResource (String, LearningResources.LearningResourcesSet)
     | RetryLearningIndex
     | NoOp

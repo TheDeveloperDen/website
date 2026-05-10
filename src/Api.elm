@@ -4,6 +4,7 @@ import Effect exposing (Effect)
 import Http
 import Json.Decode as Json
 import LearningResources
+import Yaml.Decode
 
 
 type Data value
@@ -21,6 +22,46 @@ getLearningResourcesIndex { onResponse } =
             { url = "https://learningresources.developerden.org"
             , expect = Http.expectJson onResponse resourceIndexDecoder
             }
+
+
+getLearningResource :
+    { name : String
+    , onResponse : Result Http.Error LearningResources.LearningResourcesSet -> msg
+    }
+    -> Effect msg
+getLearningResource { name, onResponse } =
+    Effect.sendCmd <|
+        Http.get
+            { url = "https://learningresources.developerden.org/" ++ name
+            , expect =
+                expectYaml onResponse LearningResources.learningResourcesSet
+            }
+
+expectYaml : (Result Http.Error a -> msg) -> Yaml.Decode.Decoder a -> Http.Expect msg
+expectYaml toMsg decoder = 
+    Http.expectStringResponse toMsg <| resolve decoder
+
+resolve decoder = \response ->
+      case response of
+        Http.BadUrl_ url ->
+          Err (Http.BadUrl url)
+
+        Http.Timeout_ ->
+          Err Http.Timeout
+
+        Http.NetworkError_ ->
+          Err Http.NetworkError
+
+        Http.BadStatus_ metadata body ->
+          Err (Http.BadStatus metadata.statusCode)
+
+        Http.GoodStatus_ metadata body ->
+          case Yaml.Decode.fromString decoder body of
+            Ok value ->
+              Ok value
+
+            Err err ->
+              Err (Http.BadBody (Yaml.Decode.errorToString err))
 
 
 resourceIndexDecoder : Json.Decoder (List LearningResources.ResourceIndexEntry)
