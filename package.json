@@ -4,7 +4,10 @@
   "private": true,
   "devDependencies": {
     "@types/bun": "latest",
-    "elm-land": "^0.20.1"
+    "elm-land": "^0.20.1",
+    "elm-open-api": "^0.7.0",
+    "quicktype": "^23.2.6",
+    "quicktype-core": "^23.2.6"
   },
   "peerDependencies": {
     "typescript": "^5"
