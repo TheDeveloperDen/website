@@ -3,7 +3,7 @@ module Shared.Msg exposing (Msg(..))
 {-| -}
 
 import Http
-import LearningResources
+import LearningResources.Types as LearningResources
 
 
 {-| Normally, this value would live in "Shared.elm"
@@ -14,7 +14,6 @@ own file, so they can be imported by `Effect.elm`
 
 -}
 type Msg
-    = LearningIndexResponded (Result Http.Error (List LearningResources.ResourceIndexEntry))
-    | CacheLearningResource (String, LearningResources.LearningResourcesSet)
+    = LearningIndexResponded (Result Http.Error LearningResources.Database)
     | RetryLearningIndex
     | NoOp

@@ -1,7 +1,5 @@
 module Shared.Model exposing
-    ( LearningIndexStatus(..)
-    , LearningResourcesData
-    , ResourceInfo(..)
+    ( LearningDatabaseStatus(..)
     , Model
     )
 
@@ -9,7 +7,7 @@ module Shared.Model exposing
 
 import Dict exposing (Dict)
 import Http
-import LearningResources
+import LearningResources.Types as LearningResources
 
 
 {-| Normally, this value would live in "Shared.elm"
@@ -19,22 +17,13 @@ For that reason, both `Shared.Model` and `Shared.Msg` are in their
 own file, so they can be imported by `Effect.elm`
 
 -}
-type LearningIndexStatus
+type LearningDatabaseStatus
     = Loading
-    | Success (List LearningResources.ResourceIndexEntry)
+    | Success LearningResources.Database
     | Failure Http.Error
 
 
-type alias LearningResourcesData
-    = (Dict String ResourceInfo)
-
-
-type ResourceInfo
-    = NotFound
-    | Found LearningResources.LearningResourcesSet
-
 
 type alias Model =
-    { learningIndex : LearningIndexStatus
-    , learningResources : LearningResourcesData
+    { learningDatabase : LearningDatabaseStatus
     }

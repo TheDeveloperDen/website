@@ -13,7 +13,7 @@
       "devDependencies": {
         "@types/bun": "latest",
         "elm-land": "^0.20.1",
-        "elm-open-api": "^0.7.0",
+        "elm-open-api": "git+https://github.com/wolfadex/elm-open-api-cli.git#main",
         "quicktype": "^23.2.6",
         "quicktype-core": "^23.2.6",
       },
@@ -315,7 +315,7 @@
 
     "elm-land": ["elm-land@0.20.1", "", { "dependencies": { "@lydell/elm": "0.19.1-14", "chokidar": "3.5.3", "terser": "5.15.1", "typescript": "4.9.3", "vite": "5.2.8", "vite-plugin-elm-watch": "1.3.3" }, "bin": { "elm-land": "src/index.js" } }, "sha512-AY8BxYNT7mblaIO9SS2YQPdskZdMsLL6fqjAA5bORdkGIRDkMeaw+rXgiVSHUM2+TK0k/ld0TdQEAd24Moi5nw=="],
 
-    "elm-open-api": ["elm-open-api@0.7.0", "", { "bin": { "elm-open-api": "dist/elm-open-api.js" } }, "sha512-cp5/XHmSRz37ORgZDoaiXixb1vlZCZg+O9zi79qoHJXYm2NtWtmcOWhdnAexgX7gcrUvAWlZvckiwYHGXY5j3A=="],
+    "elm-open-api": ["elm-open-api@github:wolfadex/elm-open-api-cli#f77df0b", { "bin": "dist/elm-open-api.js" }, "wolfadex-elm-open-api-cli-f77df0b"],
 
     "elm-tailwind-modules": ["elm-tailwind-modules@0.5.0", "", { "dependencies": { "chalk": "^4.1.1", "color-name": "^1.1.4", "commander": "^7.2.0", "css-what": "^5.0.0", "deep-equal": "^2.0.3", "fs-extra": "^9.1.0", "lodash": "^4.17.21", "rollup": "^2.45.2", "tslib": "^2.2.0" }, "peerDependencies": { "postcss": "^8.2.4", "tailwindcss": "^2.0.2 || ^3.1.6" }, "bin": { "elm-tailwind-modules": "dist/cli.js" } }, "sha512-Ad03E6lZwB2Fa+OoLTSzlRKOIzO+T5jTgTOHl53WREmNZPxcaJ+1acwdM/7RJrTkTfvoXi241pdfzzOBQX5r2A=="],
 

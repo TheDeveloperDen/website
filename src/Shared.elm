@@ -44,7 +44,7 @@ type alias Model =
 
 init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
 init _ _ =
-    ( { learningIndex = Shared.Model.Loading, learningResources = Dict.empty }
+    ( { learningDatabase = Shared.Model.Loading }
     , Api.getLearningResourcesIndex
         { onResponse = Shared.Msg.LearningIndexResponded }
     )
@@ -62,22 +62,17 @@ update : Route () -> Msg -> Model -> ( Model, Effect Msg )
 update _ msg model =
     case msg of
         Shared.Msg.LearningIndexResponded (Ok entries) ->
-            ( { model | learningIndex = Shared.Model.Success entries }
+            ( { model | learningDatabase = Shared.Model.Success entries }
             , Effect.none
             )
 
         Shared.Msg.LearningIndexResponded (Err error) ->
-            ( { model | learningIndex = Shared.Model.Failure error }
+            ( { model | learningDatabase = Shared.Model.Failure error }
             , Effect.none
             )
 
-        Shared.Msg.CacheLearningResource (resource, resourcesSet) ->
-            ( { model | learningResources = (Dict.insert resource (Shared.Model.Found resourcesSet) model.learningResources) }
-            , Effect.none
-            )            
-
         Shared.Msg.RetryLearningIndex ->
-            ( { model | learningIndex = Shared.Model.Loading }
+            ( { model | learningDatabase = Shared.Model.Loading }
             , Api.getLearningResourcesIndex
                 { onResponse = Shared.Msg.LearningIndexResponded }
             )

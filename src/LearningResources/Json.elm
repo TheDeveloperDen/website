@@ -1,8 +1,10 @@
 module LearningResources.Json exposing
-    ( encodeCompiledMeta, encodeDatabase, encodeEntityTag, encodeFreePricing, encodePaidPricing, encodePricing
-    , encodeResource, encodeResourceCategory
-    , decodeCompiledMeta, decodeDatabase, decodeEntityTag, decodeFreePricing, decodePaidPricing, decodePricing
-    , decodeResource, decodeResourceCategory
+    ( encodeCategoryLanguage, encodeCategoryPlatform, encodeCategoryTool, encodeCompiledMeta, encodeDatabase
+    , encodeEntityTag, encodeFreePricing, encodeLanguageDomain, encodeMeta, encodePaidPricing, encodePricing
+    , encodeProgrammingParadigm, encodeResource, encodeResourceCategory, encodeResourceType
+    , decodeCategoryLanguage, decodeCategoryPlatform, decodeCategoryTool, decodeCompiledMeta, decodeDatabase
+    , decodeEntityTag, decodeFreePricing, decodeLanguageDomain, decodeMeta, decodePaidPricing, decodePricing
+    , decodeProgrammingParadigm, decodeResource, decodeResourceCategory, decodeResourceType
     )
 
 {-|
@@ -10,14 +12,16 @@ module LearningResources.Json exposing
 
 ## Encoders
 
-@docs encodeCompiledMeta, encodeDatabase, encodeEntityTag, encodeFreePricing, encodePaidPricing, encodePricing
-@docs encodeResource, encodeResourceCategory
+@docs encodeCategoryLanguage, encodeCategoryPlatform, encodeCategoryTool, encodeCompiledMeta, encodeDatabase
+@docs encodeEntityTag, encodeFreePricing, encodeLanguageDomain, encodeMeta, encodePaidPricing, encodePricing
+@docs encodeProgrammingParadigm, encodeResource, encodeResourceCategory, encodeResourceType
 
 
 ## Decoders
 
-@docs decodeCompiledMeta, decodeDatabase, decodeEntityTag, decodeFreePricing, decodePaidPricing, decodePricing
-@docs decodeResource, decodeResourceCategory
+@docs decodeCategoryLanguage, decodeCategoryPlatform, decodeCategoryTool, decodeCompiledMeta, decodeDatabase
+@docs decodeEntityTag, decodeFreePricing, decodeLanguageDomain, decodeMeta, decodePaidPricing, decodePricing
+@docs decodeProgrammingParadigm, decodeResource, decodeResourceCategory, decodeResourceType
 
 -}
 
@@ -27,14 +31,54 @@ import LearningResources.Types
 import OpenApi.Common
 
 
+decodeResourceType : Json.Decode.Decoder LearningResources.Types.ResourceType
+decodeResourceType =
+    Json.Decode.andThen
+        (\andThenUnpack ->
+            case
+                LearningResources.Types.resourceTypeFromString andThenUnpack
+            of
+                Maybe.Just a ->
+                    Json.Decode.succeed a
+
+                Maybe.Nothing ->
+                    Json.Decode.fail
+                        (andThenUnpack ++ " is not a valid ResourceType")
+        )
+        Json.Decode.string
+
+
+encodeResourceType : LearningResources.Types.ResourceType -> Json.Encode.Value
+encodeResourceType rec =
+    Json.Encode.string (LearningResources.Types.resourceTypeToString rec)
+
+
 decodeResourceCategory : Json.Decode.Decoder LearningResources.Types.ResourceCategory
 decodeResourceCategory =
-    Json.Decode.value
+    Json.Decode.oneOf
+        [ Json.Decode.map
+            LearningResources.Types.CategoryLanguage_Or_CategoryPlatform_Or_CategoryTool__CategoryLanguage
+            decodeCategoryLanguage
+        , Json.Decode.map
+            LearningResources.Types.CategoryLanguage_Or_CategoryPlatform_Or_CategoryTool__CategoryPlatform
+            decodeCategoryPlatform
+        , Json.Decode.map
+            LearningResources.Types.CategoryLanguage_Or_CategoryPlatform_Or_CategoryTool__CategoryTool
+            decodeCategoryTool
+        ]
 
 
 encodeResourceCategory : LearningResources.Types.ResourceCategory -> Json.Encode.Value
-encodeResourceCategory =
-    Basics.identity
+encodeResourceCategory rec =
+    case rec of
+        LearningResources.Types.CategoryLanguage_Or_CategoryPlatform_Or_CategoryTool__CategoryLanguage content ->
+            encodeCategoryLanguage content
+
+        LearningResources.Types.CategoryLanguage_Or_CategoryPlatform_Or_CategoryTool__CategoryPlatform content ->
+            encodeCategoryPlatform content
+
+        LearningResources.Types.CategoryLanguage_Or_CategoryPlatform_Or_CategoryTool__CategoryTool content ->
+            encodeCategoryTool content
 
 
 decodeResource : Json.Decode.Decoder LearningResources.Types.Resource
@@ -69,15 +113,7 @@ decodeResource =
         |> OpenApi.Common.jsonDecodeAndMap
             (Json.Decode.field
                 "pricing"
-                (Json.Decode.oneOf
-                    [ Json.Decode.map
-                        LearningResources.Types.FreePricing_Or_PaidPricing__FreePricing
-                        decodeFreePricing
-                    , Json.Decode.map
-                        LearningResources.Types.FreePricing_Or_PaidPricing__PaidPricing
-                        decodePaidPricing
-                    ]
-                )
+                decodePricing
             )
         |> OpenApi.Common.jsonDecodeAndMap
             (OpenApi.Common.decodeOptionalField
@@ -97,7 +133,7 @@ decodeResource =
             (Json.Decode.field
                 "type"
                 (Json.Decode.list
-                    Json.Decode.string
+                    decodeResourceType
                 )
             )
         |> OpenApi.Common.jsonDecodeAndMap
@@ -121,25 +157,40 @@ encodeResource rec =
                 (\mapUnpack -> ( "description", Json.Encode.string mapUnpack ))
                 rec.description
             , Just ( "name", Json.Encode.string rec.name )
-            , Just
-                ( "pricing"
-                , case rec.pricing of
-                    LearningResources.Types.FreePricing_Or_PaidPricing__FreePricing content ->
-                        encodeFreePricing content
-
-                    LearningResources.Types.FreePricing_Or_PaidPricing__PaidPricing content ->
-                        encodePaidPricing content
-                )
+            , Just ( "pricing", encodePricing rec.pricing )
             , Maybe.map
                 (\mapUnpack ->
                     ( "pros", Json.Encode.list Json.Encode.string mapUnpack )
                 )
                 rec.pros
             , Just ( "teaches", Json.Encode.list encodeEntityTag rec.teaches )
-            , Just ( "type", Json.Encode.list Json.Encode.string rec.type_ )
+            , Just ( "type", Json.Encode.list encodeResourceType rec.type_ )
             , Just ( "url", Json.Encode.string rec.url )
             ]
         )
+
+
+decodeProgrammingParadigm : Json.Decode.Decoder LearningResources.Types.ProgrammingParadigm
+decodeProgrammingParadigm =
+    Json.Decode.andThen
+        (\andThenUnpack ->
+            case
+                LearningResources.Types.programmingParadigmFromString
+                    andThenUnpack
+            of
+                Maybe.Just a ->
+                    Json.Decode.succeed a
+
+                Maybe.Nothing ->
+                    Json.Decode.fail
+                        (andThenUnpack ++ " is not a valid ProgrammingParadigm")
+        )
+        Json.Decode.string
+
+
+encodeProgrammingParadigm : LearningResources.Types.ProgrammingParadigm -> Json.Encode.Value
+encodeProgrammingParadigm rec =
+    Json.Encode.string (LearningResources.Types.programmingParadigmToString rec)
 
 
 decodePricing : Json.Decode.Decoder LearningResources.Types.Pricing
@@ -180,6 +231,84 @@ encodePaidPricing rec =
         [ ( "amount", Json.Encode.float rec.amount )
         , ( "model", Json.Encode.string rec.model )
         ]
+
+
+decodeMeta : Json.Decode.Decoder LearningResources.Types.Meta
+decodeMeta =
+    Json.Decode.succeed
+        (\category description domains emoji name ->
+            { category = category
+            , description = description
+            , domains = domains
+            , emoji = emoji
+            , name = name
+            }
+        )
+        |> OpenApi.Common.jsonDecodeAndMap
+            (Json.Decode.field "category" decodeResourceCategory)
+        |> OpenApi.Common.jsonDecodeAndMap
+            (Json.Decode.field
+                "description"
+                Json.Decode.string
+            )
+        |> OpenApi.Common.jsonDecodeAndMap
+            (Json.Decode.field
+                "domains"
+                (Json.Decode.list
+                    decodeLanguageDomain
+                )
+            )
+        |> OpenApi.Common.jsonDecodeAndMap
+            (OpenApi.Common.decodeOptionalField
+                "emoji"
+                Json.Decode.string
+            )
+        |> OpenApi.Common.jsonDecodeAndMap
+            (Json.Decode.field
+                "name"
+                Json.Decode.string
+            )
+
+
+encodeMeta : LearningResources.Types.Meta -> Json.Encode.Value
+encodeMeta rec =
+    Json.Encode.object
+        (List.filterMap
+            Basics.identity
+            [ Just ( "category", encodeResourceCategory rec.category )
+            , Just ( "description", Json.Encode.string rec.description )
+            , Just
+                ( "domains"
+                , Json.Encode.list encodeLanguageDomain rec.domains
+                )
+            , Maybe.map
+                (\mapUnpack -> ( "emoji", Json.Encode.string mapUnpack ))
+                rec.emoji
+            , Just ( "name", Json.Encode.string rec.name )
+            ]
+        )
+
+
+decodeLanguageDomain : Json.Decode.Decoder LearningResources.Types.LanguageDomain
+decodeLanguageDomain =
+    Json.Decode.andThen
+        (\andThenUnpack ->
+            case
+                LearningResources.Types.languageDomainFromString andThenUnpack
+            of
+                Maybe.Just a ->
+                    Json.Decode.succeed a
+
+                Maybe.Nothing ->
+                    Json.Decode.fail
+                        (andThenUnpack ++ " is not a valid LanguageDomain")
+        )
+        Json.Decode.string
+
+
+encodeLanguageDomain : LearningResources.Types.LanguageDomain -> Json.Encode.Value
+encodeLanguageDomain rec =
+    Json.Encode.string (LearningResources.Types.languageDomainToString rec)
 
 
 decodeFreePricing : Json.Decode.Decoder LearningResources.Types.FreePricing
@@ -225,230 +354,20 @@ decodeDatabase =
         |> OpenApi.Common.jsonDecodeAndMap
             (Json.Decode.field
                 "metadata"
-                (Json.Decode.list
-                    (Json.Decode.succeed
-                        (\category description domains emoji id name ->
-                            { category = category
-                            , description =
-                                description
-                            , domains = domains
-                            , emoji = emoji
-                            , id = id
-                            , name = name
-                            }
-                        )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "category"
-                                Json.Decode.value
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "description"
-                                Json.Decode.string
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "domains"
-                                (Json.Decode.list
-                                    Json.Decode.string
-                                )
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (OpenApi.Common.decodeOptionalField
-                                "emoji"
-                                Json.Decode.string
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "id"
-                                decodeEntityTag
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "name"
-                                Json.Decode.string
-                            )
-                    )
-                )
+                (Json.Decode.list decodeCompiledMeta)
             )
         |> OpenApi.Common.jsonDecodeAndMap
             (Json.Decode.field
                 "resources"
-                (Json.Decode.list
-                    (Json.Decode.succeed
-                        (\cons description name pricing pros teaches type_ url ->
-                            { cons =
-                                cons
-                            , description =
-                                description
-                            , name =
-                                name
-                            , pricing =
-                                pricing
-                            , pros =
-                                pros
-                            , teaches =
-                                teaches
-                            , type_ =
-                                type_
-                            , url =
-                                url
-                            }
-                        )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (OpenApi.Common.decodeOptionalField
-                                "cons"
-                                (Json.Decode.list
-                                    Json.Decode.string
-                                )
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (OpenApi.Common.decodeOptionalField
-                                "description"
-                                Json.Decode.string
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "name"
-                                Json.Decode.string
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "pricing"
-                                (Json.Decode.oneOf
-                                    [ Json.Decode.map
-                                        LearningResources.Types.FreePricing_Or_PaidPricing__FreePricing
-                                        decodeFreePricing
-                                    , Json.Decode.map
-                                        LearningResources.Types.FreePricing_Or_PaidPricing__PaidPricing
-                                        decodePaidPricing
-                                    ]
-                                )
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (OpenApi.Common.decodeOptionalField
-                                "pros"
-                                (Json.Decode.list
-                                    Json.Decode.string
-                                )
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "teaches"
-                                (Json.Decode.list
-                                    decodeEntityTag
-                                )
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "type"
-                                (Json.Decode.list
-                                    Json.Decode.string
-                                )
-                            )
-                        |> OpenApi.Common.jsonDecodeAndMap
-                            (Json.Decode.field
-                                "url"
-                                Json.Decode.string
-                            )
-                    )
-                )
+                (Json.Decode.list decodeResource)
             )
 
 
 encodeDatabase : LearningResources.Types.Database -> Json.Encode.Value
 encodeDatabase rec =
     Json.Encode.object
-        [ ( "metadata"
-          , Json.Encode.list
-                (\rec0 ->
-                    Json.Encode.object
-                        (List.filterMap
-                            Basics.identity
-                            [ Just
-                                ( "category", Basics.identity rec0.category )
-                            , Just
-                                ( "description"
-                                , Json.Encode.string rec0.description
-                                )
-                            , Just
-                                ( "domains"
-                                , Json.Encode.list
-                                    Json.Encode.string
-                                    rec0.domains
-                                )
-                            , Maybe.map
-                                (\mapUnpack ->
-                                    ( "emoji", Json.Encode.string mapUnpack )
-                                )
-                                rec0.emoji
-                            , Just ( "id", encodeEntityTag rec0.id )
-                            , Just ( "name", Json.Encode.string rec0.name )
-                            ]
-                        )
-                )
-                rec.metadata
-          )
-        , ( "resources"
-          , Json.Encode.list
-                (\rec0 ->
-                    Json.Encode.object
-                        (List.filterMap
-                            Basics.identity
-                            [ Maybe.map
-                                (\mapUnpack ->
-                                    ( "cons"
-                                    , Json.Encode.list
-                                        Json.Encode.string
-                                        mapUnpack
-                                    )
-                                )
-                                rec0.cons
-                            , Maybe.map
-                                (\mapUnpack ->
-                                    ( "description"
-                                    , Json.Encode.string mapUnpack
-                                    )
-                                )
-                                rec0.description
-                            , Just ( "name", Json.Encode.string rec0.name )
-                            , Just
-                                ( "pricing"
-                                , case rec0.pricing of
-                                    LearningResources.Types.FreePricing_Or_PaidPricing__FreePricing content ->
-                                        encodeFreePricing content
-
-                                    LearningResources.Types.FreePricing_Or_PaidPricing__PaidPricing content ->
-                                        encodePaidPricing content
-                                )
-                            , Maybe.map
-                                (\mapUnpack ->
-                                    ( "pros"
-                                    , Json.Encode.list
-                                        Json.Encode.string
-                                        mapUnpack
-                                    )
-                                )
-                                rec0.pros
-                            , Just
-                                ( "teaches"
-                                , Json.Encode.list
-                                    encodeEntityTag
-                                    rec0.teaches
-                                )
-                            , Just
-                                ( "type"
-                                , Json.Encode.list
-                                    Json.Encode.string
-                                    rec0.type_
-                                )
-                            , Just ( "url", Json.Encode.string rec0.url )
-                            ]
-                        )
-                )
-                rec.resources
-          )
+        [ ( "metadata", Json.Encode.list encodeCompiledMeta rec.metadata )
+        , ( "resources", Json.Encode.list encodeResource rec.resources )
         ]
 
 
@@ -465,7 +384,7 @@ decodeCompiledMeta =
             }
         )
         |> OpenApi.Common.jsonDecodeAndMap
-            (Json.Decode.field "category" Json.Decode.value)
+            (Json.Decode.field "category" decodeResourceCategory)
         |> OpenApi.Common.jsonDecodeAndMap
             (Json.Decode.field
                 "description"
@@ -475,7 +394,7 @@ decodeCompiledMeta =
             (Json.Decode.field
                 "domains"
                 (Json.Decode.list
-                    Json.Decode.string
+                    decodeLanguageDomain
                 )
             )
         |> OpenApi.Common.jsonDecodeAndMap
@@ -500,10 +419,12 @@ encodeCompiledMeta rec =
     Json.Encode.object
         (List.filterMap
             Basics.identity
-            [ Just ( "category", Basics.identity rec.category )
+            [ Just ( "category", encodeResourceCategory rec.category )
             , Just ( "description", Json.Encode.string rec.description )
             , Just
-                ( "domains", Json.Encode.list Json.Encode.string rec.domains )
+                ( "domains"
+                , Json.Encode.list encodeLanguageDomain rec.domains
+                )
             , Maybe.map
                 (\mapUnpack -> ( "emoji", Json.Encode.string mapUnpack ))
                 rec.emoji
@@ -511,3 +432,58 @@ encodeCompiledMeta rec =
             , Just ( "name", Json.Encode.string rec.name )
             ]
         )
+
+
+decodeCategoryTool : Json.Decode.Decoder LearningResources.Types.CategoryTool
+decodeCategoryTool =
+    Json.Decode.succeed
+        (\type_ -> { type_ = type_ })
+        |> OpenApi.Common.jsonDecodeAndMap
+            (Json.Decode.field
+                "type"
+                Json.Decode.string
+            )
+
+
+encodeCategoryTool : LearningResources.Types.CategoryTool -> Json.Encode.Value
+encodeCategoryTool rec =
+    Json.Encode.object [ ( "type", Json.Encode.string rec.type_ ) ]
+
+
+decodeCategoryPlatform : Json.Decode.Decoder LearningResources.Types.CategoryPlatform
+decodeCategoryPlatform =
+    Json.Decode.succeed
+        (\type_ -> { type_ = type_ })
+        |> OpenApi.Common.jsonDecodeAndMap
+            (Json.Decode.field
+                "type"
+                Json.Decode.string
+            )
+
+
+encodeCategoryPlatform : LearningResources.Types.CategoryPlatform -> Json.Encode.Value
+encodeCategoryPlatform rec =
+    Json.Encode.object [ ( "type", Json.Encode.string rec.type_ ) ]
+
+
+decodeCategoryLanguage : Json.Decode.Decoder LearningResources.Types.CategoryLanguage
+decodeCategoryLanguage =
+    Json.Decode.succeed
+        (\paradigms type_ -> { paradigms = paradigms, type_ = type_ })
+        |> OpenApi.Common.jsonDecodeAndMap
+            (Json.Decode.field
+                "paradigms"
+                (Json.Decode.list decodeProgrammingParadigm)
+            )
+        |> OpenApi.Common.jsonDecodeAndMap
+            (Json.Decode.field "type" Json.Decode.string)
+
+
+encodeCategoryLanguage : LearningResources.Types.CategoryLanguage -> Json.Encode.Value
+encodeCategoryLanguage rec =
+    Json.Encode.object
+        [ ( "paradigms"
+          , Json.Encode.list encodeProgrammingParadigm rec.paradigms
+          )
+        , ( "type", Json.Encode.string rec.type_ )
+        ]
