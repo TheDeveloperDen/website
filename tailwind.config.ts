@@ -6,10 +6,15 @@ module.exports = {
       colors: {
         dd: {
           deepblue: 'var(--color-den-deepblue)',
+          deepblueLighter: 'var(--color-den-deepblue-lighter)',
           teal: 'var(--color-den-teal)',
           pink: 'var(--color-den-pink)',
           indigo: 'var(--color-den-indigo)',
         }
+      },
+      fontFamily: {
+        mono: ['Cascadia Code', 'monospace'],
+        sans: ['Montserrat Medium', 'sans-serif'],
       }
     },
   },

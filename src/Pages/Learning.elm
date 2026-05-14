@@ -1,11 +1,14 @@
 module Pages.Learning exposing (Model, Msg, page)
 
-import Api
+import Css
+import Dict
 import Effect exposing (Effect)
-import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes as Attr
+import Html.Styled as Html exposing (Html, div, span, text)
+import Html.Styled.Attributes as Attr exposing (css)
+import Html.Styled.Events exposing (onInput)
 import Json.Encode
 import Layouts
+import LearningResources.Emojis as Emojis
 import LearningResources.Types as LearningResources
 import Page exposing (Page)
 import Route exposing (Route)
@@ -15,9 +18,9 @@ import Shared.Model as SharedModel
 import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
+import Theming
 import View exposing (View)
-import Dict
-import Html.Styled.Events exposing (onInput)
+
 
 page : Shared.Model -> Route () -> Page Model Msg
 page shared _ =
@@ -67,17 +70,19 @@ view : Shared.Model -> Model -> View Msg
 view shared model =
     { title = "Learning Directory"
     , body =
-        [ Html.div [ Attr.css [ Tw.pt_12, Tw.pb_24, Tw.max_w_7xl, Tw.mx_auto ] ]
+        [ div [ css [ Tw.pt_12, Tw.pb_24, Tw.max_w_7xl, Tw.mx_auto, Tw.px_6 ] ]
             [ viewHeader model.searchQuery
             , case shared.learningDatabase of
                 SharedModel.Loading ->
-                    Html.div [ Attr.css [ Tw.text_center, Tw.text_color Tw.gray_400 ] ] [ Html.text "Loading learning directory..." ]
+                    div [ css [ Theming.bodyFont, Tw.text_center, Tw.text_color Tw.gray_400 ] ]
+                        [ text "Loading learning directory..." ]
 
                 SharedModel.Failure _ ->
-                    Html.div [ Attr.css [ Tw.text_center, Tw.text_color Tw.red_400 ] ] [ Html.text "Failed to load directory." ]
+                    div [ css [ Theming.bodyFont, Tw.text_center, Tw.text_color Tw.red_400 ] ]
+                        [ text "Failed to load directory." ]
 
                 SharedModel.Success db ->
-                    viewCategorizedGrid model.searchQuery db.metadata
+                    viewCategorisedGrid model.searchQuery db.metadata
             ]
         ]
     }
@@ -85,19 +90,20 @@ view shared model =
 
 viewHeader : String -> Html Msg
 viewHeader query =
-    Html.div [ Attr.css [ Tw.flex, Tw.flex_col, Tw.items_center, Tw.text_center, Tw.mb_16 ] ]
+    div [ css [ Tw.flex, Tw.flex_col, Tw.items_center, Tw.text_center, Tw.mb_16 ] ]
         [ Html.h1
-            [ Attr.css [ Tw.text_5xl, Tw.font_bold, Tw.tracking_widest, Tw.uppercase, Tw.mb_4 ] ]
-            [ Html.text "LEARNING RESOURCES" ]
+            [ css [ Theming.headingFont, Tw.text_5xl, Tw.font_bold, Tw.tracking_widest, Tw.uppercase, Tw.mb_4 ] ]
+            [ text "Learning Resources" ]
         , Html.p
-            [ Attr.css [ Tw.text_lg, Tw.text_color Tw.gray_400, Tw.max_w_2xl, Tw.mb_8 ] ]
-            [ Html.text "Explore our curated directory of programming languages, tools, and concepts." ]
+            [ css [ Theming.bodyFont, Tw.text_lg, Tw.text_color Tw.gray_400, Tw.max_w_2xl, Tw.mb_8 ] ]
+            [ text "Explore our curated directory of programming languages, tools, and concepts." ]
         , Html.input
             [ Attr.value query
             , onInput SearchQueryChanged
             , Attr.placeholder "Search topics or domains (e.g., 'Rust', 'Web')..."
-            , Attr.css
-                [ Tw.w_full
+            , css
+                [ Theming.bodyFont
+                , Tw.w_full
                 , Tw.max_w_lg
                 , Tw.p_4
                 , Tw.rounded_xl
@@ -105,21 +111,18 @@ viewHeader query =
                 , Tw.border
                 , Tw.border_color Tw.slate_700
                 , Tw.text_color Tw.white
-                -- , Tw.focus__border_fuchsia_500
-                -- , Tw.focus__outline_none
                 ]
             ]
             []
         ]
 
 
-viewCategorizedGrid : String -> List LearningResources.CompiledMeta -> Html Msg
-viewCategorizedGrid query metadata =
+viewCategorisedGrid : String -> List LearningResources.CompiledMeta -> Html Msg
+viewCategorisedGrid query metadata =
     let
         q =
             String.toLower query
 
-        -- Filter by name or domains
         filtered =
             List.filter
                 (\meta ->
@@ -128,7 +131,6 @@ viewCategorizedGrid query metadata =
                 )
                 metadata
 
-        -- Group by category. (Decoding the Json.Encode.Value to a string)
         grouped =
             List.foldl
                 (\meta acc ->
@@ -143,7 +145,7 @@ viewCategorizedGrid query metadata =
                 Dict.empty
                 filtered
     in
-    Html.div [ Attr.css [ Tw.flex, Tw.flex_col, Tw.gap_16 ] ]
+    div [ css [ Tw.flex, Tw.flex_col, Tw.gap_10 ] ]
         (Dict.toList grouped
             |> List.map (\( category, items ) -> viewCategorySection category items)
         )
@@ -151,56 +153,90 @@ viewCategorizedGrid query metadata =
 
 viewCategorySection : String -> List LearningResources.CompiledMeta -> Html msg
 viewCategorySection category items =
-    Html.div []
+    div []
         [ Html.h2
-            [ Attr.css [ Tw.text_2xl, Tw.font_bold, Tw.mb_6, Tw.border_b, Tw.border_color Tw.slate_700, Tw.pb_2 ] ]
-            [ Html.text category ]
-        , Html.div
-            [ Attr.css [ Tw.grid, Tw.grid_cols_1, Tw.gap_6 ] ]
+            [ css
+                [ Theming.headingFont
+                , Tw.text_3xl
+                , Tw.font_bold
+                , Tw.mb_8
+                , Theming.textGradient
+                , Tw.inline_block
+                ]
+            ]
+            [ text category ]
+        , div
+            [ css
+                [ Tw.grid
+                , Tw.grid_cols_1
+                , Breakpoints.md [ Tw.grid_cols_3 ]
+                , Breakpoints.lg [ Tw.grid_cols_4 ]
+                , Tw.gap_6
+                ]
+            ]
             (List.map viewTopicCard items)
         ]
+
 
 viewTopicCard : LearningResources.CompiledMeta -> Html msg
 viewTopicCard meta =
     Html.a
         [ Route.Path.href (Route.Path.Learning_Resource_ { resource = LearningResources.entityTagToString meta.id })
             |> Attr.fromUnstyled
-        , Attr.css
-            [ Tw.flex
-            , Tw.flex_col
-            , Tw.bg_color Tw.slate_700
-            , Tw.rounded_xl
-            , Tw.p_6
-            , Tw.border
-            , Tw.border_color Tw.slate_700
-            , Tw.transition_colors
+        , css
+            [ Tw.block
+            , Tw.no_underline
+            , Css.hover [ Tw.border_color Tw.dd_pink, Tw.translate_y_1 ]
+            , Tw.transition_all
+            , Tw.duration_300
             , Tw.cursor_pointer
             ]
         ]
-        [ Html.div [ Attr.css [ Tw.flex, Tw.items_center, Tw.mb_4, Tw.gap_3 ] ]
-            [ Html.div [ Attr.css [ Tw.text_3xl ] ] [ Html.text (Maybe.withDefault "📄" meta.emoji) ]
-            , Html.h3 [ Attr.css [ Tw.font_bold, Tw.text_xl, Tw.text_color Tw.white ] ] [ Html.text meta.name ]
+        [ Theming.cardShell [ Tw.relative ]
+            [ div
+                [ css
+                    [ Tw.absolute
+                    , Tw.top_0
+                    , Tw.left_0
+                    , Tw.right_0
+                    , Tw.h_1
+                    , Theming.brandGradientBg
+                    ]
+                ]
+                []
+            , div [ css [ Tw.p_5, Tw.bg_color Tw.dd_deepblue ] ]
+                [ div [ css [ Tw.flex, Tw.items_center, Tw.gap_3, Tw.mb_2 ] ]
+                    [ div [ css [ Tw.text_3xl, Tw.drop_shadow_md ] ] [ text (Emojis.emojiOrBackup meta) ]
+                    , Html.h3 [ css [ Theming.headingFont, Tw.text_xl, Tw.font_bold ] ] [ text meta.name ]
+                    ]
+                , Html.p
+                    [ css [ Theming.bodyFont, Tw.text_sm, Tw.text_color Tw.gray_300, Tw.mb_4 ] ]
+                    [ text meta.description ]
+                , div [ css [ Tw.flex, Tw.flex_wrap, Tw.gap_2 ] ]
+                    (List.map (LearningResources.languageDomainToString >> viewBadge) meta.domains)
+                ]
             ]
-        , Html.p [ Attr.css [ Tw.text_sm, Tw.text_color Tw.gray_400, Tw.flex_grow, Tw.mb_6 ] ]
-            [ Html.text meta.description ]
-        , Html.div [ Attr.css [ Tw.flex, Tw.flex_wrap, Tw.gap_2 ] ]
-            (List.map (\domain -> viewBadge (LearningResources.languageDomainToString domain)) meta.domains)
         ]
+
 
 viewBadge : String -> Html msg
 viewBadge label =
-    Html.span
-        [ Attr.css
-            [ Tw.text_xs
+    span
+        [ css
+            [ Theming.headingFont
+            , Tw.text_xs
             , Tw.font_medium
-            , Tw.bg_color Tw.slate_700
+            , Tw.bg_color Tw.slate_800
             , Tw.text_color Tw.slate_300
-            , Tw.px_2
+            , Tw.border
+            , Tw.border_color Tw.slate_600
+            , Tw.text_color Tw.slate_300
+            , Tw.px_3
             , Tw.py_1
             , Tw.rounded_full
             ]
         ]
-        [ Html.text label ]
+        [ text label ]
 
 
 categoryToString : LearningResources.ResourceCategory -> String
