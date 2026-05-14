@@ -9,6 +9,11 @@
     "quicktype": "^23.2.6",
     "quicktype-core": "^23.2.6"
   },
+  "scripts": {
+    "tw": " elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts",
+    "server": "elm-land server",
+    "format": "elm-format src --yes"
+  },
   "peerDependencies": {
     "typescript": "^5"
   },

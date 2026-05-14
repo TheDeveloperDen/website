@@ -43,14 +43,6 @@
               elmPackages.elm-language-server
               elmPackages.elm-test
             ];
-
-            shellHook = ''
-              alias tw="bunx elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts"
-              alias spa-server="bunx elm-land server"
-
-              echo "Dev shell active."
-              echo "Commands: tw, spa-server"
-            '';
           };
 
           packages.default = pkgs.hello;
