@@ -1,19 +1,11 @@
 module Redirects exposing (..)
 
--- There has to be a better way of doing this...
 
-
+discordURL : String
 discordURL =
     "https://developerden.org/discord"
 
 
+githubURL : String
 githubURL =
     "https://github.com/TheDeveloperDen"
-
-
-paidServicesURL =
-    "https://discord.com/channels/821743100203368458/1024625154107654234"
-
-
-freeServicesURL =
-    "https://discord.com/channels/821743100203368458/1037763084485406760"

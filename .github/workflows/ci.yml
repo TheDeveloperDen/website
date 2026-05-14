@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Cache Elm packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.elm
+          key: elm-${{ runner.os }}-${{ hashFiles('elm.json') }}
+          restore-keys: elm-${{ runner.os }}-
+
+      - run: bun install --frozen-lockfile
+
+      - name: Build Tailwind modules
+        run: bun run tw
+      
+      - name: Build
+        run: bunx elm-land build
+
+      - name: Check Elm formatting
+        run: |
+          bunx elm-format --validate src/
