@@ -27,7 +27,7 @@ textGradient =
 
 headingFont : Css.Style
 headingFont =
-    Css.batch [ Tw.font_mono, Tw.text_white ]
+    Css.batch [ Tw.font_mono, Tw.text.color Tw.white ]
 
 
 bodyFont : Css.Style
