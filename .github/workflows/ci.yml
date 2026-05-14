@@ -28,6 +28,9 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      - name: Build Tailwind modules
+        run: bun run tw
+      
       - name: Build
         run: bunx elm-land build
 
