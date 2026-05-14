@@ -2,9 +2,10 @@ module Layouts.Global exposing (Model, Msg, Props, layout)
 
 import Css
 import Effect exposing (Effect)
-import Html.Styled as Html exposing (Html, a, img, div, nav, text)
+import Html.Styled as Html exposing (Html, a, div, img, nav, text)
 import Html.Styled.Attributes as Attr exposing (css, href)
 import Layout exposing (Layout)
+import Redirects
 import Route exposing (Route)
 import Route.Path
 import Shared
@@ -12,7 +13,6 @@ import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
 import Theming
 import View exposing (View)
-import Redirects
 
 
 type alias Props =
@@ -71,7 +71,7 @@ subscriptions model =
 
 
 view : Props -> { toContentMsg : Msg -> contentMsg, content : View contentMsg, model : Model } -> View contentMsg
-view layoutProps {content} =
+view layoutProps { content } =
     { title = content.title ++ " | Developer Den"
     , body =
         [ Html.div
@@ -109,20 +109,18 @@ viewNavbar activePage =
             , Tw.py_6
             ]
         ]
-        [ 
-          a
+        [ a
             [ Route.Path.href Route.Path.Home_ |> Attr.fromUnstyled
             , css [ Theming.headingFont, Tw.text_xl, Tw.font_bold, Tw.no_underline, Theming.textGradient ]
             ]
-            [ img 
+            [ img
                 [ Attr.src "/static/devden-logo.svg"
                 , Attr.alt "Developer Den Logo"
                 , css [ Tw.h_16, Tw.w_auto ]
                 ]
                 []
             ]
-        , 
-          div [ css [ Tw.flex, Tw.gap_8 ] ]
+        , div [ css [ Tw.flex, Tw.gap_8 ] ]
             [ viewNavLink "home" Route.Path.Home_ (activePage == Route.Path.Home_)
             , viewNavLink "rules" Route.Path.Rules (activePage == Route.Path.Rules)
             , viewNavLink "learning" Route.Path.Learning (activePage == Route.Path.Learning)
@@ -149,7 +147,6 @@ viewNavLink label path isActive =
         [ Route.Path.href path |> Attr.fromUnstyled
         , css
             [ Theming.headingFont
-            , Tw.text_sm
             , Tw.pb_1
             , Tw.no_underline
             , if isActive then
@@ -163,9 +160,18 @@ viewNavLink label path isActive =
             ]
         ]
         [ text label
-        ,
-          if isActive then
-            div [ css [ Tw.absolute, Tw.bottom_0, Tw.left_0, Tw.right_0, Tw.h_1_dot_5, Theming.brandGradientBg ] ] []
+        , if isActive then
+            div
+                [ css
+                    [ Tw.absolute
+                    , Tw.bottom_0
+                    , Tw.left_0
+                    , Tw.right_0
+                    , Tw.h_1
+                    , Theming.brandGradientBg
+                    ]
+                ]
+                []
 
           else
             text ""

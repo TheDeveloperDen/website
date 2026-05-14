@@ -46,7 +46,6 @@ view =
                 , Tw.items_center
                 , Tw.justify_center
                 , Tw.w_full
-                , Tw.h_full
                 , Tw.flex_grow
                 , Tw.px_6
                 , Tw.py_8

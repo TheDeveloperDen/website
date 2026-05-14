@@ -29,7 +29,7 @@ page shared _ =
         , subscriptions = subscriptions
         , view = view shared
         }
-        |> Page.withLayout (\_ -> Layouts.Global { activePage = Route.Path.Learning})
+        |> Page.withLayout (\_ -> Layouts.Global { activePage = Route.Path.Learning })
 
 
 
@@ -185,13 +185,20 @@ viewTopicCard meta =
         , css
             [ Tw.block
             , Tw.no_underline
-            , Css.hover [ Tw.border_color Tw.dd_pink, Tw.translate_y_1 ]
-            , Tw.transition_all
-            , Tw.duration_300
             , Tw.cursor_pointer
             ]
         ]
-        [ Theming.cardShell [ Tw.relative ]
+        [ Theming.cardShell
+            [ Tw.relative
+            , Tw.transform
+            , Tw.transition_all
+            , Tw.duration_300
+            , Css.hover
+                [ Tw.border
+                , Tw.border_color Tw.dd_pink
+                , Tw.neg_translate_y_1
+                ]
+            ]
             [ div
                 [ css
                     [ Tw.absolute

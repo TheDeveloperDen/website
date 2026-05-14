@@ -3,31 +3,46 @@
 
 module LearningResources.Emojis exposing (..)
 
-import LearningResources.Types as LearningResources
+import LearningResources.Types as LearningResources exposing (EntityTag(..))
 
 
-emojiForTag : LearningResources.EntityTag -> String
+emojiForTag : EntityTag -> String
 emojiForTag tag =
     case tag of
-        LearningResources.EntityTag__Clojure ->
+        EntityTag__Clojure ->
             "🍵"
 
-        LearningResources.EntityTag__Python ->
+        EntityTag__Python ->
             "🐍"
 
-        LearningResources.EntityTag__Rust ->
+        EntityTag__Rust ->
             "🦀"
 
-        LearningResources.EntityTag__Haskell ->
+        EntityTag__Haskell ->
             "📐"
 
-        LearningResources.EntityTag__Java ->
+        EntityTag__Java ->
             "☕"
-        
-        LearningResources.EntityTag__Kotlin ->
+
+        EntityTag__Kotlin ->
             "🤖"
 
-        _ ->
+        EntityTag__Cpp ->
+            "💻"
+
+        EntityTag__Sql ->
+            "🗄️"
+
+        EntityTag__Php ->
+            "🐘"
+
+        EntityTag__ProgrammingLanguageDesign ->
+            "🛠️"
+
+        EntityTag__Git ->
+            "🔧"
+
+        EntityTag__General ->
             "📚"
 
 

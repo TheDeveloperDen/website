@@ -31,7 +31,7 @@
   --color-den-indigo: #005FF1;
 }
 
-body {
-  background-color: var(--color-den-bg);
-  color: var(--color-den-text);
+html, body {
+  background-color: var(--color-den-deepblue);
+  color: #ffffff;
 }
