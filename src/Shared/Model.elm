@@ -23,7 +23,6 @@ type LearningDatabaseStatus
     | Failure Http.Error
 
 
-
 type alias Model =
     { learningDatabase : LearningDatabaseStatus
     }

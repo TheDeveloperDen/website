@@ -188,7 +188,7 @@ viewRuleSection section =
         [ h3
             [ css [ Theming.headingFont, Tw.text_2xl, Tw.text_color Tw.dd_teal, Tw.mb_3 ] ]
             [ text (String.fromInt section.id ++ ". " ++ section.title) ]
-        , div [ css [ Tw.flex, Tw.flex_col, Tw.gap_2] ]
+        , div [ css [ Tw.flex, Tw.flex_col, Tw.gap_2 ] ]
             (List.indexedMap viewRuleLine section.rules)
         ]
 
@@ -200,14 +200,14 @@ viewRuleLine index content =
         letter =
             String.fromChar (Char.fromCode (97 + index)) ++ ". "
     in
-    p 
-        [ css 
+    p
+        [ css
             [ Theming.bodyFont
             , Tw.text_base
             , Tw.text_color Tw.gray_300
             , Tw.leading_snug
-            , Tw.m_0 
-            ] 
+            , Tw.m_0
+            ]
         ]
         (Html.text letter :: content)
 

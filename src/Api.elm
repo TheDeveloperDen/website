@@ -3,8 +3,8 @@ module Api exposing (..)
 import Effect exposing (Effect)
 import Http
 import Json.Decode as Json
-import LearningResources.Types as LearningResources
 import LearningResources.Json as LearningResources
+import LearningResources.Types as LearningResources
 import Yaml.Decode
 
 

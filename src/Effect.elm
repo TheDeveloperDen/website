@@ -213,6 +213,7 @@ toCmd options effect =
             Task.succeed sharedMsg
                 |> Task.perform options.fromSharedMsg
 
+
 sendSharedMsg : Shared.Msg.Msg -> Effect msg
 sendSharedMsg sharedMsg =
     SendSharedMsg sharedMsg

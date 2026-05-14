@@ -10,7 +10,7 @@ import Tailwind.Utilities as Tw
 brandGradientBg : Css.Style
 brandGradientBg =
     -- elm tailwind doesnt seem to play well with this
-    Css.property "background-image" 
+    Css.property "background-image"
         "linear-gradient(to right, var(--color-den-teal), var(--color-den-indigo), var(--color-den-pink))"
 
 
