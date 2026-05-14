@@ -13,8 +13,8 @@ module.exports = {
         }
       },
       fontFamily: {
-        mono: ['Cascadia Code', 'monospace'],
-        sans: ['Montserrat Medium', 'sans-serif'],
+        mono: ['Cascadia Code Variable', 'monospace'],
+        sans: ['Montserrat', 'sans-serif'],
       }
     },
   },

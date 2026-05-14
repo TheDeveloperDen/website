@@ -23,6 +23,7 @@ treefmt  # formats everything
 ## TODO
 
 - [ ] Main page (index), shows information about the organisation with links to the discord server
+- [x] `/learning` - shows the learning resources database in a nice format.
 - [ ] `/xp/leaderboard` - show the top N users in terms of XP and level (can query the API for this).
   See https://lb.helpch.at/ for inspiration. Maybe allow parameters like `?size=10` to show the top 10 users.
 - [ ] `/stats/` - Shows various graphs with stats about the servers. We can decide on exactly the data we show later,

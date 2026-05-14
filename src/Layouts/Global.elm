@@ -1,18 +1,21 @@
 module Layouts.Global exposing (Model, Msg, Props, layout)
 
+import Css
 import Effect exposing (Effect)
-import Html.Styled as Html
-import Html.Styled.Attributes as Attr
+import Html.Styled as Html exposing (Html, a, div, nav, text)
+import Html.Styled.Attributes as Attr exposing (css, href)
 import Layout exposing (Layout)
 import Route exposing (Route)
+import Route.Path
 import Shared
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
+import Theming
 import View exposing (View)
 
 
 type alias Props =
-    {}
+    { activePage : Route.Path.Path }
 
 
 layout : Props -> Shared.Model -> Route () -> Layout () Model Msg contentMsg
@@ -20,7 +23,7 @@ layout props shared route =
     Layout.new
         { init = init
         , update = update
-        , view = view
+        , view = view props
         , subscriptions = subscriptions
         }
 
@@ -66,8 +69,8 @@ subscriptions model =
 -- VIEW
 
 
-view : { toContentMsg : Msg -> contentMsg, content : View contentMsg, model : Model } -> View contentMsg
-view { toContentMsg, model, content } =
+view : Props -> { toContentMsg : Msg -> contentMsg, content : View contentMsg, model : Model } -> View contentMsg
+view layoutProps {content} =
     { title = content.title ++ " | Developer Den"
     , body =
         [ Html.div
@@ -81,9 +84,80 @@ view { toContentMsg, model, content } =
                 , Tw.antialiased
                 ]
             ]
-            [ Html.div
-                [ Attr.css [ Tw.max_w_7xl, Tw.mx_auto, Tw.px_8, Tw.py_12 ] ]
+            [ viewNavbar layoutProps.activePage
+            , Html.div [ css [ Tw.flex_grow ] ]
                 content.body
             ]
         ]
     }
+
+
+viewNavbar : Route.Path.Path -> Html msg
+viewNavbar activePage =
+    nav
+        [ css
+            [ Tw.flex
+            , Tw.justify_between
+            , Tw.items_center
+            , Tw.max_w_7xl
+            , Tw.mx_auto
+            , Tw.w_full
+            , Tw.px_8
+            , Tw.py_6
+            ]
+        ]
+        [ -- Logo
+          a
+            [ Route.Path.href Route.Path.Home_ |> Attr.fromUnstyled
+            , css [ Theming.headingFont, Tw.text_xl, Tw.font_bold, Tw.no_underline, Theming.textGradient ]
+            ]
+            [ text "developer den" ]
+        , -- Links
+          div [ css [ Tw.flex, Tw.gap_8 ] ]
+            [ viewNavLink "home" Route.Path.Home_ (activePage == Route.Path.Home_)
+            , viewNavLink "rules" Route.Path.Rules (activePage == Route.Path.Rules)
+            , viewNavLink "learning" Route.Path.Learning (activePage == Route.Path.Learning)
+            , a
+                [ href "https://developerden.org/discord"
+                , Attr.target "_blank"
+                , css
+                    [ Theming.headingFont
+                    , Tw.text_sm
+                    , Tw.text_color Tw.slate_400
+                    , Css.hover [ Tw.text_color Tw.white ]
+                    , Tw.transition_colors
+                    , Tw.no_underline
+                    ]
+                ]
+                [ text "discord" ]
+            ]
+        ]
+
+
+viewNavLink : String -> Route.Path.Path -> Bool -> Html msg
+viewNavLink label path isActive =
+    a
+        [ Route.Path.href path |> Attr.fromUnstyled
+        , css
+            [ Theming.headingFont
+            , Tw.text_sm
+            , Tw.pb_1
+            , Tw.no_underline
+            , if isActive then
+                Tw.text_color Tw.white
+
+              else
+                Tw.text_color Tw.slate_400
+            , Css.hover [ Tw.text_color Tw.white ]
+            , Tw.transition_colors
+            , Tw.relative
+            ]
+        ]
+        [ text label
+        , -- The active underline gradient
+          if isActive then
+            div [ css [ Tw.absolute, Tw.bottom_0, Tw.left_0, Tw.right_0, Tw.h_1_dot_5, Theming.brandGradientBg ] ] []
+
+          else
+            text ""
+        ]

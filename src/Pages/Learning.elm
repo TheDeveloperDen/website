@@ -6,7 +6,6 @@ import Effect exposing (Effect)
 import Html.Styled as Html exposing (Html, div, span, text)
 import Html.Styled.Attributes as Attr exposing (css)
 import Html.Styled.Events exposing (onInput)
-import Json.Encode
 import Layouts
 import LearningResources.Emojis as Emojis
 import LearningResources.Types as LearningResources
@@ -30,7 +29,7 @@ page shared _ =
         , subscriptions = subscriptions
         , view = view shared
         }
-        |> Page.withLayout (\_ -> Layouts.Global {})
+        |> Page.withLayout (\_ -> Layouts.Global { activePage = Route.Path.Learning})
 
 
 

@@ -27,7 +27,9 @@ page shared route =
         , subscriptions = \_ -> Sub.none
         , view = view shared route.params
         }
-        |> Page.withLayout (\_ -> Layouts.Global {})
+        |> Page.withLayout (\_ -> Layouts.Global {
+                activePage = Route.Path.Learning
+        })
 
 
 type alias Model =
