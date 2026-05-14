@@ -27,12 +27,12 @@ textGradient =
 
 headingFont : Css.Style
 headingFont =
-    Css.batch [ Tw.font_mono, Tw.text.color Tw.white ]
+    Css.batch [ Tw.font_mono, Tw.text_color Tw.white ]
 
 
 bodyFont : Css.Style
 bodyFont =
-    Css.batch [ Tw.font_sans, Tw.text_gray_300 ]
+    Css.batch [ Tw.font_sans, Tw.text_color Tw.gray_300 ]
 
 
 cardShell : List Css.Style -> List (Html msg) -> Html msg
