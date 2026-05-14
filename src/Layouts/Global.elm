@@ -80,15 +80,16 @@ view layoutProps { content } =
                 [ Tw.min_h_screen
                 , Tw.w_full
                 , Tw.overflow_x_hidden
-                , Tw.overflow_y_hidden
                 , Tw.bg_color Tw.dd_deepblue
                 , Tw.text_color Tw.white
                 , Tw.font_sans
                 , Tw.antialiased
+                , Tw.flex
+                , Tw.flex_col
                 ]
             ]
             [ viewNavbar layoutProps.activePage
-            , Html.div [ css [ Tw.flex_grow ] ]
+            , Html.div [ css [ Tw.flex_grow, Tw.flex, Tw.flex_col ] ]
                 content.body
             ]
         ]
@@ -116,7 +117,7 @@ viewNavbar activePage =
             [ img
                 [ Attr.src "/static/devden-logo.svg"
                 , Attr.alt "Developer Den Logo"
-                , css [ Tw.h_16, Tw.w_auto ]
+                , css [ Tw.h_16, Tw.w_auto, Tw.block ]
                 ]
                 []
             ]

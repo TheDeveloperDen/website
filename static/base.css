@@ -34,4 +34,5 @@
 html, body {
   background-color: var(--color-den-deepblue);
   color: #ffffff;
+  margin: 0;
 }

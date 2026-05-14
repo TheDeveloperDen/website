@@ -48,7 +48,6 @@ view =
                 , Tw.w_full
                 , Tw.flex_grow
                 , Tw.px_6
-                , Tw.py_8
                 ]
             ]
             [ viewBanner
@@ -60,7 +59,7 @@ view =
 
 viewBanner : Html Msg
 viewBanner =
-    div [ css [ Tw.text_center, Tw.mb_24 ] ]
+    div [ css [ Tw.text_center ] ]
         [ img
             [ Attr.src "/static/devden-banner.svg"
             , Attr.alt "Developer Den Banner"
@@ -71,7 +70,9 @@ viewBanner =
                 , Theming.textGradient
                 , Tw.inline_block
                 , Tw.tracking_widest
-                , Tw.pb_3
+                , Tw.pb_2
+                , Tw.block
+                , Tw.mx_auto
                 ]
             ]
             []
