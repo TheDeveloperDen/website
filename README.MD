@@ -7,8 +7,8 @@ It's easiest to use Nix/Devenv to get everything you need.
 ## running locally
 
 ```bash
-bunx elm-land server  # starts this app at http:/localhost:1234
-tw # rebuild tailwind definitions
+bunx elm-land server  # starts this app at http://localhost:1234
+bun run tw # rebuild tailwind definitions
 ```
 
 The site should then be running at http://localhost:1234
