@@ -1,4 +1,4 @@
-module Theming exposing (..)
+module Theming exposing (bodyFont, brandGradientBg, cardShell, headingFont, textGradient)
 
 import Css
 import Html.Styled as Html exposing (Html)

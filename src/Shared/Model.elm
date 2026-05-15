@@ -5,7 +5,6 @@ module Shared.Model exposing
 
 {-| -}
 
-import Dict exposing (Dict)
 import Http
 import LearningResources.Types as LearningResources
 

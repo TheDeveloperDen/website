@@ -1,7 +1,7 @@
 -- Backup emoji mappings for learning resources
 
 
-module LearningResources.Emojis exposing (..)
+module LearningResources.Emojis exposing (emojiOrBackup)
 
 import LearningResources.Types as LearningResources exposing (EntityTag(..))
 

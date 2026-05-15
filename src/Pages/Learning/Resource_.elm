@@ -1,9 +1,9 @@
 module Pages.Learning.Resource_ exposing (Model, Msg, page)
 
 import Css
-import Effect exposing (Effect)
+import Effect
 import Html.Styled as Html exposing (Html, div, span, text)
-import Html.Styled.Attributes as Attr exposing (css, href, target)
+import Html.Styled.Attributes as Attr exposing (css)
 import Layouts
 import LearningResources.Emojis as Emojis
 import LearningResources.Types as LearningResources

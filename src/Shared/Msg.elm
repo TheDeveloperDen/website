@@ -15,5 +15,3 @@ own file, so they can be imported by `Effect.elm`
 -}
 type Msg
     = LearningIndexResponded (Result Http.Error LearningResources.Database)
-    | RetryLearningIndex
-    | NoOp

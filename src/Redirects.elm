@@ -1,4 +1,4 @@
-module Redirects exposing (..)
+module Redirects exposing (discordURL, githubURL)
 
 
 discordURL : String

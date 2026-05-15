@@ -1,6 +1,6 @@
-module LearningResources exposing (..)
+module LearningResources exposing (getMetadata, getResourcesByTag)
 
-import LearningResources.Types exposing (..)
+import LearningResources.Types exposing (CompiledMeta, Database, EntityTag, Resource)
 
 
 getResourcesByTag : EntityTag -> Database -> List Resource

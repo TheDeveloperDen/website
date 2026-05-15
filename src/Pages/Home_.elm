@@ -1,8 +1,8 @@
 module Pages.Home_ exposing (Model, Msg, page)
 
 import Css
-import Effect exposing (Effect)
-import Html.Styled as Html exposing (Html, a, div, fieldset, h1, h2, i, img, legend, p, text)
+import Effect
+import Html.Styled exposing (Html, a, div, h2, i, img, text)
 import Html.Styled.Attributes as Attr exposing (css, href, target)
 import Layouts
 import Page exposing (Page)

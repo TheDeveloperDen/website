@@ -1,17 +1,13 @@
-module Api exposing (..)
+module Api exposing (Data(..), getLearningResourcesIndex)
 
 import Effect exposing (Effect)
 import Http
-import Json.Decode as Json
 import LearningResources.Json as LearningResources
 import LearningResources.Types as LearningResources
-import Yaml.Decode
 
 
 type Data value
-    = Loading
-    | Success value
-    | Failure Http.Error
+    = Success value
 
 
 getLearningResourcesIndex :

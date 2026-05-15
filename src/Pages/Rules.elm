@@ -2,7 +2,7 @@ module Pages.Rules exposing (Model, Msg, page)
 
 import Css
 import Effect exposing (Effect)
-import Html.Styled as Html exposing (Html, a, div, h1, h2, h3, p, span, text)
+import Html.Styled as Html exposing (Html, a, div, h1, h2, h3, p, text)
 import Html.Styled.Attributes as Attr exposing (css)
 import Layouts
 import Page exposing (Page)
@@ -16,7 +16,7 @@ import View exposing (View)
 
 
 page : Shared.Model -> Route () -> Page Model Msg
-page shared route =
+page _ _ =
     Page.new
         { init = init
         , update = update
@@ -138,7 +138,7 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
@@ -147,7 +147,7 @@ subscriptions model =
 
 
 view : Model -> View Msg
-view model =
+view _ =
     { title = "Rules"
     , body =
         [ div [ css [ Tw.max_w_4xl, Tw.mx_auto, Tw.pt_2, Tw.pb_24, Tw.px_6 ] ]

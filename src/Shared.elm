@@ -13,7 +13,6 @@ module Shared exposing
 -}
 
 import Api
-import Dict
 import Effect exposing (Effect)
 import Json.Decode
 import Route exposing (Route)
@@ -68,17 +67,6 @@ update _ msg model =
 
         Shared.Msg.LearningIndexResponded (Err error) ->
             ( { model | learningDatabase = Shared.Model.Failure error }
-            , Effect.none
-            )
-
-        Shared.Msg.RetryLearningIndex ->
-            ( { model | learningDatabase = Shared.Model.Loading }
-            , Api.getLearningResourcesIndex
-                { onResponse = Shared.Msg.LearningIndexResponded }
-            )
-
-        Shared.Msg.NoOp ->
-            ( model
             , Effect.none
             )
 

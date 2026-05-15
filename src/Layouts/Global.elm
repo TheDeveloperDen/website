@@ -20,7 +20,7 @@ type alias Props =
 
 
 layout : Props -> Shared.Model -> Route () -> Layout () Model Msg contentMsg
-layout props shared route =
+layout props _ _ =
     Layout.new
         { init = init
         , update = update
@@ -62,7 +62,7 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
