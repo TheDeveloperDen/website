@@ -1,16 +1,29 @@
-# devden-web-frontend
+# Devden website
 
-## Building
+## dependencies
 
-* To automatically recompile Elm files when changes are detected use `yarn watch-elm`
-* To build for development run `yarn build`
-* To build for production run `yarn build-prod`
+It's easiest to use Nix/Devenv to get everything you need.
 
-The site is built to `./dist/`
+## running locally
+
+```bash
+bunx elm-land server  # starts this app at http://localhost:1234
+bun run tw # rebuild tailwind definitions
+```
+
+The site should then be running at http://localhost:1234
+
+### Formatting
+
+```bash
+treefmt  # formats everything
+```
+
 
 ## TODO
 
 - [ ] Main page (index), shows information about the organisation with links to the discord server
+- [x] `/learning` - shows the learning resources database in a nice format.
 - [ ] `/xp/leaderboard` - show the top N users in terms of XP and level (can query the API for this).
   See https://lb.helpch.at/ for inspiration. Maybe allow parameters like `?size=10` to show the top 10 users.
 - [ ] `/stats/` - Shows various graphs with stats about the servers. We can decide on exactly the data we show later,
@@ -18,7 +31,7 @@ The site is built to `./dist/`
 - [ ] `/projects/<projectname>` - Show information about a various project we have.
   Should follow a standard format and show github link, contributors (fetch from github?), and other information.
 - [ ] `/faqs` - Show all the FAQs that you'd see in `ddfaq`
-- [X] `/rules` - ~~pretty obvious, rules of the server. we can provide these in a json format if it helps~~
+- [ ] `/rules` - pretty obvious, rules of the server. we can provide these in a json format if it helps
 - [ ] `/team` or `/staff` - Show a nice list of admins, mods, contributors to projects, etc
 - [ ] `/moderation/` Once the bot gets moderation features it would be very very cool to have a panel
   like Dyno or yagpdb have. This probably won't happen for a while.
