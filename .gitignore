@@ -7,7 +7,6 @@ node_modules
 .vscode
 dist
 .elm-pages
-.elm-pages
 .env
 *.pem
 gen/Tailwind
