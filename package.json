@@ -4,16 +4,22 @@
   "private": true,
   "devDependencies": {
     "@types/bun": "latest",
-    "elm-land": "^0.20.1",
     "elm-open-api": "git+https://github.com/wolfadex/elm-open-api-cli.git#main",
     "elm-review": "^2.13.5",
     "quicktype": "^23.2.6",
-    "quicktype-core": "^23.2.6"
+    "quicktype-core": "^23.2.6",
+    "elm": "^0.19.1-6",
+    "elm-codegen": "^0.6.3",
+    "elm-format": "^0.8.8",
+    "elm-pages": "^3.5.0",
+    "lamdera": "^0.19.1-1.4.0",
+    "vite": "^7.3.2"
   },
   "scripts": {
-    "tw": " elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts",
-    "server": "elm-land server",
-    "format": "elm-format src --yes"
+    "tw": "bunx --bun elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts",
+    "dev": "elm-pages dev",
+    "build": "elm-pages build",
+    "format": "elm-format src app --yes"
   },
   "peerDependencies": {
     "typescript": "^5"

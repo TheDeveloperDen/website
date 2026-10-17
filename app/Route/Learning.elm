@@ -1,39 +1,29 @@
-module Pages.Learning exposing (Model, Msg, page)
+module Route.Learning exposing (ActionData, Data, Model, Msg, route)
 
+import BackendTask exposing (BackendTask)
 import Css
 import Dict
 import Effect exposing (Effect)
+import FatalError exposing (FatalError)
+import Head
+import Head.Seo as Seo
 import Html.Styled as Html exposing (Html, div, span, text)
 import Html.Styled.Attributes as Attr exposing (css)
 import Html.Styled.Events exposing (onInput)
-import Layouts
+import LearningResources as Db
 import LearningResources.Emojis as Emojis
 import LearningResources.Types as LearningResources
-import Page exposing (Page)
-import Route exposing (Route)
-import Route.Path
+import Pages.Url
+import PagesMsg exposing (PagesMsg)
+import Route
+import RouteBuilder exposing (App, StatefulRoute)
 import Shared
-import Shared.Model as SharedModel
 import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
 import Theming
+import UrlPath
 import View exposing (View)
-
-
-page : Shared.Model -> Route () -> Page Model Msg
-page shared _ =
-    Page.new
-        { init = init
-        , update = update
-        , subscriptions = subscriptions
-        , view = view shared
-        }
-        |> Page.withLayout (\_ -> Layouts.Global { activePage = Route.Path.Learning })
-
-
-
--- INIT & STATE
 
 
 type alias Model =
@@ -44,47 +34,67 @@ type Msg
     = SearchQueryChanged String
 
 
-init : () -> ( Model, Effect Msg )
-init _ =
-    ( { searchQuery = "" }, Effect.none )
+type alias RouteParams =
+    {}
 
 
-update : Msg -> Model -> ( Model, Effect Msg )
-update msg model =
-    case msg of
-        SearchQueryChanged query ->
-            ( { model | searchQuery = query }, Effect.none )
+type alias Data =
+    { metadata : List LearningResources.CompiledMeta }
 
 
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+type alias ActionData =
+    {}
 
 
+route : StatefulRoute RouteParams Data ActionData Model Msg
+route =
+    RouteBuilder.single { head = head, data = data }
+        |> RouteBuilder.buildWithLocalState
+            { view = view
+            , init = \_ _ -> ( { searchQuery = "" }, Effect.none )
+            , update = update
+            , subscriptions = \_ _ _ _ -> Sub.none
+            }
 
--- VIEW
+
+data : BackendTask FatalError Data
+data =
+    Db.fetchDatabase
+        |> BackendTask.map (\db -> { metadata = db.metadata })
 
 
-view : Shared.Model -> Model -> View Msg
-view shared model =
-    { title = "Learning Directory"
-    , body =
+head : App Data ActionData RouteParams -> List Head.Tag
+head _ =
+    Seo.summary
+        { canonicalUrlOverride = Nothing
+        , siteName = "Developer Den"
+        , image =
+            { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
+            , alt = "Developer Den"
+            , dimensions = Nothing
+            , mimeType = Nothing
+            }
+        , description = "Explore our curated directory of programming languages, tools, and concepts."
+        , locale = Nothing
+        , title = "Learning Resources"
+        }
+        |> Seo.website
+
+
+update : App Data ActionData RouteParams -> Shared.Model -> Msg -> Model -> ( Model, Effect Msg )
+update _ _ (SearchQueryChanged query) model =
+    ( { model | searchQuery = query }, Effect.none )
+
+
+view : App Data ActionData RouteParams -> Shared.Model -> Model -> View (PagesMsg Msg)
+view app _ model =
+    View.fromStyled "Learning Directory"
         [ div [ css [ Tw.pt_12, Tw.pb_24, Tw.max_w_7xl, Tw.mx_auto, Tw.px_6 ] ]
             [ viewHeader model.searchQuery
-            , case shared.learningDatabase of
-                SharedModel.Loading ->
-                    div [ css [ Theming.bodyFont, Tw.text_center, Tw.text_color Tw.gray_400 ] ]
-                        [ text "Loading learning directory..." ]
-
-                SharedModel.Failure _ ->
-                    div [ css [ Theming.bodyFont, Tw.text_center, Tw.text_color Tw.red_400 ] ]
-                        [ text "Failed to load directory." ]
-
-                SharedModel.Success db ->
-                    viewCategorisedGrid model.searchQuery db.metadata
+            , viewCategorisedGrid model.searchQuery app.data.metadata
             ]
         ]
-    }
+        |> View.map PagesMsg.fromMsg
 
 
 viewHeader : String -> Html Msg
@@ -180,8 +190,7 @@ viewCategorySection category items =
 viewTopicCard : LearningResources.CompiledMeta -> Html msg
 viewTopicCard meta =
     Html.a
-        [ Route.Path.href (Route.Path.Learning_Resource_ { resource = LearningResources.entityTagToString meta.id })
-            |> Attr.fromUnstyled
+        [ Attr.href (UrlPath.toAbsolute (Route.toPath (Route.Learning__Resource_ { resource = LearningResources.entityTagToString meta.id })))
         , css
             [ Tw.block
             , Tw.no_underline

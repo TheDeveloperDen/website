@@ -1,57 +1,75 @@
-module Pages.Rules exposing (Model, Msg, page)
+module Route.Rules exposing (ActionData, Data, Model, Msg, route)
 
+import BackendTask exposing (BackendTask)
 import Css
-import Effect exposing (Effect)
+import FatalError exposing (FatalError)
+import Head
+import Head.Seo as Seo
 import Html.Styled as Html exposing (Html, a, div, h1, h2, h3, p, text)
 import Html.Styled.Attributes as Attr exposing (css)
-import Layouts
-import Page exposing (Page)
-import Route exposing (Route)
-import Route.Path
+import Pages.Url
+import PagesMsg exposing (PagesMsg)
+import RouteBuilder exposing (App, StatelessRoute)
 import Shared
+import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
 import Theming
+import UrlPath
 import View exposing (View)
-
-
-page : Shared.Model -> Route () -> Page Model Msg
-page _ _ =
-    Page.new
-        { init = init
-        , update = update
-        , subscriptions = subscriptions
-        , view = view
-        }
-        |> Page.withLayout
-            (\_ ->
-                Layouts.Global
-                    { activePage = Route.Path.Rules
-                    }
-            )
-
-
-
--- INIT
 
 
 type alias Model =
     {}
 
 
-init : () -> ( Model, Effect Msg )
-init () =
-    ( {}
-    , Effect.none
-    )
+type alias Msg =
+    ()
 
 
+type alias RouteParams =
+    {}
 
--- UPDATE
+
+type alias Data =
+    ()
 
 
-type Msg
-    = NoOp
+type alias ActionData =
+    {}
+
+
+route : StatelessRoute RouteParams Data ActionData
+route =
+    RouteBuilder.single
+        { head = head
+        , data = BackendTask.succeed ()
+        }
+        |> RouteBuilder.buildNoState { view = view }
+
+
+head : App Data ActionData RouteParams -> List Head.Tag
+head _ =
+    Seo.summary
+        { canonicalUrlOverride = Nothing
+        , siteName = "Developer Den"
+        , image =
+            { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
+            , alt = "Developer Den"
+            , dimensions = Nothing
+            , mimeType = Nothing
+            }
+        , description = "The rules of the Developer Den community."
+        , locale = Nothing
+        , title = "Rules"
+        }
+        |> Seo.website
+
+
+view : App Data ActionData RouteParams -> Shared.Model -> View (PagesMsg Msg)
+view _ _ =
+    View.fromStyled "Rules" [ div [ css [ Tw.max_w_4xl, Tw.mx_auto, Tw.pt_2, Tw.pb_24, Tw.px_6 ] ] [ viewHeader, div [] (List.map viewRuleSection rulesData) ] ]
+        |> View.map PagesMsg.fromMsg
 
 
 type alias RuleSection =
@@ -122,41 +140,6 @@ rulesData =
             ]
       }
     ]
-
-
-update : Msg -> Model -> ( Model, Effect Msg )
-update msg model =
-    case msg of
-        NoOp ->
-            ( model
-            , Effect.none
-            )
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
-
-
-
--- VIEW
-
-
-view : Model -> View Msg
-view _ =
-    { title = "Rules"
-    , body =
-        [ div [ css [ Tw.max_w_4xl, Tw.mx_auto, Tw.pt_2, Tw.pb_24, Tw.px_6 ] ]
-            [ viewHeader
-            , div []
-                (List.map viewRuleSection rulesData)
-            ]
-        ]
-    }
 
 
 viewHeader : Html Msg

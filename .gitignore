@@ -6,7 +6,8 @@ node_modules
 .direnv
 .vscode
 dist
-.elm-land
+.elm-pages
+.elm-pages
 .env
 *.pem
 gen/Tailwind

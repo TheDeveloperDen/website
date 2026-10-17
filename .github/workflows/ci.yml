@@ -32,8 +32,8 @@ jobs:
         run: bun run tw
       
       - name: Build
-        run: bunx elm-land build
+        run: bun run build
 
       - name: Check Elm formatting
         run: |
-          bunx elm-format --validate src/
+          bunx elm-format --validate app/ src/

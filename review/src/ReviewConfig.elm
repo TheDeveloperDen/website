@@ -40,7 +40,7 @@ config =
         (Rule.ignoreErrorsFor
             [ FilePattern.excludeDirectory "gen/"
             , FilePattern.excludeDirectory "src/OpenApi/"
-            , FilePattern.excludeDirectory ".elm-land"
+            , FilePattern.excludeDirectory ".elm-pages"
             , FilePattern.exclude "src/LearningResources/Json.elm"
             , FilePattern.exclude "src/LearningResources/Types.elm"
             ]

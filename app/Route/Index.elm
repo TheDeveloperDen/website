@@ -1,67 +1,83 @@
-module Pages.Home_ exposing (Model, Msg, page)
+module Route.Index exposing (ActionData, Data, Model, Msg, route)
 
+import BackendTask exposing (BackendTask)
 import Css
-import Effect
+import FatalError exposing (FatalError)
+import Head
+import Head.Seo as Seo
 import Html.Styled exposing (Html, a, div, h2, i, img, text)
 import Html.Styled.Attributes as Attr exposing (css, href, target)
-import Layouts
-import Page exposing (Page)
+import Pages.Url
+import PagesMsg exposing (PagesMsg)
 import Redirects
-import Route exposing (Route)
-import Route.Path
+import RouteBuilder exposing (App, StatelessRoute)
 import Shared
 import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
 import Theming
-
-
-page : Shared.Model -> Route () -> Page Model Msg
-page _ _ =
-    Page.new
-        { init = \_ -> ( {}, Effect.none )
-        , update = \_ model -> ( model, Effect.none )
-        , subscriptions = \_ -> Sub.none
-        , view = \_ -> view
-        }
-        |> Page.withLayout (\_ -> Layouts.Global { activePage = Route.Path.Home_ })
+import UrlPath
+import View exposing (View)
 
 
 type alias Model =
     {}
 
 
-type Msg
-    = NoOp
+type alias Msg =
+    ()
 
 
-view : { title : String, body : List (Html Msg) }
-view =
-    { title = "Home"
-    , body =
-        [ div
-            [ css
-                [ Tw.flex
-                , Tw.flex_col
-                , Tw.items_center
-                , Tw.justify_center
-                , Tw.w_full
-                , Tw.flex_grow
-                , Tw.px_6
-                ]
-            ]
-            [ viewBanner
-            ]
-        , viewFloatingSocials
-        ]
-    }
+type alias RouteParams =
+    {}
+
+
+type alias Data =
+    ()
+
+
+type alias ActionData =
+    {}
+
+
+route : StatelessRoute RouteParams Data ActionData
+route =
+    RouteBuilder.single
+        { head = head
+        , data = BackendTask.succeed ()
+        }
+        |> RouteBuilder.buildNoState { view = view }
+
+
+head : App Data ActionData RouteParams -> List Head.Tag
+head _ =
+    Seo.summary
+        { canonicalUrlOverride = Nothing
+        , siteName = "Developer Den"
+        , image =
+            { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
+            , alt = "Developer Den"
+            , dimensions = Nothing
+            , mimeType = Nothing
+            }
+        , description = "The Developer Den is a community of programmers learning and building together."
+        , locale = Nothing
+        , title = "Home"
+        }
+        |> Seo.website
+
+
+view : App Data ActionData RouteParams -> Shared.Model -> View (PagesMsg Msg)
+view _ _ =
+    View.fromStyled "Home" [ div [ css [ Tw.flex, Tw.flex_col, Tw.items_center, Tw.justify_center, Tw.w_full, Tw.flex_grow, Tw.px_6 ] ] [ viewBanner ], viewFloatingSocials ]
+        |> View.map PagesMsg.fromMsg
 
 
 viewBanner : Html Msg
 viewBanner =
     div [ css [ Tw.text_center ] ]
         [ img
-            [ Attr.src "/static/devden-banner.svg"
+            [ Attr.src "/devden-banner.svg"
             , Attr.alt "Developer Den Banner"
             , css
                 [ Theming.headingFont

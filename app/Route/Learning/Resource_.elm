@@ -1,101 +1,125 @@
-module Pages.Learning.Resource_ exposing (Model, Msg, page)
+module Route.Learning.Resource_ exposing (ActionData, Data, Model, Msg, route)
 
+import BackendTask exposing (BackendTask)
 import Css
-import Effect
+import FatalError exposing (FatalError)
+import Head
+import Head.Seo as Seo
 import Html.Styled as Html exposing (Html, div, span, text)
 import Html.Styled.Attributes as Attr exposing (css)
-import Layouts
+import LearningResources as Db
 import LearningResources.Emojis as Emojis
 import LearningResources.Types as LearningResources
-import Page exposing (Page)
-import Route exposing (Route)
-import Route.Path
+import Pages.Url
+import PagesMsg exposing (PagesMsg)
+import Route
+import RouteBuilder exposing (App, StatelessRoute)
 import Shared
-import Shared.Model as SharedModel
 import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
 import Theming
+import UrlPath
 import View exposing (View)
-
-
-page : Shared.Model -> Route { resource : String } -> Page Model Msg
-page shared route =
-    Page.new
-        { init = \_ -> ( {}, Effect.none )
-        , update = \_ model -> ( model, Effect.none )
-        , subscriptions = \_ -> Sub.none
-        , view = view shared route.params
-        }
-        |> Page.withLayout
-            (\_ ->
-                Layouts.Global
-                    { activePage = Route.Path.Learning
-                    }
-            )
 
 
 type alias Model =
     {}
 
 
-type Msg
-    = NoOp
+type alias Msg =
+    ()
 
 
+type alias RouteParams =
+    { resource : String }
 
--- VIEW
+
+type alias Data =
+    { allMetadata : List LearningResources.CompiledMeta
+    , meta : LearningResources.CompiledMeta
+    , resources : List LearningResources.Resource
+    }
 
 
-view : Shared.Model -> { resource : String } -> Model -> View Msg
-view shared route _ =
-    case shared.learningDatabase of
-        SharedModel.Loading ->
-            { title = "Loading...", body = [ text "Loading resources..." ] }
+type alias ActionData =
+    {}
 
-        SharedModel.Failure _ ->
-            { title = "Error", body = [ text "Failed to load database." ] }
 
-        SharedModel.Success db ->
-            let
-                activeTag =
-                    LearningResources.entityTagFromString route.resource
+route : StatelessRoute RouteParams Data ActionData
+route =
+    RouteBuilder.preRender
+        { head = head
+        , pages = pages
+        , data = data
+        }
+        |> RouteBuilder.buildNoState { view = view }
 
-                activeMeta =
-                    activeTag
-                        |> Maybe.andThen (\tag -> List.filter (\m -> m.id == tag) db.metadata |> List.head)
-            in
-            { title = Maybe.map .name activeMeta |> Maybe.withDefault "Topic"
-            , body =
-                [ viewExplorerLayout db activeTag route.resource ]
+
+pages : BackendTask FatalError (List RouteParams)
+pages =
+    Db.fetchDatabase
+        |> BackendTask.map
+            (\db ->
+                List.map (\meta -> { resource = LearningResources.entityTagToString meta.id }) db.metadata
+            )
+
+
+data : RouteParams -> BackendTask FatalError Data
+data params =
+    Db.fetchDatabase
+        |> BackendTask.andThen
+            (\db ->
+                case LearningResources.entityTagFromString params.resource |> Maybe.andThen (\tag -> Db.getMetadata tag db |> Maybe.map (Tuple.pair tag)) of
+                    Just ( tag, meta ) ->
+                        BackendTask.succeed
+                            { allMetadata = db.metadata
+                            , meta = meta
+                            , resources = Db.getResourcesByTag tag db
+                            }
+
+                    Nothing ->
+                        BackendTask.fail (FatalError.fromString ("Unknown learning topic: " ++ params.resource))
+            )
+
+
+head : App Data ActionData RouteParams -> List Head.Tag
+head app =
+    Seo.summary
+        { canonicalUrlOverride = Nothing
+        , siteName = "Developer Den"
+        , image =
+            { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
+            , alt = "Developer Den"
+            , dimensions = Nothing
+            , mimeType = Nothing
             }
+        , description = app.data.meta.description
+        , locale = Nothing
+        , title = "Learn " ++ app.data.meta.name
+        }
+        |> Seo.website
 
 
-viewExplorerLayout : LearningResources.Database -> Maybe LearningResources.EntityTag -> String -> Html Msg
-viewExplorerLayout db activeTag activeSlug =
+view : App Data ActionData RouteParams -> Shared.Model -> View (PagesMsg Msg)
+view app _ =
+    View.fromStyled app.data.meta.name [ viewExplorerLayout app.data app.routeParams.resource ]
+        |> View.map PagesMsg.fromMsg
+
+
+viewExplorerLayout : Data -> String -> Html Msg
+viewExplorerLayout topic activeSlug =
     div [ css [ Tw.flex, Tw.max_w_7xl, Tw.mx_auto, Tw.pt_12, Tw.pb_24, Tw.gap_12 ] ]
         [ div [ css [ Tw.w_64, Tw.flex_shrink_0, Tw.hidden, Breakpoints.lg [ Tw.block ] ] ]
             [ Html.h3 [ css [ Theming.headingFont, Tw.text_xl, Tw.mb_6, Tw.border_b, Tw.border_color Tw.slate_700, Tw.pb_2 ] ]
                 [ text "Topics" ]
-            , viewSidebarTopicList db.metadata activeSlug
+            , viewSidebarTopicList topic.allMetadata activeSlug
             ]
         , div [ css [ Tw.flex_1 ] ]
-            [ case activeTag of
-                Nothing ->
-                    div [ css [ Tw.text_color Tw.gray_400 ] ] [ text "Topic not found." ]
-
-                Just tag ->
-                    let
-                        maybeMeta =
-                            List.filter (\m -> m.id == tag) db.metadata |> List.head
-
-                        topicResources =
-                            List.filter (\r -> List.member tag r.teaches) db.resources
-                    in
-                    div []
-                        [ viewTopicHeader maybeMeta
-                        , viewResourceGrid topicResources
-                        ]
+            [ div []
+                [ viewTopicHeader (Just topic.meta)
+                , viewResourceGrid topic.resources
+                ]
             ]
         ]
 
@@ -116,7 +140,7 @@ viewSidebarLink activeSlug meta =
             activeSlug == metaSlug
     in
     Html.a
-        [ Route.Path.href (Route.Path.Learning_Resource_ { resource = metaSlug }) |> Attr.fromUnstyled
+        [ Attr.href (UrlPath.toAbsolute (Route.toPath (Route.Learning__Resource_ { resource = metaSlug })))
         , css
             [ Theming.headingFont
             , Tw.text_sm
