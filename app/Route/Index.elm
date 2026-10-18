@@ -1,11 +1,10 @@
 module Route.Index exposing (ActionData, Data, Model, Msg, route)
 
-import BackendTask exposing (BackendTask)
+import BackendTask
 import Css
-import FatalError exposing (FatalError)
 import Head
 import Head.Seo as Seo
-import Html.Styled exposing (Html, a, div, h2, i, img, text)
+import Html.Styled exposing (Html, a, div, h1, i, p, text)
 import Html.Styled.Attributes as Attr exposing (css, href, target)
 import Pages.Url
 import PagesMsg exposing (PagesMsg)
@@ -13,7 +12,6 @@ import Redirects
 import RouteBuilder exposing (App, StatelessRoute)
 import Shared
 import Tailwind.Breakpoints as Breakpoints
-import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
 import Theming
 import UrlPath
@@ -60,7 +58,7 @@ head _ =
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = "The Developer Den is a community of programmers learning and building together."
+        , description = "Developer Den is a community of programmers learning and building together."
         , locale = Nothing
         , title = "Home"
         }
@@ -69,109 +67,80 @@ head _ =
 
 view : App Data ActionData RouteParams -> Shared.Model -> View (PagesMsg Msg)
 view _ _ =
-    View.fromStyled "Home" [ div [ css [ Tw.flex, Tw.flex_col, Tw.items_center, Tw.justify_center, Tw.w_full, Tw.flex_grow, Tw.px_6 ] ] [ viewBanner ], viewFloatingSocials ]
+    View.fromStyled "Home"
+        [ div [ css [ Tw.flex, Tw.flex_col, Tw.items_center, Tw.justify_center, Tw.w_full, Tw.flex_grow, Theming.gutter, Tw.py_16 ] ]
+            [ viewHero ]
+        ]
         |> View.map PagesMsg.fromMsg
 
 
-viewBanner : Html Msg
-viewBanner =
-    div [ css [ Tw.text_center ] ]
-        [ img
-            [ Attr.src "/devden-banner.svg"
-            , Attr.alt "Developer Den Banner"
-            , css
-                [ Theming.headingFont
-                , Tw.font_bold
-                , Tw.mb_2
-                , Theming.textGradient
-                , Tw.inline_block
-                , Tw.tracking_widest
-                , Tw.pb_2
-                , Tw.block
-                , Tw.mx_auto
-                ]
-            ]
-            []
-        , h2
+viewHero : Html Msg
+viewHero =
+    div [ css [ Tw.text_center, Tw.flex, Tw.flex_col, Tw.items_center ] ]
+        [ viewTitle
+        , p
             [ css
                 [ Theming.bodyFont
                 , Tw.text_xl
                 , Breakpoints.md [ Tw.text_2xl ]
-                , Tw.text_color Tw.gray_300
-                , Tw.max_w_3xl
-                , Tw.mx_auto
-                , Tw.mb_10
+                , Tw.max_w_2xl
                 , Tw.leading_relaxed
+                , Tw.mt_10
+                , Tw.mb_12
+                , Tw.mx_0
                 ]
             ]
             [ text "A closely-knit community anchored in a common passion for programming." ]
-        , a
-            [ href Redirects.discordURL
-            , target "_blank"
-            , css
-                [ Tw.font_sans
-                , Tw.tracking_wide
-                , Tw.text_lg
-                , Tw.font_bold
-                , Tw.text_color Tw.white
-                , Theming.brandGradientBg
-                , Tw.px_8
-                , Tw.py_4
-                , Tw.rounded_2xl
-                , Tw.no_underline
-                , Css.hover [ Tw.opacity_90, Tw.scale_105 ]
-                , Tw.transition_all
-                , Tw.inline_flex
-                , Tw.items_center
-                , Tw.justify_center
-                , Tw.gap_3
-                , Tw.drop_shadow_lg
-                ]
-            ]
-            [ i [ Attr.class "fab fa-discord", css [ Tw.text_3xl ] ] []
-            , text "Interested? Join our Discord!"
+        , div [ css [ Tw.flex, Tw.flex_col, Tw.w_full, Tw.max_w_xs, Tw.gap_4, Breakpoints.sm [ Tw.flex_row, Tw.w_auto, Tw.max_w_none ] ] ]
+            [ viewButton Redirects.discordURL "fab fa-discord" "join our discord"
+            , viewButton Redirects.githubURL "fab fa-github" "view our github"
             ]
         ]
 
 
-viewFloatingSocials : Html Msg
-viewFloatingSocials =
+{-| A fake text layer on top of the SVG logo to allow the text to be highlighted and read by screen readers etc 
+-}
+viewTitle : Html Msg
+viewTitle =
     div
         [ css
-            [ Tw.fixed
-            , Tw.bottom_6
-            , Tw.right_6
-            , Tw.flex
-            , Tw.gap_2
-            , Tw.bg_color Tw.slate_800
-            , Tw.p_2
-            , Tw.rounded_xl
-            , Tw.border
-            , Tw.border_color Tw.slate_700
-            , Tw.drop_shadow_lg
-            , Tw.z_50
+            [ Tw.relative
+            , Tw.w_full
+            , Tw.max_w_3xl
+            , Css.property "container-type" "inline-size"
             ]
         ]
-        [ viewSocialIcon Redirects.discordURL
-            (i [ Attr.class "fab fa-discord", css [ Tw.text_2xl ] ] [])
-            (Tw.text_color Tw.indigo_400)
-        , viewSocialIcon Redirects.githubURL
-            (i [ Attr.class "fab fa-github", css [ Tw.text_2xl ] ] [])
-            (Tw.text_color Tw.white)
-        ]
+        (Theming.themedImage
+            { dark = "/devden-title.svg", light = "/devden-title-light.svg", alt = "" }
+            [ Tw.block, Tw.w_full, Tw.h_auto ]
+            ++ [ h1
+                    [ css
+                        [ Theming.headingFont
+                        , Tw.absolute
+                        , Tw.inset_0
+                        , Css.property "top" "-1.2cqw"
+                        , Tw.m_0
+                        , Tw.text_left
+                        , Tw.whitespace_nowrap
+                        , Tw.font_normal
+                        , Css.property "font-size" "12.86cqw"
+                        , Tw.leading_none
+                        , Css.property "padding-left" "1.5%"
+                        , Css.property "color" "transparent"
+                        ]
+                    ]
+                    [ text "developer den" ]
+               ]
+        )
 
 
-viewSocialIcon : String -> Html Msg -> Css.Style -> Html Msg
-viewSocialIcon url icon hoverStyle =
+viewButton : String -> String -> String -> Html Msg
+viewButton url iconClass label =
     a
         [ href url
         , target "_blank"
-        , css
-            [ Tw.text_color Tw.gray_400
-            , Css.hover [ hoverStyle ]
-            , Tw.transition_colors
-            , Tw.p_2
-            , Tw.block
-            ]
+        , css [ Theming.gradientButton, Tw.w_full, Breakpoints.sm [ Tw.w_auto ] ]
         ]
-        [ icon ]
+        [ i [ Attr.class iconClass, css [ Tw.text_2xl ] ] []
+        , text label
+        ]
