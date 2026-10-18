@@ -17,22 +17,58 @@
 
 
 :root {
-  --color-den-deepblue: #171834;
-  --color-den-deepblue-lighter: #1e1f3d;
-  --color-den-teal: #00AFC3;
-  --color-den-pink: #FF52F9;
-  --color-den-indigo: #8099FF;
+  color-scheme: dark; /* dark by default */
+
+  --color-den-deepblue: light-dark(#ffffff, #171834);
+  --color-den-deepblue-lighter: light-dark(#f1f2fb, #1e1f3d);
+  --color-den-teal: light-dark(#007684, #00AFC3);
+  --color-den-pink: light-dark(#BF00B9, #FF52F9);
+  --color-den-indigo: light-dark(#005FF1, #8099FF);
+  --color-den-text: light-dark(#171834, #ffffff);
+  --color-den-muted: light-dark(#2f3170, #c5c9ec);
+  --color-den-subtle: light-dark(#474A9F, #8e93c6);
+  --color-den-border: light-dark(#d5d7ef, #2d2f5c);
 }
 
-.theme-light {
-  --color-den-deepblue: #474A9F;
-  --color-den-teal: #007684;
-  --color-den-pink: #BF00B9;
-  --color-den-indigo: #005FF1;
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* make elements only visible in light/dark mode */
+.on-light {
+  display: none;
+}
+
+:root[data-theme="light"] .on-light {
+  display: contents;
+}
+
+:root[data-theme="light"] .on-dark {
+  display: none;
+}
+
+*, ::before, ::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
 }
 
 html, body {
   background-color: var(--color-den-deepblue);
-  color: #ffffff;
+  color: var(--color-den-text);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
   margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-den-teal);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

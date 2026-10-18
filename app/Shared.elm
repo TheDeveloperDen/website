@@ -5,10 +5,12 @@ import Css
 import Effect exposing (Effect)
 import FatalError exposing (FatalError)
 import Html exposing (Html)
-import Html.Styled as Styled exposing (a, div, img, nav, text)
+import Html.Styled as Styled exposing (a, div, nav, text)
 import Html.Styled.Attributes as Attr exposing (css, href)
+import Html.Styled.Events as Events
 import Pages.Flags
 import Pages.PageUrl exposing (PageUrl)
+import Ports
 import Redirects
 import Route exposing (Route)
 import SharedTemplate exposing (SharedTemplate)
@@ -31,7 +33,12 @@ template =
 
 
 type Msg
-    = NoOp
+    = SetTheme Theme
+
+
+type Theme
+    = Light
+    | Dark
 
 
 type alias Data =
@@ -60,8 +67,8 @@ init _ _ =
 
 
 update : Msg -> Model -> ( Model, Effect Msg )
-update NoOp model =
-    ( model, Effect.none )
+update (SetTheme theme) model =
+    ( model, Effect.fromCmd (Ports.setTheme (themeToString theme)) )
 
 
 subscriptions : UrlPath -> Model -> Sub Msg
@@ -84,7 +91,7 @@ view :
     -> (Msg -> msg)
     -> View msg
     -> { body : List (Html msg), title : String }
-view _ page _ _ pageView =
+view _ page _ toMsg pageView =
     { title = pageView.title ++ " | Developer Den"
     , body =
         [ Styled.toUnstyled
@@ -102,7 +109,7 @@ view _ page _ _ pageView =
                     , Tw.flex_col
                     ]
                 ]
-                [ viewNavbar page.route
+                [ viewNavbar toMsg page.route
                 , div [ css [ Tw.flex_grow, Tw.flex, Tw.flex_col ] ]
                     (List.map Styled.fromUnstyled pageView.body)
                 ]
@@ -111,8 +118,8 @@ view _ page _ _ pageView =
     }
 
 
-viewNavbar : Maybe Route -> Styled.Html msg
-viewNavbar activeRoute =
+viewNavbar : (Msg -> msg) -> Maybe Route -> Styled.Html msg
+viewNavbar toMsg activeRoute =
     nav
         [ css
             [ Tw.flex
@@ -127,15 +134,12 @@ viewNavbar activeRoute =
         ]
         [ a
             [ routeHref Route.Index
-            , css [ Theming.headingFont, Tw.text_xl, Tw.font_bold, Tw.no_underline, Theming.textGradient ]
+            , css [ Tw.block ]
             ]
-            [ img
-                [ Attr.src "/devden-logo.svg"
-                , Attr.alt "Developer Den Logo"
-                , css [ Tw.h_16, Tw.w_auto, Tw.block ]
-                ]
-                []
-            ]
+            (Theming.themedImage
+                { dark = "/devden-logo.svg", light = "/devden-logo-light.svg", alt = "Developer Den Logo" }
+                [ Tw.h_16, Tw.w_auto, Tw.block ]
+            )
         , div [ css [ Tw.flex, Tw.gap_8 ] ]
             [ viewNavLink "home" Route.Index (activeRoute == Just Route.Index)
             , viewNavLink "rules" Route.Rules (activeRoute == Just Route.Rules)
@@ -153,8 +157,47 @@ viewNavbar activeRoute =
                     ]
                 ]
                 [ text "discord" ]
+            , viewThemeToggle toMsg
             ]
         ]
+
+
+themeToString : Theme -> String
+themeToString theme =
+    case theme of
+        Light ->
+            "light"
+
+        Dark ->
+            "dark"
+
+
+viewThemeToggle : (Msg -> msg) -> Styled.Html msg
+viewThemeToggle toMsg =
+    Styled.span []
+        [ Styled.span [ Attr.class "on-dark" ] [ themeButton (toMsg (SetTheme Light)) "light mode" ]
+        , Styled.span [ Attr.class "on-light" ] [ themeButton (toMsg (SetTheme Dark)) "dark mode" ]
+        ]
+
+
+themeButton : msg -> String -> Styled.Html msg
+themeButton msg label =
+    Styled.button
+        [ Attr.type_ "button"
+        , Events.onClick msg
+        , css
+            [ Theming.headingFont
+            , Theming.quietLink
+            , Tw.bg_color Tw.transparent
+            , Tw.border_0
+            , Tw.p_0
+            , Tw.pb_1
+            , Tw.cursor_pointer
+            , Css.property "font-size" "inherit"
+            , Css.property "line-height" "inherit"
+            ]
+        ]
+        [ text label ]
 
 
 isLearning : Maybe Route -> Bool
