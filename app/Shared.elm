@@ -14,6 +14,7 @@ import Ports
 import Redirects
 import Route exposing (Route)
 import SharedTemplate exposing (SharedTemplate)
+import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
 import Theming
@@ -102,8 +103,9 @@ view _ page _ toMsg pageView =
                     , Tw.w_full
                     , Tw.overflow_x_hidden
                     , Tw.bg_color Tw.dd_deepblue
-                    , Tw.text_color Tw.white
+                    , Tw.text_color Tw.dd_text
                     , Tw.font_sans
+                    , Tw.font_medium
                     , Tw.antialiased
                     , Tw.flex
                     , Tw.flex_col
@@ -112,6 +114,11 @@ view _ page _ toMsg pageView =
                 [ viewNavbar toMsg page.route
                 , div [ css [ Tw.flex_grow, Tw.flex, Tw.flex_col ] ]
                     (List.map Styled.fromUnstyled pageView.body)
+                , if page.route == Just Route.Index then
+                    text ""
+
+                  else
+                    viewFooter
                 ]
             )
         ]
@@ -128,8 +135,10 @@ viewNavbar toMsg activeRoute =
             , Tw.max_w_7xl
             , Tw.mx_auto
             , Tw.w_full
-            , Tw.px_8
+            , Theming.gutter
             , Tw.py_6
+            , Tw.flex_wrap
+            , Tw.gap_y_4
             ]
         ]
         [ a
@@ -140,7 +149,7 @@ viewNavbar toMsg activeRoute =
                 { dark = "/devden-logo.svg", light = "/devden-logo-light.svg", alt = "Developer Den Logo" }
                 [ Tw.h_16, Tw.w_auto, Tw.block ]
             )
-        , div [ css [ Tw.flex, Tw.gap_8 ] ]
+        , div [ css [ Tw.flex, Tw.flex_wrap, Tw.gap_x_6, Tw.gap_y_2, Breakpoints.md [ Tw.gap_x_8 ] ] ]
             [ viewNavLink "home" Route.Index (activeRoute == Just Route.Index)
             , viewNavLink "rules" Route.Rules (activeRoute == Just Route.Rules)
             , viewNavLink "learning" Route.Learning (isLearning activeRoute)
@@ -149,11 +158,8 @@ viewNavbar toMsg activeRoute =
                 , Attr.target "_blank"
                 , css
                     [ Theming.headingFont
-                    , Tw.text_sm
-                    , Tw.text_color Tw.slate_400
-                    , Css.hover [ Tw.text_color Tw.white ]
-                    , Tw.transition_colors
-                    , Tw.no_underline
+                    , Theming.quietLink
+                    , Tw.pb_1
                     ]
                 ]
                 [ text "discord" ]
@@ -200,6 +206,44 @@ themeButton msg label =
         [ text label ]
 
 
+viewFooter : Styled.Html msg
+viewFooter =
+    Styled.footer
+        [ css
+            [ Tw.max_w_7xl
+            , Tw.mx_auto
+            , Tw.w_full
+            , Theming.gutter
+            , Tw.py_8
+            , Tw.flex_wrap
+            , Tw.gap_y_2
+            , Tw.flex
+            , Tw.justify_between
+            , Tw.items_center
+            , Tw.border_t
+            , Tw.border_color Tw.dd_border
+            , Theming.headingFont
+            , Tw.text_sm
+            ]
+        ]
+        [ div [ css [ Tw.text_color Tw.dd_subtle ] ] [ text "developer den" ]
+        , div [ css [ Tw.flex, Tw.gap_6 ] ]
+            [ footerLink "discord" Redirects.discordURL
+            , footerLink "github" Redirects.githubURL
+            ]
+        ]
+
+
+footerLink : String -> String -> Styled.Html msg
+footerLink label url =
+    a
+        [ href url
+        , Attr.target "_blank"
+        , css [ Theming.quietLink ]
+        ]
+        [ text label ]
+
+
 isLearning : Maybe Route -> Bool
 isLearning activeRoute =
     case activeRoute of
@@ -227,11 +271,11 @@ viewNavLink label route isActive =
             , Tw.pb_1
             , Tw.no_underline
             , if isActive then
-                Tw.text_color Tw.white
+                Tw.text_color Tw.dd_text
 
               else
-                Tw.text_color Tw.slate_400
-            , Css.hover [ Tw.text_color Tw.white ]
+                Tw.text_color Tw.dd_subtle
+            , Css.hover [ Tw.text_color Tw.dd_text ]
             , Tw.transition_colors
             , Tw.relative
             ]
@@ -244,7 +288,7 @@ viewNavLink label route isActive =
                     , Tw.bottom_0
                     , Tw.left_0
                     , Tw.right_0
-                    , Tw.h_1
+                    , Css.property "height" "2px"
                     , Theming.brandGradientBg
                     ]
                 ]
