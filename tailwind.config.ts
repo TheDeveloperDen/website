@@ -10,6 +10,10 @@ module.exports = {
           teal: 'var(--color-den-teal)',
           pink: 'var(--color-den-pink)',
           indigo: 'var(--color-den-indigo)',
+          text: 'var(--color-den-text)',
+          muted: 'var(--color-den-muted)',
+          subtle: 'var(--color-den-subtle)',
+          border: 'var(--color-den-border)',
         }
       },
       fontFamily: {

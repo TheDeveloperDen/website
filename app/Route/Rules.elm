@@ -1,19 +1,18 @@
 module Route.Rules exposing (ActionData, Data, Model, Msg, route)
 
-import BackendTask exposing (BackendTask)
+import BackendTask
 import Css
-import FatalError exposing (FatalError)
 import Head
 import Head.Seo as Seo
-import Html.Styled as Html exposing (Html, a, div, h1, h2, h3, p, text)
+import Html.Styled as Html exposing (Html, a, div, h2, h3, p, text)
 import Html.Styled.Attributes as Attr exposing (css)
 import Pages.Url
 import PagesMsg exposing (PagesMsg)
 import RouteBuilder exposing (App, StatelessRoute)
 import Shared
-import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
+import Tailwind.Breakpoints as Breakpoints
 import Theming
 import UrlPath
 import View exposing (View)
@@ -68,7 +67,7 @@ head _ =
 
 view : App Data ActionData RouteParams -> Shared.Model -> View (PagesMsg Msg)
 view _ _ =
-    View.fromStyled "Rules" [ div [ css [ Tw.max_w_4xl, Tw.mx_auto, Tw.pt_2, Tw.pb_24, Tw.px_6 ] ] [ viewHeader, div [] (List.map viewRuleSection rulesData) ] ]
+    View.fromStyled "Rules" [ div [ css [ Tw.max_w_7xl, Tw.mx_auto, Tw.w_full, Tw.pt_12, Tw.pb_24, Theming.gutter ] ] [ viewHeader, div [] (List.map viewRuleSection rulesData) ] ]
         |> View.map PagesMsg.fromMsg
 
 
@@ -84,13 +83,13 @@ rulesData =
     [ { id = 1
       , title = "Conduct and Communication"
       , rules =
-            [ [ Html.b [ css [ Tw.text_color Tw.white ] ] [ text "Respect the Community: " ]
+            [ [ Html.b [ css [ Tw.text_color Tw.dd_text ] ] [ text "Respect the Community: " ]
               , text "No rudeness, insults, harassment, or \"dogpiling\" (ganging up on someone)."
               ]
-            , [ Html.b [ css [ Tw.text_color Tw.white ] ] [ text "Engage in good faith: " ]
+            , [ Html.b [ css [ Tw.text_color Tw.dd_text ] ] [ text "Engage in good faith: " ]
               , text "No intentional derailing, \"sealioning\" (disingenuous questions), extreme sarcasm, or ragebait. Keep debates respectful and fair."
               ]
-            , [ Html.b [ css [ Tw.text_color Tw.white ] ] [ text "Keep Criticism Constructive: " ]
+            , [ Html.b [ css [ Tw.text_color Tw.dd_text ] ] [ text "Keep Criticism Constructive: " ]
               , text "Stay objective about code/tools. No flaming, elitism, or mocking others for their choices, especially beginners."
               ]
             ]
@@ -98,13 +97,13 @@ rulesData =
     , { id = 2
       , title = "Moderation Protocols"
       , rules =
-            [ [ Html.b [ css [ Tw.text_color Tw.white ] ] [ text "No public moderation disputes: " ]
+            [ [ Html.b [ css [ Tw.text_color Tw.dd_text ] ] [ text "No public moderation disputes: " ]
               , text "Do not argue about warnings, mutes, or deleted messages in public. Mocking or undermining staff instructions leads to immediate escalation."
               ]
-            , [ Html.b [ css [ Tw.text_color Tw.white ] ] [ text "Official Channels: " ]
+            , [ Html.b [ css [ Tw.text_color Tw.dd_text ] ] [ text "Official Channels: " ]
               , text "DM @Modmail to open a ticket for moderation issues."
               ]
-            , [ Html.b [ css [ Tw.text_color Tw.white ] ] [ text "Staff Discretion: " ]
+            , [ Html.b [ css [ Tw.text_color Tw.dd_text ] ] [ text "Staff Discretion: " ]
               , text "Staff may remove users who are a net negative to the community vibe, even without a specific rule break."
               ]
             ]
@@ -112,10 +111,10 @@ rulesData =
     , { id = 3
       , title = "Sensitive Content & Personal Boundaries"
       , rules =
-            [ [ Html.b [ css [ Tw.text_color Tw.white ] ] [ text "No trauma-dumping: " ]
+            [ [ Html.b [ css [ Tw.text_color Tw.dd_text ] ] [ text "No trauma-dumping: " ]
               , text "Keep sensitive personal topics (mental health, self-harm, politics) out of public channels."
               ]
-            , [ Html.b [ css [ Tw.text_color Tw.white ] ] [ text "No Vigilante Justice / Minimodding: " ]
+            , [ Html.b [ css [ Tw.text_color Tw.dd_text ] ] [ text "No Vigilante Justice / Minimodding: " ]
               , text "Report rule-breakers. Do not act as a moderator or take it upon yourself to \"teach them a lesson.\""
               ]
             ]
@@ -144,20 +143,10 @@ rulesData =
 
 viewHeader : Html Msg
 viewHeader =
-    div [ css [ Tw.mb_8, Tw.text_center ] ]
-        [ h1
-            [ css
-                [ Theming.headingFont
-                , Tw.text_5xl
-                , Tw.font_bold
-                , Tw.mb_2
-                , Theming.textGradient
-                , Tw.inline_block
-                ]
-            ]
-            [ text "Server Rules" ]
+    div [ css [ Tw.mb_10 ] ]
+        [ div [ css [ Tw.mb_6 ] ] [ Theming.pageTitle "server rules" ]
         , h2
-            [ css [ Theming.bodyFont, Tw.text_lg, Tw.text_color Tw.gray_300 ] ]
+            [ css [ Theming.bodyFont, Tw.text_lg, Tw.m_0 ] ]
             [ text "You are welcome in our community as long as you follow the rules." ]
         ]
 
@@ -166,12 +155,21 @@ viewRuleSection : RuleSection -> Html Msg
 viewRuleSection section =
     div
         [ css
-            [ Tw.mb_6 ]
+            [ Tw.border_t
+            , Tw.border_color Tw.dd_border
+            , Tw.py_8
+            , Tw.flex
+            , Tw.flex_col
+            , Tw.gap_4
+            , Breakpoints.md [ Tw.flex_row, Tw.gap_12 ]
+            ]
         ]
         [ h3
-            [ css [ Theming.headingFont, Tw.text_2xl, Tw.text_color Tw.dd_teal, Tw.mb_3 ] ]
-            [ text (String.fromInt section.id ++ ". " ++ section.title) ]
-        , div [ css [ Tw.flex, Tw.flex_col, Tw.gap_2 ] ]
+            [ css [ Theming.headingFont, Tw.text_xl, Tw.font_semibold, Tw.m_0, Tw.flex_shrink_0, Breakpoints.md [ Tw.w_72 ] ] ]
+            [ Html.span [ css [ Tw.text_color Tw.dd_subtle ] ] [ text (String.fromInt section.id ++ ". ") ]
+            , text section.title
+            ]
+        , div [ css [ Tw.flex, Tw.flex_col, Tw.gap_3, Tw.max_w_2xl ] ]
             (List.indexedMap viewRuleLine section.rules)
         ]
 
@@ -187,7 +185,6 @@ viewRuleLine index content =
         [ css
             [ Theming.bodyFont
             , Tw.text_base
-            , Tw.text_color Tw.gray_300
             , Tw.leading_snug
             , Tw.m_0
             ]
@@ -201,10 +198,10 @@ inlineLink val url =
         [ Attr.href url
         , Attr.target "_blank"
         , css
-            [ Tw.text_color Tw.dd_pink
+            [ Tw.text_color Tw.dd_indigo
             , Tw.font_semibold
             , Tw.no_underline
-            , Css.hover [ Tw.text_color Tw.white ]
+            , Css.hover [ Tw.text_color Tw.dd_pink ]
             , Tw.transition_colors
             ]
         ]

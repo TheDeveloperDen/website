@@ -109,18 +109,34 @@ view app _ =
 
 viewExplorerLayout : Data -> String -> Html Msg
 viewExplorerLayout topic activeSlug =
-    div [ css [ Tw.flex, Tw.max_w_7xl, Tw.mx_auto, Tw.pt_12, Tw.pb_24, Tw.gap_12 ] ]
+    div [ css [ Tw.flex, Tw.max_w_7xl, Tw.mx_auto, Theming.gutter, Tw.pt_12, Tw.pb_24, Tw.gap_12 ] ]
         [ div [ css [ Tw.w_64, Tw.flex_shrink_0, Tw.hidden, Breakpoints.lg [ Tw.block ] ] ]
-            [ Html.h3 [ css [ Theming.headingFont, Tw.text_xl, Tw.mb_6, Tw.border_b, Tw.border_color Tw.slate_700, Tw.pb_2 ] ]
+            [ Html.h3 [ css [ Theming.headingFont, Tw.text_xl, Tw.mb_6, Tw.border_b, Tw.border_color Tw.dd_border, Tw.pb_2, Tw.lowercase ] ]
                 [ text "Topics" ]
             , viewSidebarTopicList topic.allMetadata activeSlug
             ]
-        , div [ css [ Tw.flex_1 ] ]
-            [ div []
-                [ viewTopicHeader (Just topic.meta)
-                , viewResourceGrid topic.resources
-                ]
+        , div [ css [ Tw.flex_1, Tw.min_w_0 ] ]
+            [ viewMobileTopics topic.allMetadata activeSlug
+            , viewTopicHeader (Just topic.meta)
+            , viewResourceGrid topic.resources
             ]
+        ]
+
+
+{-| The sidebar only fits on wide screens, so we use a details section instead on mobile
+-}
+viewMobileTopics : List LearningResources.CompiledMeta -> String -> Html Msg
+viewMobileTopics metadata activeSlug =
+    Html.details
+        [ css
+            [ Breakpoints.lg [ Tw.hidden ]
+            , Tw.mb_8
+            , Tw.border
+            , Tw.border_color Tw.dd_border
+            ]
+        ]
+        [ Html.summary [ css [ Theming.headingFont, Tw.p_4, Tw.cursor_pointer ] ] [ text "all topics" ]
+        , div [ css [ Tw.p_2 ] ] [ viewSidebarTopicList metadata activeSlug ]
         ]
 
 
@@ -144,21 +160,27 @@ viewSidebarLink activeSlug meta =
         , css
             [ Theming.headingFont
             , Tw.text_sm
+            , Tw.no_underline
             , Tw.py_2
             , Tw.px_3
-            , Tw.rounded_lg
+            , Tw.border_l_2
             , Tw.transition_colors
             , if isActive then
-                Tw.bg_color Tw.slate_800
+                Tw.border_color Tw.dd_teal
+
+              else
+                Tw.border_color Tw.transparent
+            , if isActive then
+                Tw.bg_color Tw.dd_deepblueLighter
 
               else
                 Tw.bg_color Tw.transparent
             , if isActive then
-                Tw.text_color Tw.white
+                Tw.text_color Tw.dd_text
 
               else
-                Tw.text_color Tw.gray_400
-            , Css.hover [ Tw.text_color Tw.white, Tw.bg_color Tw.slate_800 ]
+                Tw.text_color Tw.dd_subtle
+            , Css.hover [ Tw.text_color Tw.dd_text, Tw.bg_color Tw.dd_deepblueLighter ]
             ]
         ]
         [ text (Emojis.emojiOrBackup meta ++ " " ++ meta.name) ]
@@ -171,12 +193,12 @@ viewTopicHeader maybeMeta =
             text ""
 
         Just meta ->
-            div [ css [ Tw.mb_12, Tw.border_b, Tw.border_color Tw.slate_700, Tw.pb_8 ] ]
-                [ div [ css [ Tw.flex, Tw.items_center, Tw.gap_4, Tw.mb_4 ] ]
+            div [ css [ Tw.mb_12, Tw.border_b, Tw.border_color Tw.dd_border, Tw.pb_8 ] ]
+                [ div [ css [ Tw.flex, Tw.items_center, Tw.gap_4, Tw.mb_6 ] ]
                     [ div [ css [ Tw.text_5xl ] ] [ text (Emojis.emojiOrBackup meta) ]
-                    , Html.h1 [ css [ Theming.headingFont, Tw.text_4xl, Tw.font_bold ] ] [ text meta.name ]
+                    , Theming.pageTitle meta.name
                     ]
-                , Html.p [ css [ Theming.bodyFont, Tw.text_xl, Tw.text_color Tw.gray_300, Tw.mb_4 ] ]
+                , Html.p [ css [ Theming.bodyFont, Tw.text_xl, Tw.m_0, Tw.mb_4 ] ]
                     [ text meta.description ]
                 ]
 
@@ -184,7 +206,7 @@ viewTopicHeader maybeMeta =
 viewResourceGrid : List LearningResources.Resource -> Html Msg
 viewResourceGrid resources =
     if List.isEmpty resources then
-        div [ css [ Theming.bodyFont, Tw.text_color Tw.gray_400, Tw.italic ] ] [ text "No resources found for this topic yet." ]
+        div [ css [ Theming.bodyFont, Tw.italic ] ] [ text "No resources found for this topic yet." ]
 
     else
         div [ css [ Tw.grid, Tw.grid_cols_1, Breakpoints.md [ Tw.grid_cols_2 ], Tw.gap_6 ] ]
@@ -193,7 +215,7 @@ viewResourceGrid resources =
 
 viewResourceCard : LearningResources.Resource -> Html Msg
 viewResourceCard resource =
-    Theming.cardShell [ Tw.p_6, Tw.flex, Tw.flex_col ]
+    Theming.cardShell [ Tw.p_6, Tw.flex, Tw.flex_col, Tw.transition_colors, Css.hover [ Tw.border_color Tw.dd_indigo ] ]
         [ div [ css [ Tw.flex, Tw.justify_between, Tw.items_start, Tw.mb_4 ] ]
             [ Html.h3 [ css [ Theming.headingFont, Tw.text_lg ] ] [ text resource.name ]
             , viewPricingBadge resource.pricing
@@ -207,58 +229,33 @@ viewResourceCard resource =
             , Attr.target "_blank"
             , css
                 [ Theming.headingFont
-                , Tw.text_color Tw.dd_pink
-                , Css.hover [ Tw.text_color Tw.white ]
+                , Tw.text_color Tw.dd_indigo
+                , Css.hover [ Tw.text_color Tw.dd_pink ]
                 , Tw.transition_colors
+                , Tw.no_underline
                 ]
             ]
-            [ text "Read more ->" ]
+            [ text "view resource" ]
         ]
 
 
 viewTypeBadge : LearningResources.ResourceType -> Html Msg
 viewTypeBadge resourceType =
-    span
-        [ css
-            [ Tw.text_xs
-            , Tw.font_medium
-            , Tw.bg_color Tw.indigo_900
-            , Tw.text_color Tw.indigo_200
-            , Tw.px_2
-            , Tw.py_1
-            , Tw.rounded_md
-            ]
-        ]
-        [ text (LearningResources.resourceTypeToString resourceType) ]
+    viewTag Tw.font_medium Theming.Indigo (LearningResources.resourceTypeToString resourceType)
 
 
 viewPricingBadge : LearningResources.Pricing -> Html Msg
 viewPricingBadge pricing =
     case pricing of
         LearningResources.FreePricing_Or_PaidPricing__FreePricing free ->
-            span
-                [ css
-                    [ Tw.text_xs
-                    , Tw.font_bold
-                    , Tw.bg_color Tw.emerald_900
-                    , Tw.text_color Tw.emerald_400
-                    , Tw.px_2
-                    , Tw.py_1
-                    , Tw.rounded_md
-                    ]
-                ]
-                [ text free.model ]
+            viewTag Tw.font_bold Theming.Teal free.model
 
         LearningResources.FreePricing_Or_PaidPricing__PaidPricing paid ->
-            span
-                [ css
-                    [ Tw.text_xs
-                    , Tw.font_bold
-                    , Tw.bg_color Tw.slate_700
-                    , Tw.text_color Tw.slate_300
-                    , Tw.px_2
-                    , Tw.py_1
-                    , Tw.rounded_md
-                    ]
-                ]
-                [ text (paid.model ++ ": $" ++ String.fromFloat paid.amount) ]
+            viewTag Tw.font_bold Theming.Pink (paid.model ++ ": $" ++ String.fromFloat paid.amount)
+
+
+viewTag : Css.Style -> Theming.Accent -> String -> Html Msg
+viewTag weight accent label =
+    span
+        [ css [ Tw.text_xs, weight, Theming.badgeStyle accent, Tw.px_2, Tw.py_1 ] ]
+        [ text label ]

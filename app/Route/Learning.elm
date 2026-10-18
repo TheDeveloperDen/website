@@ -89,7 +89,7 @@ update _ _ (SearchQueryChanged query) model =
 view : App Data ActionData RouteParams -> Shared.Model -> Model -> View (PagesMsg Msg)
 view app _ model =
     View.fromStyled "Learning Directory"
-        [ div [ css [ Tw.pt_12, Tw.pb_24, Tw.max_w_7xl, Tw.mx_auto, Tw.px_6 ] ]
+        [ div [ css [ Tw.pt_12, Tw.pb_24, Tw.max_w_7xl, Tw.mx_auto, Theming.gutter ] ]
             [ viewHeader model.searchQuery
             , viewCategorisedGrid model.searchQuery app.data.metadata
             ]
@@ -99,12 +99,10 @@ view app _ model =
 
 viewHeader : String -> Html Msg
 viewHeader query =
-    div [ css [ Tw.flex, Tw.flex_col, Tw.items_center, Tw.text_center, Tw.mb_16 ] ]
-        [ Html.h1
-            [ css [ Theming.headingFont, Tw.text_5xl, Tw.font_bold, Tw.tracking_widest, Tw.uppercase, Tw.mb_4 ] ]
-            [ text "Learning Resources" ]
+    div [ css [ Tw.flex, Tw.flex_col, Tw.items_start, Tw.mb_16 ] ]
+        [ div [ css [ Tw.mb_6 ] ] [ Theming.pageTitle "learning resources" ]
         , Html.p
-            [ css [ Theming.bodyFont, Tw.text_lg, Tw.text_color Tw.gray_400, Tw.max_w_2xl, Tw.mb_8 ] ]
+            [ css [ Theming.bodyFont, Tw.text_lg, Tw.m_0, Tw.max_w_2xl, Tw.mb_8 ] ]
             [ text "Explore our curated directory of programming languages, tools, and concepts." ]
         , Html.input
             [ Attr.value query
@@ -115,11 +113,12 @@ viewHeader query =
                 , Tw.w_full
                 , Tw.max_w_lg
                 , Tw.p_4
-                , Tw.rounded_xl
-                , Tw.bg_color Tw.slate_800
+                , Tw.bg_color Tw.dd_deepblueLighter
                 , Tw.border
-                , Tw.border_color Tw.slate_700
-                , Tw.text_color Tw.white
+                , Tw.border_color Tw.dd_border
+                , Tw.text_color Tw.dd_text
+                , Css.focus [ Tw.border_color Tw.dd_teal ]
+                , Css.pseudoElement "placeholder" [ Tw.text_color Tw.dd_subtle ]
                 ]
             ]
             []
@@ -162,15 +161,24 @@ viewCategorisedGrid query metadata =
 
 viewCategorySection : String -> List LearningResources.CompiledMeta -> Html msg
 viewCategorySection category items =
+    let
+        accent : Theming.Accent
+        accent =
+            categoryAccent category
+    in
     div []
         [ Html.h2
             [ css
                 [ Theming.headingFont
-                , Tw.text_3xl
-                , Tw.font_bold
-                , Tw.mb_8
-                , Theming.textGradient
+                , Tw.text_2xl
+                , Tw.font_semibold
+                , Tw.lowercase
                 , Tw.inline_block
+                , Tw.m_0
+                , Tw.mb_6
+                , Tw.pb_2
+                , Tw.border_b_2
+                , Tw.border_color (Theming.accentColour accent)
                 ]
             ]
             [ text category ]
@@ -183,12 +191,24 @@ viewCategorySection category items =
                 , Tw.gap_6
                 ]
             ]
-            (List.map viewTopicCard items)
+            (List.map (viewTopicCard accent) items)
         ]
 
+categoryAccent : String -> Theming.Accent
+categoryAccent category =
+    case category of
+        "Language" ->
+            Theming.Teal
 
-viewTopicCard : LearningResources.CompiledMeta -> Html msg
-viewTopicCard meta =
+        "Platform" ->
+            Theming.Indigo
+
+        _ ->
+            Theming.Pink
+
+
+viewTopicCard : Theming.Accent -> LearningResources.CompiledMeta -> Html msg
+viewTopicCard accent meta =
     Html.a
         [ Attr.href (UrlPath.toAbsolute (Route.toPath (Route.Learning__Resource_ { resource = LearningResources.entityTagToString meta.id })))
         , css
@@ -198,34 +218,17 @@ viewTopicCard meta =
             ]
         ]
         [ Theming.cardShell
-            [ Tw.relative
-            , Tw.transform
-            , Tw.transition_all
-            , Tw.duration_300
-            , Css.hover
-                [ Tw.border
-                , Tw.border_color Tw.dd_pink
-                , Tw.neg_translate_y_1
-                ]
+            [ Tw.h_full
+            , Tw.transition_colors
+            , Css.hover [ Tw.border_color (Theming.accentColour accent) ]
             ]
-            [ div
-                [ css
-                    [ Tw.absolute
-                    , Tw.top_0
-                    , Tw.left_0
-                    , Tw.right_0
-                    , Tw.h_1
-                    , Theming.brandGradientBg
-                    ]
-                ]
-                []
-            , div [ css [ Tw.p_5, Tw.bg_color Tw.dd_deepblue ] ]
-                [ div [ css [ Tw.flex, Tw.items_center, Tw.gap_3, Tw.mb_2 ] ]
-                    [ div [ css [ Tw.text_3xl, Tw.drop_shadow_md ] ] [ text (Emojis.emojiOrBackup meta) ]
-                    , Html.h3 [ css [ Theming.headingFont, Tw.text_xl, Tw.font_bold ] ] [ text meta.name ]
+            [ div [ css [ Tw.p_6 ] ]
+                [ div [ css [ Tw.flex, Tw.items_center, Tw.gap_3, Tw.mb_3 ] ]
+                    [ div [ css [ Tw.text_2xl ] ] [ text (Emojis.emojiOrBackup meta) ]
+                    , Html.h3 [ css [ Theming.headingFont, Tw.text_xl, Tw.font_semibold, Tw.m_0 ] ] [ text meta.name ]
                     ]
                 , Html.p
-                    [ css [ Theming.bodyFont, Tw.text_sm, Tw.text_color Tw.gray_300, Tw.mb_4 ] ]
+                    [ css [ Theming.bodyFont, Tw.text_sm, Tw.leading_relaxed, Tw.m_0, Tw.mb_4 ] ]
                     [ text meta.description ]
                 , div [ css [ Tw.flex, Tw.flex_wrap, Tw.gap_2 ] ]
                     (List.map (LearningResources.languageDomainToString >> viewBadge) meta.domains)
@@ -241,14 +244,9 @@ viewBadge label =
             [ Theming.headingFont
             , Tw.text_xs
             , Tw.font_medium
-            , Tw.bg_color Tw.slate_800
-            , Tw.text_color Tw.slate_300
-            , Tw.border
-            , Tw.border_color Tw.slate_600
-            , Tw.text_color Tw.slate_300
+            , Theming.badgeStyle Theming.Indigo
             , Tw.px_3
             , Tw.py_1
-            , Tw.rounded_full
             ]
         ]
         [ text label ]
