@@ -1,13 +1,13 @@
 module Route.Index exposing (ActionData, Data, Model, Msg, RouteParams, route)
 
 import BackendTask
+import Banner
 import Css
 import Head
 import Head.Seo as Seo
 import Html.Styled exposing (Html, a, div, h1, i, p, text)
 import Html.Styled.Attributes as Attr exposing (css, href, target)
 import Json.Encode
-import Pages.Url
 import PagesMsg exposing (PagesMsg)
 import Redirects
 import RouteBuilder exposing (App, StatelessRoute)
@@ -15,7 +15,6 @@ import Shared
 import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Utilities as Tw
 import Theming
-import UrlPath
 import View exposing (View)
 
 
@@ -51,15 +50,10 @@ route =
 head : App Data ActionData RouteParams -> List Head.Tag
 head _ =
     Head.structuredData organisation
-        :: (Seo.summary
+        :: (Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
                 , siteName = "Developer Den"
-                , image =
-                    { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
-                    , alt = "Developer Den"
-                    , dimensions = Nothing
-                    , mimeType = Nothing
-                    }
+                , image = Banner.seoImage "default" "Developer Den"
                 , description = "Developer Den is a community of programmers learning and building together."
                 , locale = Nothing
                 , title = "Home"

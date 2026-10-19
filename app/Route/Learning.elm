@@ -1,6 +1,7 @@
 module Route.Learning exposing (ActionData, Data, Model, Msg, RouteParams, route)
 
 import BackendTask exposing (BackendTask)
+import Banner
 import Css
 import Dict
 import Effect exposing (Effect)
@@ -12,7 +13,6 @@ import Html.Styled.Attributes as Attr exposing (css)
 import Html.Styled.Events exposing (onInput)
 import LearningResources as Db
 import LearningResources.Types as LearningResources
-import Pages.Url
 import PagesMsg exposing (PagesMsg)
 import Route
 import RouteBuilder exposing (App, StatefulRoute)
@@ -64,15 +64,10 @@ data =
 
 head : App Data ActionData RouteParams -> List Head.Tag
 head _ =
-    Seo.summary
+    Seo.summaryLarge
         { canonicalUrlOverride = Nothing
         , siteName = "Developer Den"
-        , image =
-            { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
-            , alt = "Developer Den"
-            , dimensions = Nothing
-            , mimeType = Nothing
-            }
+        , image = Banner.seoImage "default" "Developer Den"
         , description = "Explore our curated directory of programming languages, tools, and concepts."
         , locale = Nothing
         , title = "Learning Resources"

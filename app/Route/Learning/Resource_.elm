@@ -1,6 +1,7 @@
 module Route.Learning.Resource_ exposing (ActionData, Data, Model, Msg, RouteParams, route)
 
 import BackendTask exposing (BackendTask)
+import Banner
 import Css
 import FatalError exposing (FatalError)
 import Head
@@ -10,7 +11,6 @@ import Html.Styled.Attributes as Attr exposing (css)
 import Json.Encode
 import LearningResources as Db
 import LearningResources.Types as LearningResources
-import Pages.Url
 import PagesMsg exposing (PagesMsg)
 import Route
 import RouteBuilder exposing (App, StatelessRoute)
@@ -87,15 +87,10 @@ data params =
 head : App Data ActionData RouteParams -> List Head.Tag
 head app =
     Head.structuredData (itemList app.data)
-        :: (Seo.summary
+        :: (Seo.summaryLarge
                 { canonicalUrlOverride = Nothing
                 , siteName = "Developer Den"
-                , image =
-                    { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
-                    , alt = "Developer Den"
-                    , dimensions = Nothing
-                    , mimeType = Nothing
-                    }
+                , image = Banner.seoImage (LearningResources.entityTagToString app.data.meta.id) ("Learn " ++ app.data.meta.name ++ " on Developer Den")
                 , description = app.data.meta.description
                 , locale = Nothing
                 , title = pageTitle app.data.meta.name ++ " | Developer Den"

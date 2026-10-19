@@ -1,12 +1,12 @@
 module Route.Rules exposing (ActionData, Data, Model, Msg, RouteParams, route)
 
 import BackendTask
+import Banner
 import Css
 import Head
 import Head.Seo as Seo
 import Html.Styled as Html exposing (Html, a, div, h2, h3, p, text)
 import Html.Styled.Attributes as Attr exposing (css)
-import Pages.Url
 import PagesMsg exposing (PagesMsg)
 import RouteBuilder exposing (App, StatelessRoute)
 import Shared
@@ -14,7 +14,6 @@ import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
 import Theming
-import UrlPath
 import View exposing (View)
 
 
@@ -49,15 +48,10 @@ route =
 
 head : App Data ActionData RouteParams -> List Head.Tag
 head _ =
-    Seo.summary
+    Seo.summaryLarge
         { canonicalUrlOverride = Nothing
         , siteName = "Developer Den"
-        , image =
-            { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
-            , alt = "Developer Den"
-            , dimensions = Nothing
-            , mimeType = Nothing
-            }
+        , image = Banner.seoImage "default" "Developer Den"
         , description = "The rules of the Developer Den community."
         , locale = Nothing
         , title = "Rules"
