@@ -1,8 +1,7 @@
-module ErrorPage exposing (ErrorPage(..), Model, Msg, head, init, internalError, notFound, statusCode, update, view)
+module ErrorPage exposing (ErrorPage, Model, Msg, init, internalError, notFound, statusCode, update, view)
 
 import Effect exposing (Effect)
-import Head
-import Html exposing (Html)
+import Html
 import View exposing (View)
 
 
@@ -16,22 +15,17 @@ type alias Model =
 
 
 init : ErrorPage -> ( Model, Effect Msg )
-init errorPage =
+init _ =
     ( { count = 0 }
     , Effect.none
     )
 
 
 update : ErrorPage -> Msg -> Model -> ( Model, Effect Msg )
-update errorPage msg model =
+update _ msg model =
     case msg of
         Increment ->
             ( { model | count = model.count + 1 }, Effect.none )
-
-
-head : ErrorPage -> List Head.Tag
-head errorPage =
-    []
 
 
 type ErrorPage
@@ -50,7 +44,7 @@ internalError =
 
 
 view : ErrorPage -> Model -> View Msg
-view error model =
+view error _ =
     { body =
         [ Html.div []
             [ Html.p []
@@ -69,7 +63,7 @@ view error model =
             NotFound ->
                 "Page Not Found"
 
-            InternalError string ->
+            InternalError _ ->
                 "Unexpected Error"
     }
 

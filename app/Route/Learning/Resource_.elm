@@ -1,4 +1,4 @@
-module Route.Learning.Resource_ exposing (ActionData, Data, Model, Msg, route)
+module Route.Learning.Resource_ exposing (ActionData, Data, Model, Msg, RouteParams, route)
 
 import BackendTask exposing (BackendTask)
 import Css

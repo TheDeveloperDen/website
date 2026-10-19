@@ -1,4 +1,4 @@
-module Route.Rules exposing (ActionData, Data, Model, Msg, route)
+module Route.Rules exposing (ActionData, Data, Model, Msg, RouteParams, route)
 
 import BackendTask
 import Css

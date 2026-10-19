@@ -1,17 +1,18 @@
-module Effect exposing (Effect(..), batch, fromCmd, map, none, perform, testPerform)
+module Effect exposing
+    ( Effect, batch, fromCmd, map, none, perform
+    , FormData
+    )
 
 {-|
 
-@docs Effect, batch, fromCmd, map, none, perform, testPerform
+@docs Effect, batch, fromCmd, map, none, perform
 
 -}
 
 import Browser.Navigation
 import Form
 import Http
-import Json.Decode as Decode
 import Pages.Fetcher
-import Test.PagesProgram.SimulatedEffect as SimulatedEffect exposing (SimulatedEffect)
 import Url exposing (Url)
 
 
@@ -20,24 +21,6 @@ type Effect msg
     = None
     | Cmd (Cmd msg)
     | Batch (List (Effect msg))
-    | GetStargazers (Result Http.Error Int -> msg)
-    | SetField { formId : String, name : String, value : String }
-    | FetchRouteData
-        { data : Maybe FormData
-        , toMsg : Result Http.Error Url -> msg
-        }
-    | Submit
-        { values : FormData
-        , toMsg : Result Http.Error Url -> msg
-        }
-    | SubmitFetcher (Pages.Fetcher.Fetcher msg)
-
-
-{-| -}
-type alias RequestInfo =
-    { contentType : String
-    , body : String
-    }
 
 
 {-| -}
@@ -71,29 +54,6 @@ map fn effect =
         Batch list ->
             Batch (List.map (map fn) list)
 
-        GetStargazers toMsg ->
-            GetStargazers (toMsg >> fn)
-
-        FetchRouteData fetchInfo ->
-            FetchRouteData
-                { data = fetchInfo.data
-                , toMsg = fetchInfo.toMsg >> fn
-                }
-
-        Submit fetchInfo ->
-            Submit
-                { values = fetchInfo.values
-                , toMsg = fetchInfo.toMsg >> fn
-                }
-
-        SetField info ->
-            SetField info
-
-        SubmitFetcher fetcher ->
-            fetcher
-                |> Pages.Fetcher.map fn
-                |> SubmitFetcher
-
 
 {-| -}
 perform :
@@ -116,7 +76,7 @@ perform :
     }
     -> Effect pageMsg
     -> Cmd msg
-perform ({ fromPageMsg, key } as helpers) effect =
+perform ({ fromPageMsg } as helpers) effect =
     case effect of
         None ->
             Cmd.none
@@ -124,57 +84,8 @@ perform ({ fromPageMsg, key } as helpers) effect =
         Cmd cmd ->
             Cmd.map fromPageMsg cmd
 
-        SetField info ->
-            helpers.setField info
-
         Batch list ->
             Cmd.batch (List.map (perform helpers) list)
-
-        GetStargazers toMsg ->
-            Http.get
-                { url =
-                    "https://api.github.com/repos/dillonkearns/elm-pages"
-                , expect = Http.expectJson (toMsg >> fromPageMsg) (Decode.field "stargazers_count" Decode.int)
-                }
-
-        FetchRouteData fetchInfo ->
-            helpers.fetchRouteData
-                fetchInfo
-
-        Submit record ->
-            helpers.submit record
-
-        SubmitFetcher record ->
-            helpers.runFetcher record
-
-
-{-| -}
-testPerform : Effect msg -> SimulatedEffect msg
-testPerform effect =
-    case effect of
-        None ->
-            SimulatedEffect.none
-
-        Cmd _ ->
-            SimulatedEffect.none
-
-        Batch list ->
-            SimulatedEffect.batch (List.map testPerform list)
-
-        GetStargazers toMsg ->
-            SimulatedEffect.dispatchMsg (toMsg (Ok 0))
-
-        SetField info ->
-            SimulatedEffect.setField info
-
-        FetchRouteData _ ->
-            SimulatedEffect.none
-
-        Submit _ ->
-            SimulatedEffect.none
-
-        SubmitFetcher fetcher ->
-            SimulatedEffect.submitFetcher fetcher
 
 
 type alias FormData =
