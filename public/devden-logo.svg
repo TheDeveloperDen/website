@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="100%" height="100%" viewBox="0 0 1188 1188" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+<svg width="100%" height="100%" viewBox="169 254 849 680" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
     <g transform="matrix(1,0,0,1,-4800,0)">
         <g id="Page-2" serif:id="Page 2" transform="matrix(4.166667,0,0,4.166667,4800,0)">
             <rect x="0" y="0" width="285.03" height="285.03" style="fill:none;"/>
@@ -25,7 +25,7 @@
                             </clipPath>
                             <g clip-path="url(#_clip4)">
                                 <g transform="matrix(0.001179,0,-0,-0.001212,-0.2,0.656603)">
-                                    <use xlink:href="#_Image5" x="474.828" y="624.155" width="544px" height="44px"/>
+                                    <rect x="474.828" y="624.155" width="544" height="44" style="fill:url(#_Linear5);"/>
                                 </g>
                             </g>
                         </g>
@@ -54,6 +54,6 @@
     </g>
     <defs>
         <linearGradient id="_Linear2" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1,0,0,-1,0,-0.122341)"><stop offset="0" style="stop-color:#00AFC3;stop-opacity:1"/><stop offset="0.5" style="stop-color:#8099FF;stop-opacity:1"/><stop offset="1" style="stop-color:#FF52F9;stop-opacity:1"/></linearGradient>
-        <image id="_Image5" width="544px" height="44px" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAiAAAAAsCAYAAABc1ANOAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABaklEQVR4nO3bQW7CMBRAQafX7O16sF4lXXRRCIkboepRwcwKKc4nRhZ6myzvH5/rMn5cfh5jjGXdv7ZsVl5dO7xnNns5Xndi9uz5Lu+ZPdN83eT5Tu93f8b9+93f4/x32Z99M2+67vfP3/ed3O8fnrH5ulc4YyfnnZh9M+Mpz9jk+aL9OmOX607OO5h9u+6O32/7vU9wxqbzru6Z/OfeNXszb7PftwEAEBMgAEBOgAAAOQECAOQECACQEyAAQE6AAAA5AQIA5AQIAJATIABAToAAADkBAgDkBAgAkBMgAEBOgAAAOQECAOQECACQEyAAQE6AAAA5AQIA5AQIAJATIABAToAAADkBAgDkBAgAMNZlTb9PgAAAOQECAOQECACQEyAAQE6AAAA5AQIA5AQIwAO1Lz7C/yFAAICcAAEAcgIEAMgJEAAgJ0AAgJwAAQByAoSX5NVHgMcSIABAToAAADkBAgDkBAgAkPsCtDs1wfwJY5kAAAAASUVORK5CYII="/>
+        <linearGradient id="_Linear5" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:#5BA2DE;stop-opacity:1"/><stop offset="1" style="stop-color:#FF74FA;stop-opacity:1"/></linearGradient>
     </defs>
 </svg>
