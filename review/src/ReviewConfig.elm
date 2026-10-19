@@ -24,7 +24,6 @@ import NoPrematureLetComputation
 import NoSimpleLetBody
 import NoUnused.CustomTypeConstructorArgs
 import NoUnused.CustomTypeConstructors
-import NoUnused.Dependencies
 import NoUnused.Exports
 import NoUnused.Parameters
 import NoUnused.Patterns
@@ -59,7 +58,8 @@ config =
         , NoPrematureLetComputation.rule
         , NoUnused.CustomTypeConstructors.rule []
         , NoUnused.CustomTypeConstructorArgs.rule
-        , NoUnused.Dependencies.rule
+
+        -- NoUnused.Dependencies elm-pages seems to not play nicely with this
         , NoUnused.Exports.rule
         , NoUnused.Parameters.rule
         , NoUnused.Patterns.rule
