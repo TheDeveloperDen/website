@@ -54,7 +54,7 @@ head _ =
                 { canonicalUrlOverride = Nothing
                 , siteName = "Developer Den"
                 , image = Banner.seoImage "default" "Developer Den"
-                , description = "Developer Den is a community of programmers learning and building together."
+                , description = "A casual coding Discord server suitable for everyone, from absolute beginners to professionals!"
                 , locale = Nothing
                 , title = "Home"
                 }
