@@ -11,7 +11,6 @@ import Html.Styled as Html exposing (Html, div, span, text)
 import Html.Styled.Attributes as Attr exposing (css)
 import Html.Styled.Events exposing (onInput)
 import LearningResources as Db
-import LearningResources.Emojis as Emojis
 import LearningResources.Types as LearningResources
 import Pages.Url
 import PagesMsg exposing (PagesMsg)
@@ -194,6 +193,7 @@ viewCategorySection category items =
             (List.map (viewTopicCard accent) items)
         ]
 
+
 categoryAccent : String -> Theming.Accent
 categoryAccent category =
     case category of
@@ -224,7 +224,7 @@ viewTopicCard accent meta =
             ]
             [ div [ css [ Tw.p_6 ] ]
                 [ div [ css [ Tw.flex, Tw.items_center, Tw.gap_3, Tw.mb_3 ] ]
-                    [ div [ css [ Tw.text_2xl ] ] [ text (Emojis.emojiOrBackup meta) ]
+                    [ Theming.entityIcon (Css.batch [ Tw.w_8, Tw.h_8, Tw.text_2xl ]) meta
                     , Html.h3 [ css [ Theming.headingFont, Tw.text_xl, Tw.font_semibold, Tw.m_0 ] ] [ text meta.name ]
                     ]
                 , Html.p

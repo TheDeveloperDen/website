@@ -159,6 +159,9 @@ viewSidebarLink activeSlug meta =
         [ Attr.href (UrlPath.toAbsolute (Route.toPath (Route.Learning__Resource_ { resource = metaSlug })))
         , css
             [ Theming.headingFont
+            , Tw.flex
+            , Tw.items_center
+            , Tw.gap_2
             , Tw.text_sm
             , Tw.no_underline
             , Tw.py_2
@@ -183,7 +186,7 @@ viewSidebarLink activeSlug meta =
             , Css.hover [ Tw.text_color Tw.dd_text, Tw.bg_color Tw.dd_deepblueLighter ]
             ]
         ]
-        [ text (Emojis.emojiOrBackup meta ++ " " ++ meta.name) ]
+        [ Theming.entityIcon (Css.batch [ Tw.w_5, Tw.h_5 ]) meta, text meta.name ]
 
 
 viewTopicHeader : Maybe LearningResources.CompiledMeta -> Html Msg
@@ -195,7 +198,7 @@ viewTopicHeader maybeMeta =
         Just meta ->
             div [ css [ Tw.mb_12, Tw.border_b, Tw.border_color Tw.dd_border, Tw.pb_8 ] ]
                 [ div [ css [ Tw.flex, Tw.items_center, Tw.gap_4, Tw.mb_6 ] ]
-                    [ div [ css [ Tw.text_5xl ] ] [ text (Emojis.emojiOrBackup meta) ]
+                    [ Theming.entityIcon (Css.batch [ Tw.w_14, Tw.h_14, Tw.text_5xl ]) meta
                     , Theming.pageTitle meta.name
                     ]
                 , Html.p [ css [ Theming.bodyFont, Tw.text_xl, Tw.m_0, Tw.mb_4 ] ]
@@ -225,7 +228,7 @@ viewResourceCard resource =
         , Html.p [ css [ Theming.bodyFont, Tw.text_sm, Tw.mb_6, Tw.flex_grow ] ]
             [ text (Maybe.withDefault "No description provided." resource.description) ]
         , Html.a
-            [ Attr.href resource.url
+            [ Attr.href (Url.toString resource.url)
             , Attr.target "_blank"
             , css
                 [ Theming.headingFont

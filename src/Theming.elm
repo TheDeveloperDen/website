@@ -1,8 +1,11 @@
-module Theming exposing (Accent(..), accentColour, badgeStyle, bodyFont, brandGradientBg, cardShell, gradientButton, gutter, headingFont, pageTitle, quietLink, themedImage)
+module Theming exposing (Accent(..), accentColour, badgeStyle, bodyFont, brandGradientBg, cardShell, entityIcon, gradientButton, gutter, headingFont, pageTitle, quietLink, themedImage)
 
 import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
+import LearningResources
+import LearningResources.Emojis as Emojis
+import LearningResources.Types exposing (CompiledMeta)
 import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
@@ -119,6 +122,25 @@ themedImage config styles =
     [ Html.span [ Attr.class "on-dark" ] [ image config.dark ]
     , Html.span [ Attr.class "on-light" ] [ image config.light ]
     ]
+
+
+{-| A topic's icon at the given size, picking the dark variant on dark backgrounds. Uses the emoji if there's no icon defined
+-}
+entityIcon : Css.Style -> CompiledMeta -> Html msg
+entityIcon size meta =
+    case meta.icon of
+        Just icon ->
+            Html.span [ Attr.css [ Css.display Css.inlineFlex, Css.flexShrink (Css.int 0) ] ]
+                (themedImage
+                    { dark = LearningResources.iconUrl (Maybe.withDefault icon.default icon.dark)
+                    , light = LearningResources.iconUrl icon.default
+                    , alt = ""
+                    }
+                    [ size, Css.property "object-fit" "contain" ]
+                )
+
+        Nothing ->
+            Html.span [ Attr.css [ size ] ] [ Html.text (Emojis.emojiOrBackup meta) ]
 
 
 type Accent
