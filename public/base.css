@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+@font-face {
+  font-family: 'Cascadia Code Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 700;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/cascadia-code:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+
+:root {
+  color-scheme: dark; /* dark by default */
+
+  --color-den-deepblue: light-dark(#ffffff, #171834);
+  --color-den-deepblue-lighter: light-dark(#f1f2fb, #1e1f3d);
+  --color-den-teal: light-dark(#007684, #00AFC3);
+  --color-den-pink: light-dark(#BF00B9, #FF52F9);
+  --color-den-indigo: light-dark(#005FF1, #8099FF);
+  --color-den-text: light-dark(#171834, #ffffff);
+  --color-den-muted: light-dark(#2f3170, #c5c9ec);
+  --color-den-subtle: light-dark(#474A9F, #8e93c6);
+  --color-den-border: light-dark(#d5d7ef, #2d2f5c);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* make elements only visible in light/dark mode */
+.on-light {
+  display: none;
+}
+
+:root[data-theme="light"] .on-light {
+  display: contents;
+}
+
+:root[data-theme="light"] .on-dark {
+  display: none;
+}
+
+*, ::before, ::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+}
+
+html, body {
+  background-color: var(--color-den-deepblue);
+  color: var(--color-den-text);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-den-teal);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

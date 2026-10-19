@@ -1,26 +1,34 @@
 {
-  "license": "MIT",
+  "name": "website",
+  "type": "module",
+  "private": true,
   "devDependencies": {
-    "autoprefixer": "^10.3.6",
-    "postcss": "^8.3.8",
-    "postcss-cli": "^9.0.1",
-    "postcss-elm-tailwind": "^0.11.0",
-    "tailwindcss": "^2.2.16"
+    "@types/bun": "latest",
+    "elm-open-api": "git+https://github.com/wolfadex/elm-open-api-cli.git#main",
+    "elm-review": "^2.13.5",
+    "quicktype": "^23.2.6",
+    "quicktype-core": "^23.2.6",
+    "elm": "^0.19.1-6",
+    "elm-codegen": "^0.6.3",
+    "elm-format": "^0.8.8",
+    "elm-pages": "^3.5.0",
+    "lamdera": "^0.19.1-1.4.0",
+    "vite": "^7.3.2"
   },
   "scripts": {
-    "copy-resources": "cp -r static/. dist/;",
-    "build-elm": "elm make src/Main.elm --output=dist/elm.js",
-    "build-elm-prod": "elm make src/Main.elm --output=dist/elm.js --optimize",
-    "build-tw": "postcss main.css -o dist/main.css",
-    "build": "yarn build-tw && yarn build-elm && yarn copy-resources",
-    "build-prod": "yarn build-tw && yarn build-elm-prod && NODE_ENV=production yarn build-tw && yarn copy-resources",
-    "check-format": "elm-format src/**/*.elm --validate",
-    "watch-elm": "watch 'yarn build-elm' src"
+    "tw": "bunx --bun elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts",
+    "dev": "elm-pages dev",
+    "build": "elm-pages build && test -f dist/og/default.png",
+    "format": "elm-format src app --yes"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   },
   "dependencies": {
-    "postcss-loader": "^6.1.1",
-    "serve": "^12.0.1",
-    "watch": "^1.0.2",
-    "yarn": "^1.22.15"
+    "@resvg/resvg-js": "^2.6.2",
+    "@tailwindcss/postcss": "^4.3.0",
+    "elm-tailwind-modules": "^0.5.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0"
   }
 }
