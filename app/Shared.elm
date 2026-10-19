@@ -147,7 +147,7 @@ viewNavbar toMsg activeRoute =
             ]
             (Theming.themedImage
                 { dark = "/devden-logo.svg", light = "/devden-logo-light.svg", alt = "Developer Den Logo" }
-                [ Tw.h_16, Tw.w_auto, Tw.block ]
+                [ Tw.h_9, Tw.w_auto, Tw.block ]
             )
         , div [ css [ Tw.flex, Tw.flex_wrap, Tw.gap_x_6, Tw.gap_y_2, Breakpoints.md [ Tw.gap_x_8 ] ] ]
             [ viewNavLink "home" Route.Index (activeRoute == Just Route.Index)
