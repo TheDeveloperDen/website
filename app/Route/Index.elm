@@ -6,6 +6,7 @@ import Head
 import Head.Seo as Seo
 import Html.Styled exposing (Html, a, div, h1, i, p, text)
 import Html.Styled.Attributes as Attr exposing (css, href, target)
+import Json.Encode
 import Pages.Url
 import PagesMsg exposing (PagesMsg)
 import Redirects
@@ -49,20 +50,35 @@ route =
 
 head : App Data ActionData RouteParams -> List Head.Tag
 head _ =
-    Seo.summary
-        { canonicalUrlOverride = Nothing
-        , siteName = "Developer Den"
-        , image =
-            { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
-            , alt = "Developer Den"
-            , dimensions = Nothing
-            , mimeType = Nothing
-            }
-        , description = "Developer Den is a community of programmers learning and building together."
-        , locale = Nothing
-        , title = "Home"
-        }
-        |> Seo.website
+    Head.structuredData organisation
+        :: (Seo.summary
+                { canonicalUrlOverride = Nothing
+                , siteName = "Developer Den"
+                , image =
+                    { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
+                    , alt = "Developer Den"
+                    , dimensions = Nothing
+                    , mimeType = Nothing
+                    }
+                , description = "Developer Den is a community of programmers learning and building together."
+                , locale = Nothing
+                , title = "Home"
+                }
+                |> Seo.website
+           )
+
+
+{-| schema.org `Organization`, so search engines can associate the site with Developer Den.
+-}
+organisation : Json.Encode.Value
+organisation =
+    Json.Encode.object
+        [ ( "@context", Json.Encode.string "https://schema.org" )
+        , ( "@type", Json.Encode.string "Organization" )
+        , ( "name", Json.Encode.string "Developer Den" )
+        , ( "url", Json.Encode.string "https://developerden.org" )
+        , ( "logo", Json.Encode.string "https://developerden.org/devden-logo.svg" )
+        ]
 
 
 view : App Data ActionData RouteParams -> Shared.Model -> View (PagesMsg Msg)
@@ -98,7 +114,7 @@ viewHero =
         ]
 
 
-{-| A fake text layer on top of the SVG logo to allow the text to be highlighted and read by screen readers etc 
+{-| A fake text layer on top of the SVG logo to allow the text to be highlighted and read by screen readers etc
 -}
 viewTitle : Html Msg
 viewTitle =

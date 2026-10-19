@@ -10,9 +10,9 @@ import Pages.Url
 import PagesMsg exposing (PagesMsg)
 import RouteBuilder exposing (App, StatelessRoute)
 import Shared
+import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
-import Tailwind.Breakpoints as Breakpoints
 import Theming
 import UrlPath
 import View exposing (View)

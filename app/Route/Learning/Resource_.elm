@@ -7,8 +7,8 @@ import Head
 import Head.Seo as Seo
 import Html.Styled as Html exposing (Html, div, span, text)
 import Html.Styled.Attributes as Attr exposing (css)
+import Json.Encode
 import LearningResources as Db
-import LearningResources.Emojis as Emojis
 import LearningResources.Types as LearningResources
 import Pages.Url
 import PagesMsg exposing (PagesMsg)
@@ -19,6 +19,7 @@ import Tailwind.Breakpoints as Breakpoints
 import Tailwind.Theme as Tw
 import Tailwind.Utilities as Tw
 import Theming
+import Url
 import UrlPath
 import View exposing (View)
 
@@ -85,25 +86,61 @@ data params =
 
 head : App Data ActionData RouteParams -> List Head.Tag
 head app =
-    Seo.summary
-        { canonicalUrlOverride = Nothing
-        , siteName = "Developer Den"
-        , image =
-            { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
-            , alt = "Developer Den"
-            , dimensions = Nothing
-            , mimeType = Nothing
-            }
-        , description = app.data.meta.description
-        , locale = Nothing
-        , title = "Learn " ++ app.data.meta.name
-        }
-        |> Seo.website
+    Head.structuredData (itemList app.data)
+        :: (Seo.summary
+                { canonicalUrlOverride = Nothing
+                , siteName = "Developer Den"
+                , image =
+                    { url = UrlPath.fromString "devden-banner.svg" |> Pages.Url.fromPath
+                    , alt = "Developer Den"
+                    , dimensions = Nothing
+                    , mimeType = Nothing
+                    }
+                , description = app.data.meta.description
+                , locale = Nothing
+                , title = pageTitle app.data.meta.name ++ " | Developer Den"
+                }
+                |> Seo.website
+           )
+
+
+pageTitle : String -> String
+pageTitle name =
+    "Learn " ++ name ++ ": free and paid resources"
+
+
+{-| schema.org `CollectionPage` listing the topic's resources, for search engine rich results.
+-}
+itemList : Data -> Json.Encode.Value
+itemList topic =
+    Json.Encode.object
+        [ ( "@context", Json.Encode.string "https://schema.org" )
+        , ( "@type", Json.Encode.string "CollectionPage" )
+        , ( "name", Json.Encode.string (pageTitle topic.meta.name) )
+        , ( "description", Json.Encode.string topic.meta.description )
+        , ( "mainEntity"
+          , Json.Encode.object
+                [ ( "@type", Json.Encode.string "ItemList" )
+                , ( "itemListElement"
+                  , Json.Encode.list
+                        (\( position, resource ) ->
+                            Json.Encode.object
+                                [ ( "@type", Json.Encode.string "ListItem" )
+                                , ( "position", Json.Encode.int position )
+                                , ( "name", Json.Encode.string resource.name )
+                                , ( "url", Json.Encode.string (Url.toString resource.url) )
+                                ]
+                        )
+                        (List.indexedMap (\i r -> ( i + 1, r )) topic.resources)
+                  )
+                ]
+          )
+        ]
 
 
 view : App Data ActionData RouteParams -> Shared.Model -> View (PagesMsg Msg)
 view app _ =
-    View.fromStyled app.data.meta.name [ viewExplorerLayout app.data app.routeParams.resource ]
+    View.fromStyled (pageTitle app.data.meta.name) [ viewExplorerLayout app.data app.routeParams.resource ]
         |> View.map PagesMsg.fromMsg
 
 
