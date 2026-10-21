@@ -22,7 +22,7 @@
     "format": "elm-format src app --yes"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5 || ^7.0.0"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
