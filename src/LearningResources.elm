@@ -9,7 +9,7 @@ import LearningResources.Types exposing (CompiledMeta, Database, EntityTag, Reso
 
 repoUrl : String
 repoUrl =
-    "https://cdn.jsdelivr.net/gh/TheDeveloperDen/LearningResources@790043e153f15fee0fa18cdd64a529d7b58c80af/"
+    "https://cdn.jsdelivr.net/gh/TheDeveloperDen/LearningResources@94a95ce0bc8c0625e2af95b404d80f2224714b73/"
 
 
 databaseUrl : String
