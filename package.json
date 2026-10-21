@@ -16,9 +16,10 @@
     "vite": "^7.3.2"
   },
   "scripts": {
+    "gen-types": "bun run generate-elm-types.ts",
     "tw": "bunx --bun elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts",
     "dev": "elm-pages dev",
-    "build": "elm-pages build && test -f dist/og/default.png",
+    "build": "bun run gen-types && elm-pages build && test -f dist/og/default.png",
     "format": "elm-format src app --yes"
   },
   "peerDependencies": {
