@@ -6,7 +6,7 @@
     "@types/bun": "latest",
     "elm-open-api": "git+https://github.com/wolfadex/elm-open-api-cli.git#main",
     "elm-review": "^2.13.5",
-    "quicktype": "^23.2.6",
+    "quicktype": "^26.0.0",
     "quicktype-core": "^23.2.6",
     "elm": "^0.19.1-6",
     "elm-codegen": "^0.6.3",
