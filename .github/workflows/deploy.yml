@@ -16,6 +16,9 @@ jobs:
   deploy:
     name: Release & trigger deploy
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://developerden.org
     steps:
       - uses: actions/checkout@v4
 
