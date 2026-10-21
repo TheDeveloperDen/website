@@ -8,7 +8,7 @@ import path from "path";
 import fs from "fs"
 import { $ } from "bun";
 
-const SCHEMA_URL = "https://cdn.jsdelivr.net/gh/TheDeveloperDen/LearningResources@ff00a2214449e0f6ce8e9fb2ddea91489678af3b/openapi.schema.json";
+const SCHEMA_URL = "https://cdn.jsdelivr.net/gh/TheDeveloperDen/LearningResources@94a95ce0bc8c0625e2af95b404d80f2224714b73/openapi.schema.json";
 const OUTPUT_DIR = path.join(__dirname, "./src");
 const MODULE_NAME = "LearningResources";
 
