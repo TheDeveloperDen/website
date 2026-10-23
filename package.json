@@ -18,6 +18,7 @@
   "scripts": {
     "gen-types": "bun run generate-elm-types.ts",
     "tw": "bunx --bun elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts",
+    "predev": "bun run gen-types",
     "dev": "elm-pages dev",
     "build": "bun run gen-types && elm-pages build && test -f dist/og/default.png",
     "format": "elm-format src app --yes"

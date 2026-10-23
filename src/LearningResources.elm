@@ -4,12 +4,8 @@ import BackendTask exposing (BackendTask)
 import BackendTask.Http
 import FatalError exposing (FatalError)
 import LearningResources.Json as Json
+import LearningResources.Source exposing (repoUrl)
 import LearningResources.Types exposing (CompiledMeta, Database, EntityTag, Resource)
-
-
-repoUrl : String
-repoUrl =
-    "https://cdn.jsdelivr.net/gh/TheDeveloperDen/LearningResources@94a95ce0bc8c0625e2af95b404d80f2224714b73/"
 
 
 databaseUrl : String

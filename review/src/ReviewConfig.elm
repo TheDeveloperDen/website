@@ -42,6 +42,7 @@ config =
             , FilePattern.excludeDirectory ".elm-pages"
             , FilePattern.exclude "src/LearningResources/Json.elm"
             , FilePattern.exclude "src/LearningResources/Types.elm"
+            , FilePattern.exclude "src/LearningResources/Source.elm"
             ]
         )
         [ Docs.ReviewAtDocs.rule

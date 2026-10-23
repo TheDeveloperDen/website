@@ -10,3 +10,6 @@ dist
 .env
 *.pem
 gen/Tailwind
+src/LearningResources/Types.elm
+src/LearningResources/Json.elm
+src/LearningResources/Source.elm
