@@ -4,7 +4,7 @@
   "private": true,
   "devDependencies": {
     "@types/bun": "latest",
-    "elm-open-api": "git+https://github.com/wolfadex/elm-open-api-cli.git#main",
+    "elm-open-api": "^0.8.0",
     "elm-review": "^2.13.5",
     "quicktype": "^26.0.0",
     "quicktype-core": "^23.2.6",

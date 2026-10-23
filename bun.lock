@@ -16,7 +16,7 @@
         "elm": "^0.19.1-6",
         "elm-codegen": "^0.6.3",
         "elm-format": "^0.8.8",
-        "elm-open-api": "git+https://github.com/wolfadex/elm-open-api-cli.git#main",
+        "elm-open-api": "^0.8.0",
         "elm-pages": "^3.5.0",
         "elm-review": "^2.13.5",
         "lamdera": "^0.19.1-1.4.0",
@@ -524,7 +524,7 @@
 
     "elm-hot": ["elm-hot@1.1.6", "", {}, "sha512-zYZJlfs7Gt4BdjA+D+857K+XAWzwwySJmXCgFpHW1dIEfaHSZCIPYPf7/jinZBLfKRkOAlKzI32AA84DY50g7Q=="],
 
-    "elm-open-api": ["elm-open-api@github:wolfadex/elm-open-api-cli#f77df0b", { "bin": "dist/elm-open-api.js" }, "wolfadex-elm-open-api-cli-f77df0b", "sha512-Q7DVQNVTtiOtgoMzbgLNf6/Z2DFVOu7Xh7WKO6m7IKV/ig9W3bb7XQZd+E8TvmJUMTp/WBzBG1ZdnhoOAobN4g=="],
+    "elm-open-api": ["elm-open-api@0.8.0", "", { "bin": { "elm-open-api": "dist/elm-open-api.js" } }, "sha512-FKDISbwXNE1gRYvSBllpBRw93mhFtVYDTI2/nDBaBSWTOvbhF7Dr+x+mtCB1c2QtDt7H9js7AI1TzfjAO10a2Q=="],
 
     "elm-optimize-level-2": ["elm-optimize-level-2@0.3.5", "", { "dependencies": { "@types/jest": "^27.0.3", "chalk": "^4.1.0", "commander": "^6.0.0", "node-elm-compiler": "^5.0.4", "ts-union": "^2.2.1", "typescript": "^4.5.5" }, "bin": { "elm-optimize-level-2": "bin/elm-optimize-level-2" } }, "sha512-t1xl8zR9UBspdmEMuLBE/qTLP+Ew3L4PzKLhSY/PsO21HU3jZ1ULmKxDtZmJPVG4ciqsY1JSl/GFbaSdQ1sX9Q=="],
 
