@@ -1,7 +1,12 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
-import { codeToTokens, createCssVariablesTheme, type BundledLanguage, type ThemedToken } from "shiki";
+import {
+	type BundledLanguage,
+	codeToTokens,
+	createCssVariablesTheme,
+	type ThemedToken,
+} from "shiki";
 
 const fontFiles = [
 	"banners/fonts/CascadiaCode-SemiBold.ttf",
@@ -28,7 +33,6 @@ export async function writePng({
 	return null;
 }
 
-
 const theme = createCssVariablesTheme({
 	name: "den",
 	variablePrefix: "--shiki-",
@@ -43,7 +47,8 @@ export async function highlight({
 	code: string;
 	lang: string;
 }): Promise<ThemedToken[][]> {
-	const render = (lang: string) => codeToTokens(code, { lang: lang as BundledLanguage, theme });
+	const render = (lang: string) =>
+		codeToTokens(code, { lang: lang as BundledLanguage, theme });
 	const { tokens } = await render(lang).catch(() => render("text"));
 	return tokens;
 }

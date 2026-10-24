@@ -1,4 +1,7 @@
-module Blog exposing (Author, HighlightCodeBlock, Post, Summary, fetchPost, fetchSummaries, formatDate, postSlugs, renderBody, sameLogin, tagSlug)
+module Blog exposing
+    ( Author, Post, Summary, fetchPost, fetchSummaries, formatDate, postSlugs, renderBody, sameLogin, tagSlug
+    , HighlightCodeBlock
+    )
 
 {-| Posts from the `TheDeveloperDen/blog` repo.
 The files this code reads should be cloned at `content/blog` and `content/blog-dates.json` by `prepare-blog.ts`.
@@ -179,7 +182,6 @@ fetchPost slug =
 
 
 {-| Highlights every fenced code block by running the `highlight` task in `custom-backend-task.ts`.
-
 -}
 highlightBlocks : String -> BackendTask FatalError (List HighlightCodeBlock)
 highlightBlocks markdown =

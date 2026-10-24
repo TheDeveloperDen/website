@@ -60,6 +60,7 @@ viewToken token =
             [ Maybe.map (Attr.style "color") token.color
             , flag 1 "font-style" "italic" token
             , flag 2 "font-weight" "bold" token
+
             -- don't really care enough to support any of the other tags
             ]
         )
