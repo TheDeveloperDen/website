@@ -30,6 +30,7 @@
             programs = {
               nixfmt.enable = true;
               elm-format.enable = true;
+              biome.enable = true;
             };
           };
 
