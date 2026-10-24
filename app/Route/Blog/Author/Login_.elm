@@ -122,7 +122,7 @@ view app _ =
 -}
 viewBio : Maybe String -> Html msg
 viewBio maybeBio =
-    case maybeBio |> Maybe.map (Blog.renderBody "") of
+    case maybeBio |> Maybe.map (Blog.renderBody "" []) of
         Just (Ok rendered) ->
             div [ css [ Theming.prose, Tw.mt_6 ] ] (List.map Html.fromUnstyled rendered)
 

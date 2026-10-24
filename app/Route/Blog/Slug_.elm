@@ -41,6 +41,7 @@ type alias Data =
     , tags : List String
     , published : Maybe Time.Posix
     , body : String
+    , highlighted : List Blog.HighlightCodeBlock
     }
 
 
@@ -74,6 +75,7 @@ data params =
                 , tags = post.tags
                 , published = post.published
                 , body = post.body
+                , highlighted = post.highlighted
                 }
             )
 
@@ -121,7 +123,7 @@ view app _ =
             [ Theming.pageTitle app.data.title
             , div [ css [ Tw.mt_4, Tw.mb_4 ] ] [ BlogView.metaLine app.data.authors app.data.published ]
             , div [ css [ Tw.flex, Tw.flex_wrap, Tw.gap_2, Tw.mb_12 ] ] (List.map BlogView.tagLink app.data.tags)
-            , viewMarkdown app.routeParams.slug app.data.body
+            , viewMarkdown app.routeParams.slug app.data.highlighted app.data.body
             , div [ css [ Tw.mt_16, Tw.flex, Tw.flex_col, Tw.gap_6 ] ] (List.filterMap viewAuthorBox app.data.authors)
             ]
         ]
@@ -137,14 +139,14 @@ viewAuthorBox author =
             (\bio ->
                 Theming.cardShell [ Tw.p_6, Tw.flex, Tw.flex_col, Tw.gap_2 ]
                     [ div [ css [ Tw.flex, Tw.items_center, Tw.gap_3 ] ] [ BlogView.avatar 40 author.login, p [ css [ Theming.bodyFont, Tw.m_0, Tw.font_semibold ] ] [ text author.name ] ]
-                    , viewMarkdown "" bio
+                    , viewMarkdown "" [] bio
                     ]
             )
 
 
-viewMarkdown : String -> String -> Html msg
-viewMarkdown slug markdown =
-    case Blog.renderBody slug markdown of
+viewMarkdown : String -> List Blog.HighlightCodeBlock -> String -> Html msg
+viewMarkdown slug highlighted markdown =
+    case Blog.renderBody slug highlighted markdown of
         Ok rendered ->
             Html.div [ css [ Theming.prose ] ] (List.map Html.fromUnstyled rendered)
 

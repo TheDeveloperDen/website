@@ -86,7 +86,7 @@ viewBioCard author bio =
                 [ avatar 40 author.login
                 , span [ css [ Tw.font_semibold ] ] [ text author.name ]
                 ]
-            , case Blog.renderBody "" bio of
+            , case Blog.renderBody "" [] bio of
                 Ok rendered ->
                     div [] (List.map Html.fromUnstyled rendered)
 

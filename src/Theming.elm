@@ -205,8 +205,8 @@ cardShell extraStyles children =
 
 
 {-| Styles for rendered Markdown for blog posts
-Code blocks are highlighted in the browser by Shiki (`public/highlight-init.js`), 
--- we set the colour `--shiki-*` variables here so they follow the theming
+Code blocks are highlighted at build time by Shiki (see `Shiki`), which colours tokens with `--shiki-*` variables
+that we set here so they follow the theming.
 -}
 prose : Css.Style
 prose =

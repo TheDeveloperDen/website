@@ -1,13 +1,14 @@
-module Blog exposing (Author, Post, Summary, fetchPost, fetchSummaries, formatDate, postSlugs, renderBody, sameLogin, tagSlug)
+module Blog exposing (Author, HighlightCodeBlock, Post, Summary, fetchPost, fetchSummaries, formatDate, postSlugs, renderBody, sameLogin, tagSlug)
 
 {-| Posts from the `TheDeveloperDen/blog` repo.
 The files this code reads should be cloned at `content/blog` and `content/blog-dates.json` by `prepare-blog.ts`.
 
-@docs Author, Post, Summary, fetchPost, fetchSummaries, formatDate, postSlugs, renderBody, sameLogin, tagSlug
+@docs Author, Highlight, Post, Summary, fetchPost, fetchSummaries, formatDate, postSlugs, renderBody, sameLogin, tagSlug
 
 -}
 
 import BackendTask exposing (BackendTask)
+import BackendTask.Custom
 import BackendTask.File as File
 import BackendTask.Glob as Glob
 import Date
@@ -16,9 +17,11 @@ import FatalError exposing (FatalError)
 import Html as UnstyledHtml
 import Html.Attributes as UnstyledAttr
 import Json.Decode as Decode exposing (Decoder)
+import Json.Encode as Encode
 import Markdown.Block as Block
 import Markdown.Parser
 import Markdown.Renderer
+import Shiki
 import Time
 
 
@@ -41,6 +44,14 @@ type alias Post =
     , tags : List String
     , published : Maybe Time.Posix
     , body : String
+    , highlighted : List HighlightCodeBlock
+    }
+
+
+type alias HighlightCodeBlock =
+    { language : String
+    , code : String
+    , tokens : Shiki.Highlighted
     }
 
 
@@ -164,6 +175,35 @@ fetchPost : String -> BackendTask FatalError Post
 fetchPost slug =
     BackendTask.map2 Tuple.pair authorNames publishedDates
         |> BackendTask.andThen (\( names, dates ) -> readPost names dates slug)
+        |> BackendTask.andThen (\post -> highlightBlocks post.body |> BackendTask.map (\highlighted -> { post | highlighted = highlighted }))
+
+
+{-| Highlights every fenced code block by running the `highlight` task in `custom-backend-task.ts`.
+
+-}
+highlightBlocks : String -> BackendTask FatalError (List HighlightCodeBlock)
+highlightBlocks markdown =
+    Markdown.Parser.parse markdown
+        |> Result.withDefault []
+        |> Block.foldl
+            (\block blocks ->
+                case block of
+                    Block.CodeBlock { body, language } ->
+                        ( Maybe.withDefault "text" language, body ) :: blocks
+
+                    _ ->
+                        blocks
+            )
+            []
+        |> List.map
+            (\( language, code ) ->
+                BackendTask.Custom.run "highlight"
+                    (Encode.object [ ( "lang", Encode.string language ), ( "code", Encode.string code ) ])
+                    Shiki.decoder
+                    |> BackendTask.allowFatal
+                    |> BackendTask.map (HighlightCodeBlock language code)
+            )
+        |> BackendTask.combine
 
 
 readPost : List String -> Dict String Int -> String -> BackendTask FatalError Post
@@ -182,6 +222,7 @@ readPost names dates slug =
                         , tags = frontmatter.tags
                         , published = Dict.get slug dates |> Maybe.map Time.millisToPosix
                         , body = body
+                        , highlighted = []
                         }
                     )
                     (BackendTask.combine (List.map (fetchAuthor names) frontmatter.authors))
@@ -273,15 +314,15 @@ firstParagraph body =
 
 {-| Render a post's Markdown.
 -}
-renderBody : String -> String -> Result String (List (UnstyledHtml.Html msg))
-renderBody slug markdown =
+renderBody : String -> List HighlightCodeBlock -> String -> Result String (List (UnstyledHtml.Html msg))
+renderBody slug highlighted markdown =
     Markdown.Parser.parse markdown
         |> Result.mapError (\_ -> "Could not parse this post.")
-        |> Result.andThen (Markdown.Renderer.render (renderer slug))
+        |> Result.andThen (Markdown.Renderer.render (renderer slug highlighted))
 
 
-renderer : String -> Markdown.Renderer.Renderer (UnstyledHtml.Html msg)
-renderer slug =
+renderer : String -> List HighlightCodeBlock -> Markdown.Renderer.Renderer (UnstyledHtml.Html msg)
+renderer slug highlighted =
     let
         defaults : Markdown.Renderer.Renderer (UnstyledHtml.Html msg)
         defaults =
@@ -297,7 +338,14 @@ renderer slug =
                 "/blog/" ++ slug ++ "/" ++ source
     in
     { defaults
-        | image =
+        | codeBlock =
+            \block ->
+                highlighted
+                    |> List.filter (\highlight -> highlight.code == block.body && highlight.language == Maybe.withDefault "text" block.language)
+                    |> List.head
+                    |> Maybe.map (\highlight -> Shiki.view highlight.language highlight.tokens)
+                    |> Maybe.withDefault (defaults.codeBlock block)
+        , image =
             \image ->
                 UnstyledHtml.img
                     (UnstyledAttr.src (imageSource image.src)
