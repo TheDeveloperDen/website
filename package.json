@@ -1,36 +1,37 @@
 {
-  "name": "website",
-  "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest",
-    "elm-open-api": "^0.8.0",
-    "elm-review": "^2.13.5",
-    "quicktype": "^26.0.0",
-    "quicktype-core": "^23.2.6",
-    "elm": "^0.19.1-6",
-    "elm-codegen": "^0.6.3",
-    "elm-format": "^0.8.8",
-    "elm-pages": "^3.5.0",
-    "lamdera": "^0.19.1-1.4.0",
-    "vite": "^7.3.2"
-  },
-  "scripts": {
-    "gen-types": "bun run generate-elm-types.ts",
-    "tw": "bunx --bun elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts",
-    "predev": "bun run gen-types",
-    "dev": "elm-pages dev",
-    "build": "bun run gen-types && elm-pages build && test -f dist/og/default.png",
-    "format": "elm-format src app --yes"
-  },
-  "peerDependencies": {
-    "typescript": "^5 || ^7.0.0"
-  },
-  "dependencies": {
-    "@resvg/resvg-js": "^2.6.2",
-    "@tailwindcss/postcss": "^4.3.0",
-    "elm-tailwind-modules": "^0.5.0",
-    "postcss": "^8.4.0",
-    "tailwindcss": "^3.4.0"
-  }
+	"name": "website",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@types/bun": "latest",
+		"elm-open-api": "^0.8.0",
+		"elm-review": "^2.13.5",
+		"quicktype": "^26.0.0",
+		"quicktype-core": "^23.2.6",
+		"elm": "^0.19.1-6",
+		"elm-codegen": "^0.6.3",
+		"elm-format": "^0.8.8",
+		"elm-pages": "^3.5.0",
+		"lamdera": "^0.19.1-1.4.0",
+		"vite": "^7.3.2"
+	},
+	"scripts": {
+		"gen-types": "bun run generate-elm-types.ts",
+		"prepare-blog": "bun run prepare-blog.ts",
+		"tw": "bunx --bun elm-tailwind-modules --dir ./gen --tailwind-config tailwind.config.ts",
+		"predev": "bun run gen-types && bun run prepare-blog",
+		"dev": "elm-pages dev",
+		"build": "bun run gen-types && bun run prepare-blog && elm-pages build && test -f dist/og/default.png",
+		"format": "elm-format src app --yes"
+	},
+	"peerDependencies": {
+		"typescript": "^5 || ^7.0.0"
+	},
+	"dependencies": {
+		"@resvg/resvg-js": "^2.6.2",
+		"@tailwindcss/postcss": "^4.3.0",
+		"elm-tailwind-modules": "^0.5.0",
+		"postcss": "^8.4.0",
+		"tailwindcss": "^3.4.0"
+	}
 }

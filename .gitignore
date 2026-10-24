@@ -13,3 +13,6 @@ gen/Tailwind
 src/LearningResources/Types.elm
 src/LearningResources/Json.elm
 src/LearningResources/Source.elm
+content/blog
+public/blog
+content/blog-dates.json
