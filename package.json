@@ -7,7 +7,7 @@
 		"elm-open-api": "^0.8.0",
 		"elm-review": "^2.13.5",
 		"quicktype": "^26.0.0",
-		"quicktype-core": "^23.2.6",
+		"quicktype-core": "^26.0.0",
 		"elm": "^0.19.1-6",
 		"elm-codegen": "^0.6.3",
 		"elm-format": "^0.8.8",
