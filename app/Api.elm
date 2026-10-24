@@ -6,6 +6,7 @@ import BackendTask.Custom
 import BackendTask.File
 import BackendTask.Http
 import Banner
+import Blog
 import FatalError exposing (FatalError)
 import Html exposing (Html)
 import Json.Decode
@@ -30,18 +31,45 @@ routes getStaticRoutes renderHtml =
     ]
 
 
-{-| Renders `dist/og/default.png` and one `dist/og/<topic>.png` per topic.
-Returns the plain/simple names of the banners written (`default` and each topic tag).
+{-| Renders `dist/og/default.png`, one `dist/og/<topic>.png` per topic, and one per blog post (see `Banner.postFile`).
+Returns the plain/simple names of the banners written.
 -}
 renderBanners : (Maybe { indent : Int, newLines : Bool } -> Html Never -> String) -> BackendTask FatalError (List String)
 renderBanners renderHtml =
-    Db.fetchDatabase
-        |> BackendTask.andThen
-            (\db ->
-                (Nothing :: List.map Just db.metadata)
-                    |> List.map (renderBanner renderHtml)
-                    |> BackendTask.combine
-            )
+    BackendTask.map2
+        (\db posts -> defaultSpec :: List.map topicSpec db.metadata ++ List.map postSpec posts)
+        Db.fetchDatabase
+        Blog.fetchSummaries
+        |> BackendTask.andThen (List.map (renderBanner renderHtml) >> BackendTask.combine)
+
+
+type alias BannerSpec =
+    { file : String
+    , subtitle : String
+    , title : String
+    , tagline : String
+    , icon : Maybe LearningResources.EntityIcon
+    }
+
+
+defaultSpec : BannerSpec
+defaultSpec =
+    { file = "default", subtitle = "welcome to", title = "developer den", tagline = "a community of programmers learning together", icon = Nothing }
+
+
+topicSpec : LearningResources.CompiledMeta -> BannerSpec
+topicSpec meta =
+    { file = LearningResources.entityTagToString meta.id
+    , subtitle = "learn"
+    , title = String.toLower meta.name
+    , tagline = firstSentence meta.description
+    , icon = meta.icon
+    }
+
+
+postSpec : Blog.Summary -> BannerSpec
+postSpec post =
+    { file = Banner.postFile post.slug, subtitle = "blog", title = String.toLower post.title, tagline = post.description, icon = Nothing }
 
 
 bannerDir : String
@@ -54,29 +82,17 @@ bannerManifest files =
     Json.Encode.encode 2 (Json.Encode.list Json.Encode.string files)
 
 
-renderBanner : (Maybe { indent : Int, newLines : Bool } -> Html Never -> String) -> Maybe LearningResources.CompiledMeta -> BackendTask FatalError String
-renderBanner renderHtml maybeMeta =
-    let
-        file : String
-        file =
-            maybeMeta |> Maybe.map (.id >> LearningResources.entityTagToString) |> Maybe.withDefault "default"
-    in
+renderBanner : (Maybe { indent : Int, newLines : Bool } -> Html Never -> String) -> BannerSpec -> BackendTask FatalError String
+renderBanner renderHtml spec =
     BackendTask.map2
-        (\logo icon ->
-            case maybeMeta of
-                Just meta ->
-                    { subtitle = "learn", title = String.toLower meta.name, tagline = firstSentence meta.description, logo = logo, icon = icon }
-
-                Nothing ->
-                    { subtitle = "welcome to", title = "developer den", tagline = "a community of programmers learning together", logo = logo, icon = Nothing }
-        )
+        (\logo icon -> { subtitle = spec.subtitle, title = spec.title, tagline = spec.tagline, logo = logo, icon = icon })
         (BackendTask.File.rawFile "public/devden-logo.svg" |> BackendTask.allowFatal)
-        (maybeMeta |> Maybe.andThen .icon |> fetchIcon)
+        (fetchIcon spec.icon)
         |> BackendTask.andThen
             (\banner ->
                 BackendTask.Custom.run "writePng"
-                    (Json.Encode.object [ ( "path", Json.Encode.string (bannerDir ++ "/" ++ file ++ ".png") ), ( "svg", Json.Encode.string (Banner.toSvg renderHtml banner) ) ])
-                    (Json.Decode.succeed file)
+                    (Json.Encode.object [ ( "path", Json.Encode.string (bannerDir ++ "/" ++ spec.file ++ ".png") ), ( "svg", Json.Encode.string (Banner.toSvg renderHtml banner) ) ])
+                    (Json.Decode.succeed spec.file)
                     |> BackendTask.allowFatal
             )
 

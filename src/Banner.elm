@@ -1,11 +1,11 @@
-module Banner exposing (Banner, seoImage, toSvg)
+module Banner exposing (Banner, postFile, seoImage, toSvg)
 
 {-| Renders the social preview image ("banner") for a page, as an SVG string. Its size is `layout.canvas`.
 
 The layout is, from top to bottom on the left: the Developer Den logo, a small subtitle (such as "learn" or "welcome to"),
 the big title with a coloured underline, and a tagline. Pages about a topic can also have the topic's icon on the right.
 
-@docs Banner, seoImage, toSvg
+@docs Banner, postFile, seoImage, toSvg
 
 -}
 
@@ -493,6 +493,13 @@ wrap maxChars content =
                     [ word ]
     in
     String.words content |> List.foldl addWord [] |> List.reverse
+
+
+{-| The banner file location of the blog post with this slug.
+-}
+postFile : String -> String
+postFile slug =
+    "blog-" ++ slug
 
 
 {-| The `og:image` for the banner `Api.renderBanners` writes as `og/<file>.png`, with `alt` as its alt text.
