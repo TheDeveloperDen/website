@@ -1,6 +1,7 @@
-module Theming exposing (Accent(..), accentColour, badgeStyle, bodyFont, brandGradientBg, cardShell, entityIcon, gradientButton, gutter, headingFont, pageTitle, quietLink, themedImage)
+module Theming exposing (Accent(..), accentColour, badgeStyle, bodyFont, brandGradientBg, cardShell, entityIcon, gradientButton, gutter, headingFont, pageTitle, prose, quietLink, themedImage)
 
 import Css
+import Css.Global as Global
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
 import LearningResources
@@ -201,3 +202,57 @@ cardShell extraStyles children =
             )
         ]
         children
+
+
+{-| Styles for rendered Markdown for blog posts
+Code blocks are highlighted in the browser by Shiki (`public/highlight-init.js`), 
+-- we set the colour `--shiki-*` variables here so they follow the theming
+-}
+prose : Css.Style
+prose =
+    Css.batch
+        [ Tw.text_lg
+        , Tw.leading_7
+        , syntaxHighlightingColours
+        , Global.descendants
+            [ Global.each [ Global.typeSelector "h2", Global.typeSelector "h3" ]
+                [ Tw.font_semibold, Tw.mt_12, Tw.mb_5, Tw.leading_snug ]
+            , Global.typeSelector "h2" [ Tw.text_3xl ]
+            , Global.typeSelector "h3" [ Tw.text_2xl ]
+            , Global.each [ Global.typeSelector "p", Global.typeSelector "ul", Global.typeSelector "ol", Global.typeSelector "pre", Global.typeSelector "blockquote", Global.typeSelector "table" ]
+                [ Tw.m_0, Tw.mb_7 ]
+            , Global.typeSelector "li" [ Tw.mb_1 ]
+            , Global.each [ Global.typeSelector "ul", Global.typeSelector "ol" ] [ Tw.pl_6 ]
+            , Global.typeSelector "a" [ Tw.text_color Tw.dd_teal ]
+            , Global.typeSelector "blockquote" [ Tw.border_l_4, Tw.border_color Tw.dd_indigo, Tw.pl_6, Tw.text_color Tw.dd_muted ]
+            , Global.typeSelector "code" [ Tw.font_mono, Tw.text_base, Tw.bg_color Tw.dd_deepblueLighter, Tw.px_1 ]
+            , Global.typeSelector "pre" [ Tw.bg_color Tw.dd_deepblueLighter, Tw.border, Tw.border_color Tw.dd_border, Tw.px_6, Tw.py_5, Tw.overflow_x_auto ]
+            , Global.selector "pre code" [ Tw.bg_color Tw.transparent, Tw.p_0 ]
+            , Global.typeSelector "img" [ Tw.max_w_full, Tw.h_auto ]
+
+            -- use block display so a wide table scrolls instead of widening the page
+            , Global.typeSelector "table" [ Tw.block, Tw.overflow_x_auto, Tw.border_collapse ]
+            , Global.each [ Global.typeSelector "th", Global.typeSelector "td" ] [ Tw.border, Tw.border_color Tw.dd_border, Tw.px_3, Tw.py_2, Tw.text_left ]
+            , Global.typeSelector "hr" [ Tw.border_0, Tw.border_t, Tw.border_color Tw.dd_border, Tw.my_12 ]
+            ]
+        , Global.children [ Global.everything [ Css.lastChild [ Tw.mb_0 ] ] ]
+        ]
+
+
+syntaxHighlightingColours : Css.Style
+syntaxHighlightingColours =
+    Css.batch
+        ([ ( "foreground", "text" )
+         , ( "background", "deepblue-lighter" )
+         , ( "token-keyword", "pink" )
+         , ( "token-function", "indigo" )
+         , ( "token-constant", "indigo" )
+         , ( "token-string", "teal" )
+         , ( "token-string-expression", "teal" )
+         , ( "token-comment", "subtle" )
+         , ( "token-parameter", "muted" )
+         , ( "token-punctuation", "muted" )
+         , ( "token-link", "teal" )
+         ]
+            |> List.map (\( name, colour ) -> Css.property ("--shiki-" ++ name) ("var(--color-den-" ++ colour ++ ")"))
+        )

@@ -153,6 +153,7 @@ viewNavbar toMsg activeRoute =
             [ viewNavLink "home" Route.Index (activeRoute == Just Route.Index)
             , viewNavLink "rules" Route.Rules (activeRoute == Just Route.Rules)
             , viewNavLink "learning" Route.Learning (isLearning activeRoute)
+            , viewNavLink "blog" Route.Blog (isBlog activeRoute)
             , a
                 [ href Redirects.discordURL
                 , Attr.target "_blank"
@@ -251,6 +252,25 @@ isLearning activeRoute =
             True
 
         Just (Route.Learning__Resource_ _) ->
+            True
+
+        _ ->
+            False
+
+
+isBlog : Maybe Route -> Bool
+isBlog activeRoute =
+    case activeRoute of
+        Just Route.Blog ->
+            True
+
+        Just (Route.Blog__Slug_ _) ->
+            True
+
+        Just (Route.Blog__Author__Login_ _) ->
+            True
+
+        Just (Route.Blog__Tag__Tag_ _) ->
             True
 
         _ ->
