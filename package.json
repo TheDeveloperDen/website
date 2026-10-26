@@ -13,7 +13,7 @@
 		"elm-format": "^0.8.8",
 		"elm-pages": "^3.5.0",
 		"lamdera": "^0.19.1-1.4.0",
-		"vite": "^7.3.2"
+		"vite": "^8.0.0"
 	},
 	"scripts": {
 		"gen-types": "bun run generate-elm-types.ts",
